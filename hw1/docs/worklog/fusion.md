@@ -55,3 +55,11 @@ The tables above used the broken MERT features. After re-extraction (`bench_fusi
 
 - **B improved** (all-layer average 0.990 to 1.034); **A is about the same** (0.947 to 0.943). Learned weights on B now clearly favor layers 12-24 (about 0.05 vs 0.033 below).
 - **The submission recipes are unchanged** under the selection rule in the plan (simplest recipe within 0.03 of the best): A = MERT average + hand-crafted 10 s (0.947; + CLAP 0.974 is within 0.03 and adds a weak, partly broken model), B = MERT average (1.034). `results/final_validation.json` matches these numbers.
+
+## Task A ordinal check (2026-09-29, `scripts/ordinal_a.py`, `results/ordinal_A.json`)
+
+- **Error structure (current A recipe):** mean absolute error 0.88 decades out-of-fold (5-fold on train, n=1026) and 0.82 on validation; a random guess gives 1.94. Of the wrong top-1 picks, 62% (OOF) and 61% (validation) are one decade off. Only 57-62% of top-3 sets are three adjacent decades.
+- **Neighbour smoothing** of the probabilities, p'[k] = (1-2e) p[k] + e (p[k-1] + p[k+1]), strength chosen on the out-of-fold set: S rises from 0.892 (e=0) to 0.913 (e=0.25-0.3), then collapses above 0.35 (top-1 drops to 0.43). Validation at e=0.25: 1.000 (top-1 0.561, top-3 0.879) against 0.947.
+- **Forced-adjacent top-3** (best run of three neighbouring decades): OOF 0.900 (+0.008), validation 0.955; no clear gain.
+- **Rounded expected decade** as top-1: 0.423, worse than argmax (0.471).
+- **Reading:** the OOF gain (+0.02) is under the 0.03 rule and the validation gain (+0.05) is inside its noise, so smoothing is not adopted yet. Recheck on the fused pool with the cross-validated selection.
