@@ -11,6 +11,7 @@ from tqdm import tqdm
 
 from hw1.data import load_manifest, load_audio
 from hw1.features.mert import DEFAULT_MODEL, load_mert, pooled_layers
+from hw1.features.separation import stem_dir
 
 HW1 = Path(__file__).resolve().parents[1]
 
@@ -23,11 +24,16 @@ def main() -> None:
     ap.add_argument("--dtype", default="fp32", choices=["fp32", "bf16", "fp16"])
     ap.add_argument("--batch", type=int, default=8)
     ap.add_argument("--tag", default=None, help="output suffix, default derived from model id")
+    ap.add_argument("--stem", default=None, choices=["drums", "bass", "other", "vocals"],
+                    help="embed a Demucs stem from data/stems instead of the mixture")
     args = ap.parse_args()
 
     df = load_manifest(args.dataset)
     key = str(df["sample_id"].iloc[0]).split("_")[0]
     tag = args.tag or ("mertv2" if "v2" in args.model.lower() else "mertv1")
+    if args.stem:
+        df["path"] = [str(stem_dir(key, sid) / f"{args.stem}.flac") for sid in df["sample_id"]]
+        tag = f"{tag}_{args.stem}"
     args.out.mkdir(parents=True, exist_ok=True)
     out_path = args.out / f"{key}_{tag}.npz"
 
@@ -52,6 +58,7 @@ def main() -> None:
     meta = {
         "model": args.model,
         "dtype": args.dtype,
+        "input": args.stem or "mixture",
         "transformers": transformers.__version__,
         "torch": torch.__version__,
         "num_layers": int(arr.shape[1]),

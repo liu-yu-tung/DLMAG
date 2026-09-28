@@ -1,0 +1,146 @@
+[
+  {
+    "sample_id": "A_02124fd24618",
+    "label": "1960s",
+    "seconds": 0.99,
+    "recon_snr_db": 32.0,
+    "energy_share": {
+      "drums": 0.202,
+      "bass": 0.361,
+      "other": 0.113,
+      "vocals": 0.324
+    }
+  },
+  {
+    "sample_id": "A_00da4bf97034",
+    "label": "1970s",
+    "seconds": 0.36,
+    "recon_snr_db": 28.3,
+    "energy_share": {
+      "drums": 0.13,
+      "bass": 0.352,
+      "other": 0.113,
+      "vocals": 0.406
+    }
+  },
+  {
+    "sample_id": "A_0150a99e15f9",
+    "label": "1980s",
+    "seconds": 0.36,
+    "recon_snr_db": 26.5,
+    "energy_share": {
+      "drums": 0.321,
+      "bass": 0.094,
+      "other": 0.383,
+      "vocals": 0.202
+    }
+  },
+  {
+    "sample_id": "A_015eea117945",
+    "label": "1990s",
+    "seconds": 0.36,
+    "recon_snr_db": 29.4,
+    "energy_share": {
+      "drums": 0.174,
+      "bass": 0.024,
+      "other": 0.458,
+      "vocals": 0.344
+    }
+  },
+  {
+    "sample_id": "A_00fe7d91fa9e",
+    "label": "2000s",
+    "seconds": 0.36,
+    "recon_snr_db": 36.5,
+    "energy_share": {
+      "drums": 0.0,
+      "bass": 0.0,
+      "other": 0.773,
+      "vocals": 0.227
+    }
+  },
+  {
+    "sample_id": "A_005851d35e74",
+    "label": "2010s",
+    "seconds": 0.37,
+    "recon_snr_db": 25.9,
+    "energy_share": {
+      "drums": 0.274,
+      "bass": 0.163,
+      "other": 0.356,
+      "vocals": 0.206
+    }
+  },
+  {
+    "sample_id": "B_00c82bac12d8",
+    "label": "US",
+    "seconds": 0.35,
+    "recon_snr_db": 25.2,
+    "energy_share": {
+      "drums": 0.201,
+      "bass": 0.364,
+      "other": 0.094,
+      "vocals": 0.34
+    }
+  },
+  {
+    "sample_id": "B_01c95a8259d3",
+    "label": "UK",
+    "seconds": 0.35,
+    "recon_snr_db": 27.2,
+    "energy_share": {
+      "drums": 0.593,
+      "bass": 0.152,
+      "other": 0.255,
+      "vocals": 0.0
+    }
+  },
+  {
+    "sample_id": "B_012fbffe25e2",
+    "label": "Brazil",
+    "seconds": 0.35,
+    "recon_snr_db": 32.2,
+    "energy_share": {
+      "drums": 0.256,
+      "bass": 0.235,
+      "other": 0.096,
+      "vocals": 0.413
+    }
+  },
+  {
+    "sample_id": "B_00cb16950f65",
+    "label": "Spain",
+    "seconds": 0.35,
+    "recon_snr_db": 31.7,
+    "energy_share": {
+      "drums": 0.469,
+      "bass": 0.118,
+      "other": 0.084,
+      "vocals": 0.329
+    }
+  },
+  {
+    "sample_id": "B_07aede4c422a",
+    "label": "Germany",
+    "seconds": 0.35,
+    "recon_snr_db": 34.4,
+    "energy_share": {
+      "drums": 0.153,
+      "bass": 0.251,
+      "other": 0.596,
+      "vocals": 0.0
+    }
+  },
+  {
+    "sample_id": "B_005682819724",
+    "label": "Italy",
+    "seconds": 0.35,
+    "recon_snr_db": 29.7,
+    "energy_share": {
+      "drums": 0.327,
+      "bass": 0.127,
+      "other": 0.147,
+      "vocals": 0.399
+    }
+  }
+]

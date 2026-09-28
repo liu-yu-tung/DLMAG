@@ -11,3 +11,9 @@ Status: open, supported, rejected, or unclear, with the evidence.
 | H4 | US vs UK is the main Task 2 confusion (both English). | Task 2 confusion matrix. | supported one way (hand-crafted): 9/17 US clips go to UK and US is never predicted. But Spain and Germany are also mostly sent to UK or Brazil, so UK absorbs several classes. |
 | H5 | The dataset may contain different versions (covers) of the same song, so melody and harmony are weak cues for both tasks. Guess based only on the dataset's name "Discogs-VI"; not verified. | Compare chroma/harmony-only features with timbre features on validation; look for near-duplicate melodies across classes within train. | open |
 | H6 | A class dominated by a few artists is easier to fit on train but generalizes worse (artist confound). | Spread within each class vs per-class validation accuracy. | open |
+
+## H7: mixing conventions separate decades (and maybe markets)
+
+- **Claim:** per-stem level, dynamics and brightness (vocal level over the band, drum and bass prominence, per-stem compression) change by decade, and these are easier to read from Demucs stems than from the mixture.
+- **Test:** probe the 29 mix-balance features and per-stem MERT embeddings on train, score on validation; compare mixture vs vocals vs accompaniment inputs (the HW's optional experiment).
+- **Status:** open; features extracting overnight 9/29.
