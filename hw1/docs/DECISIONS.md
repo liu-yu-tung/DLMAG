@@ -29,3 +29,10 @@ Append-only. Newest at the bottom. Format: date, decision, reason, source.
 ## 2026-09-29
 
 - **MERT-v2 extraction runs in fp32.** The real-weight smoke test on transformers 5.17.0 passes: 24 layers of (750, 1024), all finite, 0.12 s per clip, 2.8 GB peak. bf16 and fp16 are 2x faster but deviate from fp32 by up to 32% (relative error) on some layer's pooled vector, with minimum cosine 0.948. Layer-wise probing needs faithful per-layer features, and fp32 is fast enough (about 5 min for all 2,292 clips).
+- **CLAP on transformers 5.17: audio embeddings used, zero-shot text dropped (known issue).** Three API changes were fixed in `features/clap.py`:
+  - the processor keyword is now `audio=`, not `audios=`;
+  - `get_*_features` returns an output object, so the code takes `.pooler_output`;
+  - runs use `HF_HUB_OFFLINE=1`, because an erroring run hung instead of exiting (possibly a background Hub request; not confirmed).
+
+  The text tower still gives near-identical embeddings for unrelated prompts (cosine 0.999, e.g. "a dog barking" vs "heavy metal"), even at the CLS hidden state and with explicit RoBERTa position IDs, although all weights load without missing keys. Probable cause: a 5.17 regression in the CLAP text model, not investigated further (time-boxed). Zero-shot needs the text tower, so it is excluded unless re-checked in an isolated older-transformers environment.
+- **All reported numbers are also exported as CSV** (`scripts/export_tables.py` → `results/tables/*.csv`) for the report. Rerun after each new result.
