@@ -96,3 +96,10 @@ def extract(y: np.ndarray) -> dict[str, float]:
 
 def feature_group(name: str) -> str:
     return name.split("_", 1)[0]
+
+
+def extract_chunks(y: np.ndarray, chunk_s: float) -> np.ndarray:
+    """(n_chunks, n_features) for non-overlapping chunks of chunk_s seconds; a short tail is dropped."""
+    n = int(round(chunk_s * SR))
+    k = max(len(y) // n, 1)
+    return np.asarray([list(extract(y[i * n : (i + 1) * n]).values()) for i in range(k)], dtype=np.float32)

@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from hw1.features.handcrafted import SR, extract, feature_group
+from hw1.features.handcrafted import SR, extract, extract_chunks, feature_group
 
 DUR = 10
 
@@ -59,3 +59,11 @@ def test_loudness_scales_by_20db():
 def test_click_tempo():
     tempo = extract(_clicks(120))["rhythm_tempo_bpm"]
     assert min(abs(tempo - t) for t in (60, 120, 240)) < 6
+
+
+def test_extract_chunks_shapes_and_whole_clip():
+    y = _sine(440.0)
+    full = np.array(list(extract(y).values()), dtype=np.float32)
+    assert extract_chunks(y, 5).shape == (2, len(full))
+    assert extract_chunks(y, 3).shape == (3, len(full))
+    np.testing.assert_allclose(extract_chunks(y, DUR)[0], full, rtol=1e-5, atol=1e-6)
