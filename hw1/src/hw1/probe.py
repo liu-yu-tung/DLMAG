@@ -63,3 +63,9 @@ def fuse_logprobs(logps: list[np.ndarray]) -> np.ndarray:
     z = np.mean(logps, axis=0)
     z = np.exp(z - z.max(axis=1, keepdims=True))
     return z / z.sum(axis=1, keepdims=True)
+
+
+def layeravg_logprobs(Xtr: np.ndarray, ytr: np.ndarray, Xva: np.ndarray, model: str = "logreg") -> np.ndarray:
+    """One probe per layer on (N, L, D) features; returns the mean of per-layer validation log-probabilities."""
+    return np.mean([np.log(make_model(model).fit(Xtr[:, l], ytr).predict_proba(Xva[:, l]) + 1e-9)
+                    for l in range(Xtr.shape[1])], axis=0)

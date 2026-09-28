@@ -11,7 +11,7 @@ from tqdm import tqdm
 
 from hw1.data import load_manifest, load_audio
 from hw1.features.mert import DEFAULT_MODEL, load_mert, pooled_layers
-from hw1.features.separation import stem_dir
+from hw1.features.separation import STEMS, stem_dir
 
 HW1 = Path(__file__).resolve().parents[1]
 
@@ -24,15 +24,18 @@ def main() -> None:
     ap.add_argument("--dtype", default="fp32", choices=["fp32", "bf16", "fp16"])
     ap.add_argument("--batch", type=int, default=8)
     ap.add_argument("--tag", default=None, help="output suffix, default derived from model id")
-    ap.add_argument("--stem", default=None, choices=["drums", "bass", "other", "vocals"],
-                    help="embed a Demucs stem from data/stems instead of the mixture")
+    ap.add_argument("--stem", default=None, choices=[*STEMS, "accompaniment"],
+                    help="embed a Demucs stem from data/stems instead of the mixture (accompaniment = drums+bass+other)")
     args = ap.parse_args()
 
     df = load_manifest(args.dataset)
     key = str(df["sample_id"].iloc[0]).split("_")[0]
     tag = args.tag or ("mertv2" if "v2" in args.model.lower() else "mertv1")
+    load = load_audio
     if args.stem:
-        df["path"] = [str(stem_dir(key, sid) / f"{args.stem}.flac") for sid in df["sample_id"]]
+        df["path"] = [str(stem_dir(key, sid)) for sid in df["sample_id"]]
+        parts = [s for s in STEMS if s != "vocals"] if args.stem == "accompaniment" else [args.stem]
+        load = lambda d: sum(load_audio(Path(d) / f"{s}.flac") for s in parts)
         tag = f"{tag}_{args.stem}"
     args.out.mkdir(parents=True, exist_ok=True)
     out_path = args.out / f"{key}_{tag}.npz"
@@ -44,7 +47,7 @@ def main() -> None:
     feats: list[np.ndarray] = []
     t0 = time.time()
     with ThreadPoolExecutor(4) as pool:
-        loaded = pool.map(lambda b: [load_audio(p) for p in b], batches)
+        loaded = pool.map(lambda b: [load(p) for p in b], batches)
         for wavs in tqdm(loaded, total=len(batches), desc=f"{key} {tag}"):
             lengths = [len(w) for w in wavs]
             x = np.zeros((len(wavs), max(lengths)), dtype=np.float32)

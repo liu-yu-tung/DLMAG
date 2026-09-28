@@ -93,6 +93,18 @@ def main() -> None:
                 if "cm" in v:
                     cms += _cm_rows(k, n, v["cm"])
 
+    if st := _load("stems.json"):
+        save(pd.DataFrame([{"dataset": k, "method": n, **{m: v[m] for m in METRICS}} for k, r in st.items() for n, v in r["methods"].items()]),
+             "stems.csv")
+        save(pd.DataFrame([{"dataset": k, "rank": i + 1, **d} for k, r in st.items() for i, d in enumerate(r["mixbalance_anova_train"])]),
+             "mixbalance_anova_train.csv")
+        save(pd.DataFrame([{"dataset": k, "class": LABELS[k][c], "feature": f, "train_mean": vals[c]}
+                           for k, r in st.items() for f, vals in r["mixbalance_class_means_train"].items() for c in range(6)]),
+             "mixbalance_class_means_train.csv")
+        for k, r in st.items():
+            for n, v in r["methods"].items():
+                summary.append({"dataset": k, "method": f"stems: {n}", **{m: v[m] for m in METRICS}})
+
     if summary:
         save(pd.DataFrame(summary).drop_duplicates(["dataset", "method"]).sort_values(["dataset", "S"], ascending=[True, False]),
              "summary.csv")
