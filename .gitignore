@@ -1,0 +1,52 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Dataset (course rules: do not redistribute)
+data/
+dataset_A/
+dataset_B/
+*.wav
+*.mp3
+*.flac
+*.zip
+
+# Extracted features and caches
+features/
+cache/
+*.npy
+*.npz
+*.h5
+.cache/
+hf_cache/
+
+# Checkpoints (uploaded to the cloud drive, not git)
+checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.joblib
+*.pkl
+
+# Training outputs
+runs/
+outputs/
+wandb/
+lightning_logs/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Editor and OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
