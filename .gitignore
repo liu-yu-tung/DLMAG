@@ -50,3 +50,7 @@ lightning_logs/
 .idea/
 *.swp
 .DS_Store
+
+# Course material (not ours to redistribute)
+slides/
+*.pdf
