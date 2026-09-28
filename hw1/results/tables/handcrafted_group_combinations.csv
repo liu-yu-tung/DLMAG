@@ -1,0 +1,13 @@
+dataset,features,S
+A,energy only,0.7614
+A,energy+harmony,0.7235
+A,energy+rhythm,0.7652
+A,energy+spectral,0.7765
+A,energy+timbre,0.8106
+A,all,0.7917
+B,energy only,0.6127
+B,energy+harmony,0.5588
+B,energy+rhythm,0.6127
+B,energy+spectral,0.5931
+B,energy+timbre,0.6324
+B,all,0.6176

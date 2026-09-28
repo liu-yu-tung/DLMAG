@@ -1,0 +1,7 @@
+dataset,variant,top1,top3,S
+A,best single layer (9) time-mean,0.5152,0.8636,0.9470
+A,best layer mean+std,0.4848,0.8258,0.8977
+A,layer-average mean,0.4697,0.8182,0.8788
+B,best single layer (14) time-mean,0.5784,0.8431,1.0000
+B,best layer mean+std,0.5490,0.8333,0.9657
+B,layer-average mean,0.5490,0.8333,0.9657

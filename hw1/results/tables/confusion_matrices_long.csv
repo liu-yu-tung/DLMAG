@@ -1,0 +1,145 @@
+dataset,method,true,predicted,count
+A,hand-crafted logreg,1960s,1960s,9
+A,hand-crafted logreg,1960s,1970s,5
+A,hand-crafted logreg,1960s,1980s,3
+A,hand-crafted logreg,1960s,1990s,3
+A,hand-crafted logreg,1960s,2000s,2
+A,hand-crafted logreg,1960s,2010s,0
+A,hand-crafted logreg,1970s,1960s,6
+A,hand-crafted logreg,1970s,1970s,11
+A,hand-crafted logreg,1970s,1980s,0
+A,hand-crafted logreg,1970s,1990s,1
+A,hand-crafted logreg,1970s,2000s,1
+A,hand-crafted logreg,1970s,2010s,3
+A,hand-crafted logreg,1980s,1960s,3
+A,hand-crafted logreg,1980s,1970s,1
+A,hand-crafted logreg,1980s,1980s,8
+A,hand-crafted logreg,1980s,1990s,2
+A,hand-crafted logreg,1980s,2000s,3
+A,hand-crafted logreg,1980s,2010s,5
+A,hand-crafted logreg,1990s,1960s,1
+A,hand-crafted logreg,1990s,1970s,3
+A,hand-crafted logreg,1990s,1980s,3
+A,hand-crafted logreg,1990s,1990s,6
+A,hand-crafted logreg,1990s,2000s,6
+A,hand-crafted logreg,1990s,2010s,3
+A,hand-crafted logreg,2000s,1960s,1
+A,hand-crafted logreg,2000s,1970s,4
+A,hand-crafted logreg,2000s,1980s,2
+A,hand-crafted logreg,2000s,1990s,1
+A,hand-crafted logreg,2000s,2000s,7
+A,hand-crafted logreg,2000s,2010s,7
+A,hand-crafted logreg,2010s,1960s,1
+A,hand-crafted logreg,2010s,1970s,2
+A,hand-crafted logreg,2010s,1980s,1
+A,hand-crafted logreg,2010s,1990s,2
+A,hand-crafted logreg,2010s,2000s,9
+A,hand-crafted logreg,2010s,2010s,7
+B,hand-crafted svm_rbf,US,US,0
+B,hand-crafted svm_rbf,US,UK,9
+B,hand-crafted svm_rbf,US,Brazil,2
+B,hand-crafted svm_rbf,US,Spain,2
+B,hand-crafted svm_rbf,US,Germany,2
+B,hand-crafted svm_rbf,US,Italy,2
+B,hand-crafted svm_rbf,UK,US,0
+B,hand-crafted svm_rbf,UK,UK,13
+B,hand-crafted svm_rbf,UK,Brazil,3
+B,hand-crafted svm_rbf,UK,Spain,0
+B,hand-crafted svm_rbf,UK,Germany,0
+B,hand-crafted svm_rbf,UK,Italy,1
+B,hand-crafted svm_rbf,Brazil,US,0
+B,hand-crafted svm_rbf,Brazil,UK,3
+B,hand-crafted svm_rbf,Brazil,Brazil,10
+B,hand-crafted svm_rbf,Brazil,Spain,0
+B,hand-crafted svm_rbf,Brazil,Germany,1
+B,hand-crafted svm_rbf,Brazil,Italy,3
+B,hand-crafted svm_rbf,Spain,US,0
+B,hand-crafted svm_rbf,Spain,UK,7
+B,hand-crafted svm_rbf,Spain,Brazil,5
+B,hand-crafted svm_rbf,Spain,Spain,1
+B,hand-crafted svm_rbf,Spain,Germany,2
+B,hand-crafted svm_rbf,Spain,Italy,2
+B,hand-crafted svm_rbf,Germany,US,1
+B,hand-crafted svm_rbf,Germany,UK,6
+B,hand-crafted svm_rbf,Germany,Brazil,4
+B,hand-crafted svm_rbf,Germany,Spain,3
+B,hand-crafted svm_rbf,Germany,Germany,1
+B,hand-crafted svm_rbf,Germany,Italy,2
+B,hand-crafted svm_rbf,Italy,US,1
+B,hand-crafted svm_rbf,Italy,UK,3
+B,hand-crafted svm_rbf,Italy,Brazil,2
+B,hand-crafted svm_rbf,Italy,Spain,3
+B,hand-crafted svm_rbf,Italy,Germany,1
+B,hand-crafted svm_rbf,Italy,Italy,7
+A,MERT-v2 layer 9 logreg,1960s,1960s,13
+A,MERT-v2 layer 9 logreg,1960s,1970s,3
+A,MERT-v2 layer 9 logreg,1960s,1980s,1
+A,MERT-v2 layer 9 logreg,1960s,1990s,3
+A,MERT-v2 layer 9 logreg,1960s,2000s,1
+A,MERT-v2 layer 9 logreg,1960s,2010s,1
+A,MERT-v2 layer 9 logreg,1970s,1960s,4
+A,MERT-v2 layer 9 logreg,1970s,1970s,9
+A,MERT-v2 layer 9 logreg,1970s,1980s,2
+A,MERT-v2 layer 9 logreg,1970s,1990s,2
+A,MERT-v2 layer 9 logreg,1970s,2000s,2
+A,MERT-v2 layer 9 logreg,1970s,2010s,3
+A,MERT-v2 layer 9 logreg,1980s,1960s,1
+A,MERT-v2 layer 9 logreg,1980s,1970s,3
+A,MERT-v2 layer 9 logreg,1980s,1980s,14
+A,MERT-v2 layer 9 logreg,1980s,1990s,1
+A,MERT-v2 layer 9 logreg,1980s,2000s,3
+A,MERT-v2 layer 9 logreg,1980s,2010s,0
+A,MERT-v2 layer 9 logreg,1990s,1960s,0
+A,MERT-v2 layer 9 logreg,1990s,1970s,1
+A,MERT-v2 layer 9 logreg,1990s,1980s,3
+A,MERT-v2 layer 9 logreg,1990s,1990s,9
+A,MERT-v2 layer 9 logreg,1990s,2000s,3
+A,MERT-v2 layer 9 logreg,1990s,2010s,6
+A,MERT-v2 layer 9 logreg,2000s,1960s,0
+A,MERT-v2 layer 9 logreg,2000s,1970s,2
+A,MERT-v2 layer 9 logreg,2000s,1980s,1
+A,MERT-v2 layer 9 logreg,2000s,1990s,5
+A,MERT-v2 layer 9 logreg,2000s,2000s,9
+A,MERT-v2 layer 9 logreg,2000s,2010s,5
+A,MERT-v2 layer 9 logreg,2010s,1960s,0
+A,MERT-v2 layer 9 logreg,2010s,1970s,0
+A,MERT-v2 layer 9 logreg,2010s,1980s,0
+A,MERT-v2 layer 9 logreg,2010s,1990s,3
+A,MERT-v2 layer 9 logreg,2010s,2000s,5
+A,MERT-v2 layer 9 logreg,2010s,2010s,14
+B,MERT-v2 layer 14 logreg,US,US,9
+B,MERT-v2 layer 14 logreg,US,UK,4
+B,MERT-v2 layer 14 logreg,US,Brazil,0
+B,MERT-v2 layer 14 logreg,US,Spain,2
+B,MERT-v2 layer 14 logreg,US,Germany,2
+B,MERT-v2 layer 14 logreg,US,Italy,0
+B,MERT-v2 layer 14 logreg,UK,US,3
+B,MERT-v2 layer 14 logreg,UK,UK,8
+B,MERT-v2 layer 14 logreg,UK,Brazil,0
+B,MERT-v2 layer 14 logreg,UK,Spain,1
+B,MERT-v2 layer 14 logreg,UK,Germany,3
+B,MERT-v2 layer 14 logreg,UK,Italy,2
+B,MERT-v2 layer 14 logreg,Brazil,US,0
+B,MERT-v2 layer 14 logreg,Brazil,UK,0
+B,MERT-v2 layer 14 logreg,Brazil,Brazil,16
+B,MERT-v2 layer 14 logreg,Brazil,Spain,0
+B,MERT-v2 layer 14 logreg,Brazil,Germany,1
+B,MERT-v2 layer 14 logreg,Brazil,Italy,0
+B,MERT-v2 layer 14 logreg,Spain,US,1
+B,MERT-v2 layer 14 logreg,Spain,UK,2
+B,MERT-v2 layer 14 logreg,Spain,Brazil,0
+B,MERT-v2 layer 14 logreg,Spain,Spain,11
+B,MERT-v2 layer 14 logreg,Spain,Germany,1
+B,MERT-v2 layer 14 logreg,Spain,Italy,2
+B,MERT-v2 layer 14 logreg,Germany,US,4
+B,MERT-v2 layer 14 logreg,Germany,UK,4
+B,MERT-v2 layer 14 logreg,Germany,Brazil,1
+B,MERT-v2 layer 14 logreg,Germany,Spain,2
+B,MERT-v2 layer 14 logreg,Germany,Germany,6
+B,MERT-v2 layer 14 logreg,Germany,Italy,0
+B,MERT-v2 layer 14 logreg,Italy,US,0
+B,MERT-v2 layer 14 logreg,Italy,UK,1
+B,MERT-v2 layer 14 logreg,Italy,Brazil,0
+B,MERT-v2 layer 14 logreg,Italy,Spain,2
+B,MERT-v2 layer 14 logreg,Italy,Germany,5
+B,MERT-v2 layer 14 logreg,Italy,Italy,9

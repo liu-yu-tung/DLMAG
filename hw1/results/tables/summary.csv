@@ -1,0 +1,6 @@
+dataset,method,top1,top3,S
+A,"MERT-v2 layer 9 (val-selected), logreg",0.5152,0.8636,0.9470
+A,"hand-crafted 10 s chunks, logreg",0.4545,0.8409,0.8750
+A,"hand-crafted 30 s, logreg",0.3636,0.8561,0.7917
+B,"MERT-v2 layer 14 (val-selected), logreg",0.5784,0.8431,1.0000
+B,"hand-crafted 30 s, svm_rbf",0.3137,0.7353,0.6814

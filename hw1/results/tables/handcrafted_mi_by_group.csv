@@ -1,0 +1,11 @@
+dataset,group,mi_sum,mi_max,mean_abs_corr_with_energy
+A,energy,0.4390,0.0887,
+A,harmony,0.3430,0.0687,0.1990
+A,rhythm,0.0520,0.0312,0.1240
+A,spectral,0.3010,0.0558,0.2590
+A,timbre,0.5650,0.0644,0.2030
+B,energy,0.2510,0.0624,
+B,harmony,0.1480,0.0402,0.2120
+B,rhythm,0.0250,0.0165,0.1180
+B,spectral,0.1480,0.0479,0.2340
+B,timbre,1.1380,0.0577,0.1980
