@@ -143,3 +143,831 @@ B,MERT-v2 layer 14 logreg,Italy,Brazil,0
 B,MERT-v2 layer 14 logreg,Italy,Spain,2
 B,MERT-v2 layer 14 logreg,Italy,Germany,5
 B,MERT-v2 layer 14 logreg,Italy,Italy,9
+A,hand-crafted 30 s,1960s,1960s,9
+A,hand-crafted 30 s,1960s,1970s,5
+A,hand-crafted 30 s,1960s,1980s,3
+A,hand-crafted 30 s,1960s,1990s,3
+A,hand-crafted 30 s,1960s,2000s,2
+A,hand-crafted 30 s,1960s,2010s,0
+A,hand-crafted 30 s,1970s,1960s,6
+A,hand-crafted 30 s,1970s,1970s,11
+A,hand-crafted 30 s,1970s,1980s,0
+A,hand-crafted 30 s,1970s,1990s,1
+A,hand-crafted 30 s,1970s,2000s,1
+A,hand-crafted 30 s,1970s,2010s,3
+A,hand-crafted 30 s,1980s,1960s,3
+A,hand-crafted 30 s,1980s,1970s,1
+A,hand-crafted 30 s,1980s,1980s,8
+A,hand-crafted 30 s,1980s,1990s,2
+A,hand-crafted 30 s,1980s,2000s,3
+A,hand-crafted 30 s,1980s,2010s,5
+A,hand-crafted 30 s,1990s,1960s,1
+A,hand-crafted 30 s,1990s,1970s,3
+A,hand-crafted 30 s,1990s,1980s,3
+A,hand-crafted 30 s,1990s,1990s,6
+A,hand-crafted 30 s,1990s,2000s,6
+A,hand-crafted 30 s,1990s,2010s,3
+A,hand-crafted 30 s,2000s,1960s,1
+A,hand-crafted 30 s,2000s,1970s,4
+A,hand-crafted 30 s,2000s,1980s,2
+A,hand-crafted 30 s,2000s,1990s,1
+A,hand-crafted 30 s,2000s,2000s,7
+A,hand-crafted 30 s,2000s,2010s,7
+A,hand-crafted 30 s,2010s,1960s,1
+A,hand-crafted 30 s,2010s,1970s,2
+A,hand-crafted 30 s,2010s,1980s,1
+A,hand-crafted 30 s,2010s,1990s,2
+A,hand-crafted 30 s,2010s,2000s,9
+A,hand-crafted 30 s,2010s,2010s,7
+A,hand-crafted 10 s chunks,1960s,1960s,15
+A,hand-crafted 10 s chunks,1960s,1970s,2
+A,hand-crafted 10 s chunks,1960s,1980s,2
+A,hand-crafted 10 s chunks,1960s,1990s,2
+A,hand-crafted 10 s chunks,1960s,2000s,1
+A,hand-crafted 10 s chunks,1960s,2010s,0
+A,hand-crafted 10 s chunks,1970s,1960s,7
+A,hand-crafted 10 s chunks,1970s,1970s,10
+A,hand-crafted 10 s chunks,1970s,1980s,1
+A,hand-crafted 10 s chunks,1970s,1990s,0
+A,hand-crafted 10 s chunks,1970s,2000s,2
+A,hand-crafted 10 s chunks,1970s,2010s,2
+A,hand-crafted 10 s chunks,1980s,1960s,1
+A,hand-crafted 10 s chunks,1980s,1970s,3
+A,hand-crafted 10 s chunks,1980s,1980s,12
+A,hand-crafted 10 s chunks,1980s,1990s,2
+A,hand-crafted 10 s chunks,1980s,2000s,1
+A,hand-crafted 10 s chunks,1980s,2010s,3
+A,hand-crafted 10 s chunks,1990s,1960s,2
+A,hand-crafted 10 s chunks,1990s,1970s,2
+A,hand-crafted 10 s chunks,1990s,1980s,1
+A,hand-crafted 10 s chunks,1990s,1990s,8
+A,hand-crafted 10 s chunks,1990s,2000s,6
+A,hand-crafted 10 s chunks,1990s,2010s,3
+A,hand-crafted 10 s chunks,2000s,1960s,1
+A,hand-crafted 10 s chunks,2000s,1970s,4
+A,hand-crafted 10 s chunks,2000s,1980s,2
+A,hand-crafted 10 s chunks,2000s,1990s,2
+A,hand-crafted 10 s chunks,2000s,2000s,7
+A,hand-crafted 10 s chunks,2000s,2010s,6
+A,hand-crafted 10 s chunks,2010s,1960s,2
+A,hand-crafted 10 s chunks,2010s,1970s,1
+A,hand-crafted 10 s chunks,2010s,1980s,1
+A,hand-crafted 10 s chunks,2010s,1990s,1
+A,hand-crafted 10 s chunks,2010s,2000s,9
+A,hand-crafted 10 s chunks,2010s,2010s,8
+A,MERT-v2 all-layer average,1960s,1960s,16
+A,MERT-v2 all-layer average,1960s,1970s,3
+A,MERT-v2 all-layer average,1960s,1980s,0
+A,MERT-v2 all-layer average,1960s,1990s,2
+A,MERT-v2 all-layer average,1960s,2000s,1
+A,MERT-v2 all-layer average,1960s,2010s,0
+A,MERT-v2 all-layer average,1970s,1960s,5
+A,MERT-v2 all-layer average,1970s,1970s,9
+A,MERT-v2 all-layer average,1970s,1980s,5
+A,MERT-v2 all-layer average,1970s,1990s,1
+A,MERT-v2 all-layer average,1970s,2000s,0
+A,MERT-v2 all-layer average,1970s,2010s,2
+A,MERT-v2 all-layer average,1980s,1960s,1
+A,MERT-v2 all-layer average,1980s,1970s,2
+A,MERT-v2 all-layer average,1980s,1980s,12
+A,MERT-v2 all-layer average,1980s,1990s,3
+A,MERT-v2 all-layer average,1980s,2000s,4
+A,MERT-v2 all-layer average,1980s,2010s,0
+A,MERT-v2 all-layer average,1990s,1960s,0
+A,MERT-v2 all-layer average,1990s,1970s,1
+A,MERT-v2 all-layer average,1990s,1980s,3
+A,MERT-v2 all-layer average,1990s,1990s,9
+A,MERT-v2 all-layer average,1990s,2000s,5
+A,MERT-v2 all-layer average,1990s,2010s,4
+A,MERT-v2 all-layer average,2000s,1960s,0
+A,MERT-v2 all-layer average,2000s,1970s,1
+A,MERT-v2 all-layer average,2000s,1980s,3
+A,MERT-v2 all-layer average,2000s,1990s,2
+A,MERT-v2 all-layer average,2000s,2000s,10
+A,MERT-v2 all-layer average,2000s,2010s,6
+A,MERT-v2 all-layer average,2010s,1960s,0
+A,MERT-v2 all-layer average,2010s,1970s,0
+A,MERT-v2 all-layer average,2010s,1980s,0
+A,MERT-v2 all-layer average,2010s,1990s,3
+A,MERT-v2 all-layer average,2010s,2000s,7
+A,MERT-v2 all-layer average,2010s,2010s,12
+A,"MERT-v2 layer 9 (val-selected, reference)",1960s,1960s,13
+A,"MERT-v2 layer 9 (val-selected, reference)",1960s,1970s,3
+A,"MERT-v2 layer 9 (val-selected, reference)",1960s,1980s,1
+A,"MERT-v2 layer 9 (val-selected, reference)",1960s,1990s,3
+A,"MERT-v2 layer 9 (val-selected, reference)",1960s,2000s,1
+A,"MERT-v2 layer 9 (val-selected, reference)",1960s,2010s,1
+A,"MERT-v2 layer 9 (val-selected, reference)",1970s,1960s,4
+A,"MERT-v2 layer 9 (val-selected, reference)",1970s,1970s,9
+A,"MERT-v2 layer 9 (val-selected, reference)",1970s,1980s,2
+A,"MERT-v2 layer 9 (val-selected, reference)",1970s,1990s,2
+A,"MERT-v2 layer 9 (val-selected, reference)",1970s,2000s,2
+A,"MERT-v2 layer 9 (val-selected, reference)",1970s,2010s,3
+A,"MERT-v2 layer 9 (val-selected, reference)",1980s,1960s,1
+A,"MERT-v2 layer 9 (val-selected, reference)",1980s,1970s,3
+A,"MERT-v2 layer 9 (val-selected, reference)",1980s,1980s,14
+A,"MERT-v2 layer 9 (val-selected, reference)",1980s,1990s,1
+A,"MERT-v2 layer 9 (val-selected, reference)",1980s,2000s,3
+A,"MERT-v2 layer 9 (val-selected, reference)",1980s,2010s,0
+A,"MERT-v2 layer 9 (val-selected, reference)",1990s,1960s,0
+A,"MERT-v2 layer 9 (val-selected, reference)",1990s,1970s,1
+A,"MERT-v2 layer 9 (val-selected, reference)",1990s,1980s,3
+A,"MERT-v2 layer 9 (val-selected, reference)",1990s,1990s,9
+A,"MERT-v2 layer 9 (val-selected, reference)",1990s,2000s,3
+A,"MERT-v2 layer 9 (val-selected, reference)",1990s,2010s,6
+A,"MERT-v2 layer 9 (val-selected, reference)",2000s,1960s,0
+A,"MERT-v2 layer 9 (val-selected, reference)",2000s,1970s,2
+A,"MERT-v2 layer 9 (val-selected, reference)",2000s,1980s,1
+A,"MERT-v2 layer 9 (val-selected, reference)",2000s,1990s,5
+A,"MERT-v2 layer 9 (val-selected, reference)",2000s,2000s,9
+A,"MERT-v2 layer 9 (val-selected, reference)",2000s,2010s,5
+A,"MERT-v2 layer 9 (val-selected, reference)",2010s,1960s,0
+A,"MERT-v2 layer 9 (val-selected, reference)",2010s,1970s,0
+A,"MERT-v2 layer 9 (val-selected, reference)",2010s,1980s,0
+A,"MERT-v2 layer 9 (val-selected, reference)",2010s,1990s,3
+A,"MERT-v2 layer 9 (val-selected, reference)",2010s,2000s,5
+A,"MERT-v2 layer 9 (val-selected, reference)",2010s,2010s,14
+A,MERT-v2 learned layer weights,1960s,1960s,13
+A,MERT-v2 learned layer weights,1960s,1970s,5
+A,MERT-v2 learned layer weights,1960s,1980s,0
+A,MERT-v2 learned layer weights,1960s,1990s,2
+A,MERT-v2 learned layer weights,1960s,2000s,2
+A,MERT-v2 learned layer weights,1960s,2010s,0
+A,MERT-v2 learned layer weights,1970s,1960s,6
+A,MERT-v2 learned layer weights,1970s,1970s,8
+A,MERT-v2 learned layer weights,1970s,1980s,5
+A,MERT-v2 learned layer weights,1970s,1990s,1
+A,MERT-v2 learned layer weights,1970s,2000s,1
+A,MERT-v2 learned layer weights,1970s,2010s,1
+A,MERT-v2 learned layer weights,1980s,1960s,2
+A,MERT-v2 learned layer weights,1980s,1970s,0
+A,MERT-v2 learned layer weights,1980s,1980s,15
+A,MERT-v2 learned layer weights,1980s,1990s,3
+A,MERT-v2 learned layer weights,1980s,2000s,2
+A,MERT-v2 learned layer weights,1980s,2010s,0
+A,MERT-v2 learned layer weights,1990s,1960s,1
+A,MERT-v2 learned layer weights,1990s,1970s,1
+A,MERT-v2 learned layer weights,1990s,1980s,4
+A,MERT-v2 learned layer weights,1990s,1990s,8
+A,MERT-v2 learned layer weights,1990s,2000s,5
+A,MERT-v2 learned layer weights,1990s,2010s,3
+A,MERT-v2 learned layer weights,2000s,1960s,2
+A,MERT-v2 learned layer weights,2000s,1970s,0
+A,MERT-v2 learned layer weights,2000s,1980s,1
+A,MERT-v2 learned layer weights,2000s,1990s,6
+A,MERT-v2 learned layer weights,2000s,2000s,9
+A,MERT-v2 learned layer weights,2000s,2010s,4
+A,MERT-v2 learned layer weights,2010s,1960s,0
+A,MERT-v2 learned layer weights,2010s,1970s,0
+A,MERT-v2 learned layer weights,2010s,1980s,1
+A,MERT-v2 learned layer weights,2010s,1990s,4
+A,MERT-v2 learned layer weights,2010s,2000s,5
+A,MERT-v2 learned layer weights,2010s,2010s,12
+A,CLAP audio embedding,1960s,1960s,5
+A,CLAP audio embedding,1960s,1970s,5
+A,CLAP audio embedding,1960s,1980s,2
+A,CLAP audio embedding,1960s,1990s,6
+A,CLAP audio embedding,1960s,2000s,4
+A,CLAP audio embedding,1960s,2010s,0
+A,CLAP audio embedding,1970s,1960s,2
+A,CLAP audio embedding,1970s,1970s,6
+A,CLAP audio embedding,1970s,1980s,6
+A,CLAP audio embedding,1970s,1990s,3
+A,CLAP audio embedding,1970s,2000s,3
+A,CLAP audio embedding,1970s,2010s,2
+A,CLAP audio embedding,1980s,1960s,0
+A,CLAP audio embedding,1980s,1970s,8
+A,CLAP audio embedding,1980s,1980s,7
+A,CLAP audio embedding,1980s,1990s,1
+A,CLAP audio embedding,1980s,2000s,3
+A,CLAP audio embedding,1980s,2010s,3
+A,CLAP audio embedding,1990s,1960s,2
+A,CLAP audio embedding,1990s,1970s,4
+A,CLAP audio embedding,1990s,1980s,5
+A,CLAP audio embedding,1990s,1990s,3
+A,CLAP audio embedding,1990s,2000s,4
+A,CLAP audio embedding,1990s,2010s,4
+A,CLAP audio embedding,2000s,1960s,4
+A,CLAP audio embedding,2000s,1970s,6
+A,CLAP audio embedding,2000s,1980s,1
+A,CLAP audio embedding,2000s,1990s,3
+A,CLAP audio embedding,2000s,2000s,7
+A,CLAP audio embedding,2000s,2010s,1
+A,CLAP audio embedding,2010s,1960s,1
+A,CLAP audio embedding,2010s,1970s,4
+A,CLAP audio embedding,2010s,1980s,3
+A,CLAP audio embedding,2010s,1990s,4
+A,CLAP audio embedding,2010s,2000s,9
+A,CLAP audio embedding,2010s,2010s,1
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,1960s,1960s,17
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,1960s,1970s,1
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,1960s,1980s,1
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,1960s,1990s,2
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,1960s,2000s,0
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,1960s,2010s,1
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,1970s,1960s,7
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,1970s,1970s,9
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,1970s,1980s,3
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,1970s,1990s,0
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,1970s,2000s,1
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,1970s,2010s,2
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,1980s,1960s,1
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,1980s,1970s,3
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,1980s,1980s,12
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,1980s,1990s,3
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,1980s,2000s,3
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,1980s,2010s,0
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,1990s,1960s,0
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,1990s,1970s,1
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,1990s,1980s,3
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,1990s,1990s,8
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,1990s,2000s,4
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,1990s,2010s,6
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,2000s,1960s,0
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,2000s,1970s,2
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,2000s,1980s,2
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,2000s,1990s,1
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,2000s,2000s,12
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,2000s,2010s,5
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,2010s,1960s,0
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,2010s,1970s,1
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,2010s,1980s,0
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,2010s,1990s,2
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,2010s,2000s,7
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,2010s,2010s,12
+A,MERT-v2 all-layer average + CLAP,1960s,1960s,15
+A,MERT-v2 all-layer average + CLAP,1960s,1970s,3
+A,MERT-v2 all-layer average + CLAP,1960s,1980s,0
+A,MERT-v2 all-layer average + CLAP,1960s,1990s,2
+A,MERT-v2 all-layer average + CLAP,1960s,2000s,1
+A,MERT-v2 all-layer average + CLAP,1960s,2010s,1
+A,MERT-v2 all-layer average + CLAP,1970s,1960s,5
+A,MERT-v2 all-layer average + CLAP,1970s,1970s,6
+A,MERT-v2 all-layer average + CLAP,1970s,1980s,5
+A,MERT-v2 all-layer average + CLAP,1970s,1990s,2
+A,MERT-v2 all-layer average + CLAP,1970s,2000s,2
+A,MERT-v2 all-layer average + CLAP,1970s,2010s,2
+A,MERT-v2 all-layer average + CLAP,1980s,1960s,1
+A,MERT-v2 all-layer average + CLAP,1980s,1970s,3
+A,MERT-v2 all-layer average + CLAP,1980s,1980s,13
+A,MERT-v2 all-layer average + CLAP,1980s,1990s,2
+A,MERT-v2 all-layer average + CLAP,1980s,2000s,3
+A,MERT-v2 all-layer average + CLAP,1980s,2010s,0
+A,MERT-v2 all-layer average + CLAP,1990s,1960s,1
+A,MERT-v2 all-layer average + CLAP,1990s,1970s,1
+A,MERT-v2 all-layer average + CLAP,1990s,1980s,5
+A,MERT-v2 all-layer average + CLAP,1990s,1990s,7
+A,MERT-v2 all-layer average + CLAP,1990s,2000s,6
+A,MERT-v2 all-layer average + CLAP,1990s,2010s,2
+A,MERT-v2 all-layer average + CLAP,2000s,1960s,1
+A,MERT-v2 all-layer average + CLAP,2000s,1970s,0
+A,MERT-v2 all-layer average + CLAP,2000s,1980s,2
+A,MERT-v2 all-layer average + CLAP,2000s,1990s,3
+A,MERT-v2 all-layer average + CLAP,2000s,2000s,12
+A,MERT-v2 all-layer average + CLAP,2000s,2010s,4
+A,MERT-v2 all-layer average + CLAP,2010s,1960s,0
+A,MERT-v2 all-layer average + CLAP,2010s,1970s,1
+A,MERT-v2 all-layer average + CLAP,2010s,1980s,1
+A,MERT-v2 all-layer average + CLAP,2010s,1990s,1
+A,MERT-v2 all-layer average + CLAP,2010s,2000s,8
+A,MERT-v2 all-layer average + CLAP,2010s,2010s,11
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,1960s,1960s,16
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,1960s,1970s,2
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,1960s,1980s,0
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,1960s,1990s,2
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,1960s,2000s,0
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,1960s,2010s,2
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,1970s,1960s,7
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,1970s,1970s,8
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,1970s,1980s,3
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,1970s,1990s,0
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,1970s,2000s,1
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,1970s,2010s,3
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,1980s,1960s,1
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,1980s,1970s,3
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,1980s,1980s,12
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,1980s,1990s,2
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,1980s,2000s,4
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,1980s,2010s,0
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,1990s,1960s,1
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,1990s,1970s,1
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,1990s,1980s,4
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,1990s,1990s,6
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,1990s,2000s,5
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,1990s,2010s,5
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,2000s,1960s,0
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,2000s,1970s,1
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,2000s,1980s,2
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,2000s,1990s,2
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,2000s,2000s,12
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,2000s,2010s,5
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,2010s,1960s,0
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,2010s,1970s,1
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,2010s,1980s,0
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,2010s,1990s,1
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,2010s,2000s,8
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,2010s,2010s,12
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,1960s,1960s,15
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,1960s,1970s,4
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,1960s,1980s,1
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,1960s,1990s,2
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,1960s,2000s,0
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,1960s,2010s,0
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,1970s,1960s,7
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,1970s,1970s,11
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,1970s,1980s,2
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,1970s,1990s,0
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,1970s,2000s,0
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,1970s,2010s,2
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,1980s,1960s,1
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,1980s,1970s,3
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,1980s,1980s,14
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,1980s,1990s,1
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,1980s,2000s,3
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,1980s,2010s,0
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,1990s,1960s,2
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,1990s,1970s,1
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,1990s,1980s,4
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,1990s,1990s,4
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,1990s,2000s,6
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,1990s,2010s,5
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,2000s,1960s,0
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,2000s,1970s,1
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,2000s,1980s,1
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,2000s,1990s,5
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,2000s,2000s,9
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,2000s,2010s,6
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,2010s,1960s,0
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,2010s,1970s,1
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,2010s,1980s,0
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,2010s,1990s,2
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,2010s,2000s,7
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,2010s,2010s,12
+A,MERT-v2 learned layer weights + CLAP,1960s,1960s,15
+A,MERT-v2 learned layer weights + CLAP,1960s,1970s,3
+A,MERT-v2 learned layer weights + CLAP,1960s,1980s,0
+A,MERT-v2 learned layer weights + CLAP,1960s,1990s,2
+A,MERT-v2 learned layer weights + CLAP,1960s,2000s,1
+A,MERT-v2 learned layer weights + CLAP,1960s,2010s,1
+A,MERT-v2 learned layer weights + CLAP,1970s,1960s,4
+A,MERT-v2 learned layer weights + CLAP,1970s,1970s,8
+A,MERT-v2 learned layer weights + CLAP,1970s,1980s,6
+A,MERT-v2 learned layer weights + CLAP,1970s,1990s,2
+A,MERT-v2 learned layer weights + CLAP,1970s,2000s,1
+A,MERT-v2 learned layer weights + CLAP,1970s,2010s,1
+A,MERT-v2 learned layer weights + CLAP,1980s,1960s,1
+A,MERT-v2 learned layer weights + CLAP,1980s,1970s,3
+A,MERT-v2 learned layer weights + CLAP,1980s,1980s,13
+A,MERT-v2 learned layer weights + CLAP,1980s,1990s,2
+A,MERT-v2 learned layer weights + CLAP,1980s,2000s,3
+A,MERT-v2 learned layer weights + CLAP,1980s,2010s,0
+A,MERT-v2 learned layer weights + CLAP,1990s,1960s,1
+A,MERT-v2 learned layer weights + CLAP,1990s,1970s,2
+A,MERT-v2 learned layer weights + CLAP,1990s,1980s,3
+A,MERT-v2 learned layer weights + CLAP,1990s,1990s,8
+A,MERT-v2 learned layer weights + CLAP,1990s,2000s,6
+A,MERT-v2 learned layer weights + CLAP,1990s,2010s,2
+A,MERT-v2 learned layer weights + CLAP,2000s,1960s,1
+A,MERT-v2 learned layer weights + CLAP,2000s,1970s,0
+A,MERT-v2 learned layer weights + CLAP,2000s,1980s,1
+A,MERT-v2 learned layer weights + CLAP,2000s,1990s,5
+A,MERT-v2 learned layer weights + CLAP,2000s,2000s,12
+A,MERT-v2 learned layer weights + CLAP,2000s,2010s,3
+A,MERT-v2 learned layer weights + CLAP,2010s,1960s,1
+A,MERT-v2 learned layer weights + CLAP,2010s,1970s,1
+A,MERT-v2 learned layer weights + CLAP,2010s,1980s,1
+A,MERT-v2 learned layer weights + CLAP,2010s,1990s,1
+A,MERT-v2 learned layer weights + CLAP,2010s,2000s,9
+A,MERT-v2 learned layer weights + CLAP,2010s,2010s,9
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,1960s,1960s,14
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,1960s,1970s,2
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,1960s,1980s,1
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,1960s,1990s,3
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,1960s,2000s,1
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,1960s,2010s,1
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,1970s,1960s,6
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,1970s,1970s,9
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,1970s,1980s,3
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,1970s,1990s,0
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,1970s,2000s,1
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,1970s,2010s,3
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,1980s,1960s,1
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,1980s,1970s,3
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,1980s,1980s,13
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,1980s,1990s,2
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,1980s,2000s,3
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,1980s,2010s,0
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,1990s,1960s,2
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,1990s,1970s,1
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,1990s,1980s,4
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,1990s,1990s,6
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,1990s,2000s,6
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,1990s,2010s,3
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,2000s,1960s,0
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,2000s,1970s,1
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,2000s,1980s,1
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,2000s,1990s,4
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,2000s,2000s,11
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,2000s,2010s,5
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,2010s,1960s,0
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,2010s,1970s,1
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,2010s,1980s,1
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,2010s,1990s,1
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,2010s,2000s,8
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,2010s,2010s,11
+B,hand-crafted 30 s,US,US,2
+B,hand-crafted 30 s,US,UK,8
+B,hand-crafted 30 s,US,Brazil,1
+B,hand-crafted 30 s,US,Spain,2
+B,hand-crafted 30 s,US,Germany,4
+B,hand-crafted 30 s,US,Italy,0
+B,hand-crafted 30 s,UK,US,4
+B,hand-crafted 30 s,UK,UK,7
+B,hand-crafted 30 s,UK,Brazil,1
+B,hand-crafted 30 s,UK,Spain,1
+B,hand-crafted 30 s,UK,Germany,1
+B,hand-crafted 30 s,UK,Italy,3
+B,hand-crafted 30 s,Brazil,US,0
+B,hand-crafted 30 s,Brazil,UK,0
+B,hand-crafted 30 s,Brazil,Brazil,7
+B,hand-crafted 30 s,Brazil,Spain,5
+B,hand-crafted 30 s,Brazil,Germany,1
+B,hand-crafted 30 s,Brazil,Italy,4
+B,hand-crafted 30 s,Spain,US,3
+B,hand-crafted 30 s,Spain,UK,5
+B,hand-crafted 30 s,Spain,Brazil,0
+B,hand-crafted 30 s,Spain,Spain,4
+B,hand-crafted 30 s,Spain,Germany,2
+B,hand-crafted 30 s,Spain,Italy,3
+B,hand-crafted 30 s,Germany,US,1
+B,hand-crafted 30 s,Germany,UK,2
+B,hand-crafted 30 s,Germany,Brazil,1
+B,hand-crafted 30 s,Germany,Spain,5
+B,hand-crafted 30 s,Germany,Germany,5
+B,hand-crafted 30 s,Germany,Italy,3
+B,hand-crafted 30 s,Italy,US,3
+B,hand-crafted 30 s,Italy,UK,2
+B,hand-crafted 30 s,Italy,Brazil,2
+B,hand-crafted 30 s,Italy,Spain,4
+B,hand-crafted 30 s,Italy,Germany,1
+B,hand-crafted 30 s,Italy,Italy,5
+B,MERT-v2 all-layer average,US,US,8
+B,MERT-v2 all-layer average,US,UK,3
+B,MERT-v2 all-layer average,US,Brazil,0
+B,MERT-v2 all-layer average,US,Spain,3
+B,MERT-v2 all-layer average,US,Germany,3
+B,MERT-v2 all-layer average,US,Italy,0
+B,MERT-v2 all-layer average,UK,US,5
+B,MERT-v2 all-layer average,UK,UK,9
+B,MERT-v2 all-layer average,UK,Brazil,0
+B,MERT-v2 all-layer average,UK,Spain,0
+B,MERT-v2 all-layer average,UK,Germany,2
+B,MERT-v2 all-layer average,UK,Italy,1
+B,MERT-v2 all-layer average,Brazil,US,0
+B,MERT-v2 all-layer average,Brazil,UK,0
+B,MERT-v2 all-layer average,Brazil,Brazil,14
+B,MERT-v2 all-layer average,Brazil,Spain,0
+B,MERT-v2 all-layer average,Brazil,Germany,2
+B,MERT-v2 all-layer average,Brazil,Italy,1
+B,MERT-v2 all-layer average,Spain,US,1
+B,MERT-v2 all-layer average,Spain,UK,2
+B,MERT-v2 all-layer average,Spain,Brazil,0
+B,MERT-v2 all-layer average,Spain,Spain,11
+B,MERT-v2 all-layer average,Spain,Germany,2
+B,MERT-v2 all-layer average,Spain,Italy,1
+B,MERT-v2 all-layer average,Germany,US,3
+B,MERT-v2 all-layer average,Germany,UK,3
+B,MERT-v2 all-layer average,Germany,Brazil,1
+B,MERT-v2 all-layer average,Germany,Spain,3
+B,MERT-v2 all-layer average,Germany,Germany,6
+B,MERT-v2 all-layer average,Germany,Italy,1
+B,MERT-v2 all-layer average,Italy,US,1
+B,MERT-v2 all-layer average,Italy,UK,2
+B,MERT-v2 all-layer average,Italy,Brazil,0
+B,MERT-v2 all-layer average,Italy,Spain,1
+B,MERT-v2 all-layer average,Italy,Germany,3
+B,MERT-v2 all-layer average,Italy,Italy,10
+B,"MERT-v2 layer 14 (val-selected, reference)",US,US,9
+B,"MERT-v2 layer 14 (val-selected, reference)",US,UK,4
+B,"MERT-v2 layer 14 (val-selected, reference)",US,Brazil,0
+B,"MERT-v2 layer 14 (val-selected, reference)",US,Spain,2
+B,"MERT-v2 layer 14 (val-selected, reference)",US,Germany,2
+B,"MERT-v2 layer 14 (val-selected, reference)",US,Italy,0
+B,"MERT-v2 layer 14 (val-selected, reference)",UK,US,3
+B,"MERT-v2 layer 14 (val-selected, reference)",UK,UK,8
+B,"MERT-v2 layer 14 (val-selected, reference)",UK,Brazil,0
+B,"MERT-v2 layer 14 (val-selected, reference)",UK,Spain,1
+B,"MERT-v2 layer 14 (val-selected, reference)",UK,Germany,3
+B,"MERT-v2 layer 14 (val-selected, reference)",UK,Italy,2
+B,"MERT-v2 layer 14 (val-selected, reference)",Brazil,US,0
+B,"MERT-v2 layer 14 (val-selected, reference)",Brazil,UK,0
+B,"MERT-v2 layer 14 (val-selected, reference)",Brazil,Brazil,16
+B,"MERT-v2 layer 14 (val-selected, reference)",Brazil,Spain,0
+B,"MERT-v2 layer 14 (val-selected, reference)",Brazil,Germany,1
+B,"MERT-v2 layer 14 (val-selected, reference)",Brazil,Italy,0
+B,"MERT-v2 layer 14 (val-selected, reference)",Spain,US,1
+B,"MERT-v2 layer 14 (val-selected, reference)",Spain,UK,2
+B,"MERT-v2 layer 14 (val-selected, reference)",Spain,Brazil,0
+B,"MERT-v2 layer 14 (val-selected, reference)",Spain,Spain,11
+B,"MERT-v2 layer 14 (val-selected, reference)",Spain,Germany,1
+B,"MERT-v2 layer 14 (val-selected, reference)",Spain,Italy,2
+B,"MERT-v2 layer 14 (val-selected, reference)",Germany,US,4
+B,"MERT-v2 layer 14 (val-selected, reference)",Germany,UK,4
+B,"MERT-v2 layer 14 (val-selected, reference)",Germany,Brazil,1
+B,"MERT-v2 layer 14 (val-selected, reference)",Germany,Spain,2
+B,"MERT-v2 layer 14 (val-selected, reference)",Germany,Germany,6
+B,"MERT-v2 layer 14 (val-selected, reference)",Germany,Italy,0
+B,"MERT-v2 layer 14 (val-selected, reference)",Italy,US,0
+B,"MERT-v2 layer 14 (val-selected, reference)",Italy,UK,1
+B,"MERT-v2 layer 14 (val-selected, reference)",Italy,Brazil,0
+B,"MERT-v2 layer 14 (val-selected, reference)",Italy,Spain,2
+B,"MERT-v2 layer 14 (val-selected, reference)",Italy,Germany,5
+B,"MERT-v2 layer 14 (val-selected, reference)",Italy,Italy,9
+B,MERT-v2 learned layer weights,US,US,7
+B,MERT-v2 learned layer weights,US,UK,4
+B,MERT-v2 learned layer weights,US,Brazil,0
+B,MERT-v2 learned layer weights,US,Spain,2
+B,MERT-v2 learned layer weights,US,Germany,4
+B,MERT-v2 learned layer weights,US,Italy,0
+B,MERT-v2 learned layer weights,UK,US,5
+B,MERT-v2 learned layer weights,UK,UK,7
+B,MERT-v2 learned layer weights,UK,Brazil,0
+B,MERT-v2 learned layer weights,UK,Spain,1
+B,MERT-v2 learned layer weights,UK,Germany,4
+B,MERT-v2 learned layer weights,UK,Italy,0
+B,MERT-v2 learned layer weights,Brazil,US,0
+B,MERT-v2 learned layer weights,Brazil,UK,0
+B,MERT-v2 learned layer weights,Brazil,Brazil,15
+B,MERT-v2 learned layer weights,Brazil,Spain,0
+B,MERT-v2 learned layer weights,Brazil,Germany,1
+B,MERT-v2 learned layer weights,Brazil,Italy,1
+B,MERT-v2 learned layer weights,Spain,US,1
+B,MERT-v2 learned layer weights,Spain,UK,3
+B,MERT-v2 learned layer weights,Spain,Brazil,0
+B,MERT-v2 learned layer weights,Spain,Spain,12
+B,MERT-v2 learned layer weights,Spain,Germany,1
+B,MERT-v2 learned layer weights,Spain,Italy,0
+B,MERT-v2 learned layer weights,Germany,US,3
+B,MERT-v2 learned layer weights,Germany,UK,3
+B,MERT-v2 learned layer weights,Germany,Brazil,1
+B,MERT-v2 learned layer weights,Germany,Spain,2
+B,MERT-v2 learned layer weights,Germany,Germany,5
+B,MERT-v2 learned layer weights,Germany,Italy,3
+B,MERT-v2 learned layer weights,Italy,US,1
+B,MERT-v2 learned layer weights,Italy,UK,1
+B,MERT-v2 learned layer weights,Italy,Brazil,0
+B,MERT-v2 learned layer weights,Italy,Spain,1
+B,MERT-v2 learned layer weights,Italy,Germany,2
+B,MERT-v2 learned layer weights,Italy,Italy,12
+B,CLAP audio embedding,US,US,3
+B,CLAP audio embedding,US,UK,2
+B,CLAP audio embedding,US,Brazil,3
+B,CLAP audio embedding,US,Spain,3
+B,CLAP audio embedding,US,Germany,3
+B,CLAP audio embedding,US,Italy,3
+B,CLAP audio embedding,UK,US,4
+B,CLAP audio embedding,UK,UK,4
+B,CLAP audio embedding,UK,Brazil,2
+B,CLAP audio embedding,UK,Spain,1
+B,CLAP audio embedding,UK,Germany,3
+B,CLAP audio embedding,UK,Italy,3
+B,CLAP audio embedding,Brazil,US,4
+B,CLAP audio embedding,Brazil,UK,1
+B,CLAP audio embedding,Brazil,Brazil,9
+B,CLAP audio embedding,Brazil,Spain,0
+B,CLAP audio embedding,Brazil,Germany,1
+B,CLAP audio embedding,Brazil,Italy,2
+B,CLAP audio embedding,Spain,US,3
+B,CLAP audio embedding,Spain,UK,0
+B,CLAP audio embedding,Spain,Brazil,2
+B,CLAP audio embedding,Spain,Spain,4
+B,CLAP audio embedding,Spain,Germany,5
+B,CLAP audio embedding,Spain,Italy,3
+B,CLAP audio embedding,Germany,US,0
+B,CLAP audio embedding,Germany,UK,3
+B,CLAP audio embedding,Germany,Brazil,3
+B,CLAP audio embedding,Germany,Spain,3
+B,CLAP audio embedding,Germany,Germany,5
+B,CLAP audio embedding,Germany,Italy,3
+B,CLAP audio embedding,Italy,US,4
+B,CLAP audio embedding,Italy,UK,1
+B,CLAP audio embedding,Italy,Brazil,2
+B,CLAP audio embedding,Italy,Spain,3
+B,CLAP audio embedding,Italy,Germany,3
+B,CLAP audio embedding,Italy,Italy,4
+B,MERT-v2 all-layer average + hand-crafted 30 s,US,US,8
+B,MERT-v2 all-layer average + hand-crafted 30 s,US,UK,2
+B,MERT-v2 all-layer average + hand-crafted 30 s,US,Brazil,0
+B,MERT-v2 all-layer average + hand-crafted 30 s,US,Spain,2
+B,MERT-v2 all-layer average + hand-crafted 30 s,US,Germany,5
+B,MERT-v2 all-layer average + hand-crafted 30 s,US,Italy,0
+B,MERT-v2 all-layer average + hand-crafted 30 s,UK,US,6
+B,MERT-v2 all-layer average + hand-crafted 30 s,UK,UK,6
+B,MERT-v2 all-layer average + hand-crafted 30 s,UK,Brazil,0
+B,MERT-v2 all-layer average + hand-crafted 30 s,UK,Spain,0
+B,MERT-v2 all-layer average + hand-crafted 30 s,UK,Germany,2
+B,MERT-v2 all-layer average + hand-crafted 30 s,UK,Italy,3
+B,MERT-v2 all-layer average + hand-crafted 30 s,Brazil,US,0
+B,MERT-v2 all-layer average + hand-crafted 30 s,Brazil,UK,0
+B,MERT-v2 all-layer average + hand-crafted 30 s,Brazil,Brazil,13
+B,MERT-v2 all-layer average + hand-crafted 30 s,Brazil,Spain,0
+B,MERT-v2 all-layer average + hand-crafted 30 s,Brazil,Germany,1
+B,MERT-v2 all-layer average + hand-crafted 30 s,Brazil,Italy,3
+B,MERT-v2 all-layer average + hand-crafted 30 s,Spain,US,1
+B,MERT-v2 all-layer average + hand-crafted 30 s,Spain,UK,2
+B,MERT-v2 all-layer average + hand-crafted 30 s,Spain,Brazil,0
+B,MERT-v2 all-layer average + hand-crafted 30 s,Spain,Spain,11
+B,MERT-v2 all-layer average + hand-crafted 30 s,Spain,Germany,2
+B,MERT-v2 all-layer average + hand-crafted 30 s,Spain,Italy,1
+B,MERT-v2 all-layer average + hand-crafted 30 s,Germany,US,4
+B,MERT-v2 all-layer average + hand-crafted 30 s,Germany,UK,2
+B,MERT-v2 all-layer average + hand-crafted 30 s,Germany,Brazil,1
+B,MERT-v2 all-layer average + hand-crafted 30 s,Germany,Spain,2
+B,MERT-v2 all-layer average + hand-crafted 30 s,Germany,Germany,6
+B,MERT-v2 all-layer average + hand-crafted 30 s,Germany,Italy,2
+B,MERT-v2 all-layer average + hand-crafted 30 s,Italy,US,1
+B,MERT-v2 all-layer average + hand-crafted 30 s,Italy,UK,2
+B,MERT-v2 all-layer average + hand-crafted 30 s,Italy,Brazil,0
+B,MERT-v2 all-layer average + hand-crafted 30 s,Italy,Spain,1
+B,MERT-v2 all-layer average + hand-crafted 30 s,Italy,Germany,1
+B,MERT-v2 all-layer average + hand-crafted 30 s,Italy,Italy,12
+B,MERT-v2 all-layer average + CLAP,US,US,8
+B,MERT-v2 all-layer average + CLAP,US,UK,4
+B,MERT-v2 all-layer average + CLAP,US,Brazil,1
+B,MERT-v2 all-layer average + CLAP,US,Spain,1
+B,MERT-v2 all-layer average + CLAP,US,Germany,2
+B,MERT-v2 all-layer average + CLAP,US,Italy,1
+B,MERT-v2 all-layer average + CLAP,UK,US,2
+B,MERT-v2 all-layer average + CLAP,UK,UK,8
+B,MERT-v2 all-layer average + CLAP,UK,Brazil,0
+B,MERT-v2 all-layer average + CLAP,UK,Spain,1
+B,MERT-v2 all-layer average + CLAP,UK,Germany,3
+B,MERT-v2 all-layer average + CLAP,UK,Italy,3
+B,MERT-v2 all-layer average + CLAP,Brazil,US,0
+B,MERT-v2 all-layer average + CLAP,Brazil,UK,1
+B,MERT-v2 all-layer average + CLAP,Brazil,Brazil,14
+B,MERT-v2 all-layer average + CLAP,Brazil,Spain,0
+B,MERT-v2 all-layer average + CLAP,Brazil,Germany,2
+B,MERT-v2 all-layer average + CLAP,Brazil,Italy,0
+B,MERT-v2 all-layer average + CLAP,Spain,US,0
+B,MERT-v2 all-layer average + CLAP,Spain,UK,3
+B,MERT-v2 all-layer average + CLAP,Spain,Brazil,0
+B,MERT-v2 all-layer average + CLAP,Spain,Spain,12
+B,MERT-v2 all-layer average + CLAP,Spain,Germany,1
+B,MERT-v2 all-layer average + CLAP,Spain,Italy,1
+B,MERT-v2 all-layer average + CLAP,Germany,US,2
+B,MERT-v2 all-layer average + CLAP,Germany,UK,3
+B,MERT-v2 all-layer average + CLAP,Germany,Brazil,1
+B,MERT-v2 all-layer average + CLAP,Germany,Spain,4
+B,MERT-v2 all-layer average + CLAP,Germany,Germany,6
+B,MERT-v2 all-layer average + CLAP,Germany,Italy,1
+B,MERT-v2 all-layer average + CLAP,Italy,US,2
+B,MERT-v2 all-layer average + CLAP,Italy,UK,1
+B,MERT-v2 all-layer average + CLAP,Italy,Brazil,0
+B,MERT-v2 all-layer average + CLAP,Italy,Spain,1
+B,MERT-v2 all-layer average + CLAP,Italy,Germany,2
+B,MERT-v2 all-layer average + CLAP,Italy,Italy,11
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,US,US,6
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,US,UK,3
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,US,Brazil,0
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,US,Spain,3
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,US,Germany,5
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,US,Italy,0
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,UK,US,3
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,UK,UK,8
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,UK,Brazil,0
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,UK,Spain,1
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,UK,Germany,2
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,UK,Italy,3
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,Brazil,US,0
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,Brazil,UK,1
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,Brazil,Brazil,13
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,Brazil,Spain,0
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,Brazil,Germany,0
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,Brazil,Italy,3
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,Spain,US,1
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,Spain,UK,3
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,Spain,Brazil,0
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,Spain,Spain,10
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,Spain,Germany,2
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,Spain,Italy,1
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,Germany,US,2
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,Germany,UK,3
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,Germany,Brazil,1
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,Germany,Spain,3
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,Germany,Germany,6
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,Germany,Italy,2
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,Italy,US,1
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,Italy,UK,2
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,Italy,Brazil,0
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,Italy,Spain,1
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,Italy,Germany,2
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,Italy,Italy,11
+B,MERT-v2 learned layer weights + hand-crafted 30 s,US,US,5
+B,MERT-v2 learned layer weights + hand-crafted 30 s,US,UK,5
+B,MERT-v2 learned layer weights + hand-crafted 30 s,US,Brazil,0
+B,MERT-v2 learned layer weights + hand-crafted 30 s,US,Spain,2
+B,MERT-v2 learned layer weights + hand-crafted 30 s,US,Germany,5
+B,MERT-v2 learned layer weights + hand-crafted 30 s,US,Italy,0
+B,MERT-v2 learned layer weights + hand-crafted 30 s,UK,US,6
+B,MERT-v2 learned layer weights + hand-crafted 30 s,UK,UK,4
+B,MERT-v2 learned layer weights + hand-crafted 30 s,UK,Brazil,0
+B,MERT-v2 learned layer weights + hand-crafted 30 s,UK,Spain,1
+B,MERT-v2 learned layer weights + hand-crafted 30 s,UK,Germany,3
+B,MERT-v2 learned layer weights + hand-crafted 30 s,UK,Italy,3
+B,MERT-v2 learned layer weights + hand-crafted 30 s,Brazil,US,0
+B,MERT-v2 learned layer weights + hand-crafted 30 s,Brazil,UK,0
+B,MERT-v2 learned layer weights + hand-crafted 30 s,Brazil,Brazil,13
+B,MERT-v2 learned layer weights + hand-crafted 30 s,Brazil,Spain,0
+B,MERT-v2 learned layer weights + hand-crafted 30 s,Brazil,Germany,1
+B,MERT-v2 learned layer weights + hand-crafted 30 s,Brazil,Italy,3
+B,MERT-v2 learned layer weights + hand-crafted 30 s,Spain,US,1
+B,MERT-v2 learned layer weights + hand-crafted 30 s,Spain,UK,2
+B,MERT-v2 learned layer weights + hand-crafted 30 s,Spain,Brazil,0
+B,MERT-v2 learned layer weights + hand-crafted 30 s,Spain,Spain,11
+B,MERT-v2 learned layer weights + hand-crafted 30 s,Spain,Germany,2
+B,MERT-v2 learned layer weights + hand-crafted 30 s,Spain,Italy,1
+B,MERT-v2 learned layer weights + hand-crafted 30 s,Germany,US,4
+B,MERT-v2 learned layer weights + hand-crafted 30 s,Germany,UK,1
+B,MERT-v2 learned layer weights + hand-crafted 30 s,Germany,Brazil,1
+B,MERT-v2 learned layer weights + hand-crafted 30 s,Germany,Spain,2
+B,MERT-v2 learned layer weights + hand-crafted 30 s,Germany,Germany,7
+B,MERT-v2 learned layer weights + hand-crafted 30 s,Germany,Italy,2
+B,MERT-v2 learned layer weights + hand-crafted 30 s,Italy,US,1
+B,MERT-v2 learned layer weights + hand-crafted 30 s,Italy,UK,1
+B,MERT-v2 learned layer weights + hand-crafted 30 s,Italy,Brazil,0
+B,MERT-v2 learned layer weights + hand-crafted 30 s,Italy,Spain,1
+B,MERT-v2 learned layer weights + hand-crafted 30 s,Italy,Germany,2
+B,MERT-v2 learned layer weights + hand-crafted 30 s,Italy,Italy,12
+B,MERT-v2 learned layer weights + CLAP,US,US,7
+B,MERT-v2 learned layer weights + CLAP,US,UK,4
+B,MERT-v2 learned layer weights + CLAP,US,Brazil,0
+B,MERT-v2 learned layer weights + CLAP,US,Spain,2
+B,MERT-v2 learned layer weights + CLAP,US,Germany,3
+B,MERT-v2 learned layer weights + CLAP,US,Italy,1
+B,MERT-v2 learned layer weights + CLAP,UK,US,2
+B,MERT-v2 learned layer weights + CLAP,UK,UK,7
+B,MERT-v2 learned layer weights + CLAP,UK,Brazil,0
+B,MERT-v2 learned layer weights + CLAP,UK,Spain,2
+B,MERT-v2 learned layer weights + CLAP,UK,Germany,3
+B,MERT-v2 learned layer weights + CLAP,UK,Italy,3
+B,MERT-v2 learned layer weights + CLAP,Brazil,US,0
+B,MERT-v2 learned layer weights + CLAP,Brazil,UK,1
+B,MERT-v2 learned layer weights + CLAP,Brazil,Brazil,14
+B,MERT-v2 learned layer weights + CLAP,Brazil,Spain,1
+B,MERT-v2 learned layer weights + CLAP,Brazil,Germany,0
+B,MERT-v2 learned layer weights + CLAP,Brazil,Italy,1
+B,MERT-v2 learned layer weights + CLAP,Spain,US,0
+B,MERT-v2 learned layer weights + CLAP,Spain,UK,3
+B,MERT-v2 learned layer weights + CLAP,Spain,Brazil,0
+B,MERT-v2 learned layer weights + CLAP,Spain,Spain,11
+B,MERT-v2 learned layer weights + CLAP,Spain,Germany,2
+B,MERT-v2 learned layer weights + CLAP,Spain,Italy,1
+B,MERT-v2 learned layer weights + CLAP,Germany,US,1
+B,MERT-v2 learned layer weights + CLAP,Germany,UK,4
+B,MERT-v2 learned layer weights + CLAP,Germany,Brazil,1
+B,MERT-v2 learned layer weights + CLAP,Germany,Spain,4
+B,MERT-v2 learned layer weights + CLAP,Germany,Germany,6
+B,MERT-v2 learned layer weights + CLAP,Germany,Italy,1
+B,MERT-v2 learned layer weights + CLAP,Italy,US,2
+B,MERT-v2 learned layer weights + CLAP,Italy,UK,1
+B,MERT-v2 learned layer weights + CLAP,Italy,Brazil,0
+B,MERT-v2 learned layer weights + CLAP,Italy,Spain,1
+B,MERT-v2 learned layer weights + CLAP,Italy,Germany,2
+B,MERT-v2 learned layer weights + CLAP,Italy,Italy,11
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,US,US,7
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,US,UK,3
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,US,Brazil,0
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,US,Spain,2
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,US,Germany,4
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,US,Italy,1
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,UK,US,2
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,UK,UK,7
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,UK,Brazil,0
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,UK,Spain,2
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,UK,Germany,3
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,UK,Italy,3
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,Brazil,US,0
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,Brazil,UK,0
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,Brazil,Brazil,14
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,Brazil,Spain,0
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,Brazil,Germany,1
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,Brazil,Italy,2
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,Spain,US,0
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,Spain,UK,3
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,Spain,Brazil,0
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,Spain,Spain,12
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,Spain,Germany,1
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,Spain,Italy,1
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,Germany,US,2
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,Germany,UK,3
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,Germany,Brazil,1
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,Germany,Spain,3
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,Germany,Germany,7
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,Germany,Italy,1
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,Italy,US,2
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,Italy,UK,1
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,Italy,Brazil,0
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,Italy,Spain,1
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,Italy,Germany,2
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,Italy,Italy,11

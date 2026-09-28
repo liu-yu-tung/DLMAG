@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 
 from hw1.data import LABELS
-from hw1.probe import fit_eval, split_xy
+from hw1.probe import fit_eval, fuse_logprobs, split_xy
 
 
 def _fake_features(n_per_class: int = 30, dim: int = 8) -> dict[str, np.ndarray]:
@@ -34,3 +34,11 @@ def test_column_subset():
     f = _fake_features()
     X, _, _ = split_xy(f, "A", "train", cols=np.array([0, 2]))
     assert X.shape == (180, 2)
+
+
+def test_fuse_logprobs_is_normalized_geometric_mean():
+    a = np.array([[0.7, 0.2, 0.1]])
+    b = np.array([[0.1, 0.2, 0.7]])
+    f = fuse_logprobs([np.log(a), np.log(b)])
+    np.testing.assert_allclose(f.sum(), 1.0)
+    np.testing.assert_allclose(f[0, 0], f[0, 2])

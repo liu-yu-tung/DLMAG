@@ -17,7 +17,7 @@ import numpy as np
 from hw1.data import LABELS
 from hw1.features.handcrafted import feature_group
 from hw1.metrics import evaluate
-from hw1.probe import load_features, make_model
+from hw1.probe import chunk_probs, load_features, make_model
 
 HW1 = Path(__file__).resolve().parents[1]
 LENGTHS = ["c5", "c10", "c15", "c30"]
@@ -41,15 +41,8 @@ def chunk_arrays(key: str) -> tuple[dict, list[str]]:
 
 
 def chunk_classifier(data: dict, key: str, length: str, cols: np.ndarray, model: str = "logreg") -> dict:
-    a = data["arr"][length][:, :, cols]
-    tr, va = data["split"] == "train", data["split"] == "validation"
-    ytr, yva = _y(data, key, "train"), _y(data, key, "validation")
-    n = a.shape[1]
-    clf = make_model(model).fit(a[tr].reshape(-1, len(cols)), np.repeat(ytr, n))
-    logp = np.log(clf.predict_proba(a[va].reshape(-1, len(cols))) + 1e-9).reshape(va.sum(), n, -1)
-    probs = np.exp(logp.mean(axis=1))
-    probs /= probs.sum(axis=1, keepdims=True)
-    return evaluate(probs, yva, LABELS[key])
+    probs = chunk_probs(data["arr"][length][:, :, cols], data["split"], _y(data, key, "train"), model)
+    return evaluate(probs, _y(data, key, "validation"), LABELS[key])
 
 
 def multiscale(data: dict, key: str, scales: list[str], model: str = "logreg") -> dict:

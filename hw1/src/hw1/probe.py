@@ -46,3 +46,20 @@ def fit_eval(name: str, Xtr, ytr, Xva, yva, labels: list[str]) -> tuple[Pipeline
     model = make_model(name).fit(Xtr, ytr)
     probs = model.predict_proba(Xva)
     return model, probs, evaluate(probs, yva, labels)
+
+
+def chunk_probs(chunks: np.ndarray, split: np.ndarray, y_train: np.ndarray, model: str = "logreg") -> np.ndarray:
+    """chunks (N, n_chunks, F). Fit on train chunks (each inherits its clip label); return validation clip
+    probabilities as the renormalized geometric mean of chunk probabilities."""
+    tr, va = split == "train", split == "validation"
+    n = chunks.shape[1]
+    clf = make_model(model).fit(chunks[tr].reshape(-1, chunks.shape[2]), np.repeat(y_train, n))
+    logp = np.log(clf.predict_proba(chunks[va].reshape(-1, chunks.shape[2])) + 1e-9).reshape(va.sum(), n, -1)
+    return fuse_logprobs([logp.mean(axis=1)])
+
+
+def fuse_logprobs(logps: list[np.ndarray]) -> np.ndarray:
+    """Equal-weight late fusion: mean of log-probabilities, renormalized to probabilities."""
+    z = np.mean(logps, axis=0)
+    z = np.exp(z - z.max(axis=1, keepdims=True))
+    return z / z.sum(axis=1, keepdims=True)
