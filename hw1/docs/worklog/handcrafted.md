@@ -79,3 +79,24 @@ Figures in `results/`:
   - B: energy 0.613, +timbre 0.632, all 0.618.
 - **Top-k by MI is worse than using all features** (A top-20: 0.742), because univariate MI misses features that only help in combination.
 - **Validation noise:** with 132 validation clips, S has roughly ±0.05 sampling noise, so these differences aren't significant. Don't pick a subset by validation (that would be tuning on validation). Keep all features; get gains from new information sources (MERT, language ID) through late fusion.
+
+## Chunk length and multi-scale (`scripts/bench_chunks.py`, `results/chunks.json`, dataset A only)
+
+- **E1, one classifier per chunk length** (trained on train chunks; clip score = mean of chunk log-probs), validation S:
+  - 5 s: 0.871
+  - 10 s: 0.875
+  - 15 s: 0.814
+  - 30 s: 0.792
+
+  Short chunks help. It's the Short-Chunk CNN idea: 3-6x more training samples, plus averaging over chunks at test.
+- **E2, concatenating chunk statistics onto the 30 s vector hurts:**
+  - 30 s alone: 0.792
+  - + 10 s stats: 0.712
+  - + all scales: 0.633
+
+  3-7x more dimensions with 1,026 clips overfits. So multi-scale information helps when it comes as more samples, not as more features.
+- **E3, feature group × chunk length:**
+  - Timbre gains most from shorter chunks (0.720 at 30 s → 0.784 at 10 s), then harmony (0.572 → 0.640).
+  - Energy is flat (about 0.76-0.78) and rhythm stays near chance at every length.
+  - Heatmap: `results/chunks_A_group_length.png`.
+- **Caveat:** the 30 s → 10 s gain (+0.08) is just above the roughly ±0.05 validation noise, but it holds for every group except rhythm, which makes it believable.
