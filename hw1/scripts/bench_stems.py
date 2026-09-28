@@ -57,6 +57,12 @@ def components(key: str) -> tuple[dict[str, np.ndarray], np.ndarray, dict]:
     extra["mixbalance_class_means_train"] = {
         n: [round(float(mb["feats"][tr & (y == c), i].mean()), 4) for c in range(6)] for i, n in enumerate(names)}
 
+    lid = load_features(FEAT / f"{key}_langid.npz")
+    if not (lid["sample_id"] == ref["sample_id"]).all():
+        raise ValueError("clip order differs in language-ID features")
+    for src in ("vocals", "mixture"):
+        comp[f"language ({src})"] = np.log(fit_eval("logreg", lid[src][tr], y[tr], lid[src][va], y[va], LABELS[key])[1] + 1e-9)
+
     if key == "A":
         ch = load_features(FEAT / "A_handcrafted_chunks.npz")
         comp["hand-crafted 10 s chunks"] = np.log(chunk_probs(ch["c10"], ch["split"], y[tr]) + 1e-9)
@@ -75,6 +81,9 @@ def mixtures(key: str, comp: dict) -> dict[str, list[str]]:
         "current recipe + mix balance": base + ["mix balance"],
         "current recipe + vocals": base + ["MERT vocals"],
         "current recipe + vocals + mix balance": base + ["MERT vocals", "mix balance"],
+        "current recipe + language (vocals)": base + ["language (vocals)"],
+        "current recipe + language (mixture)": base + ["language (mixture)"],
+        "current recipe + mix balance + language (vocals)": base + ["mix balance", "language (vocals)"],
     }
     if key == "A":
         mixes["current recipe (MERT mixture + hand-crafted 10 s)"] = base
