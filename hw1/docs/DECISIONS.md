@@ -25,3 +25,7 @@ Append-only. Newest at the bottom. Format: date, decision, reason, source.
 - **Model downloads use `HF_HUB_DISABLE_XET=1` (plain HTTPS).** The xet backend stalled for over 4 minutes with no progress on MERT-v2 and CLAP. The connection here is about 1 MB/s in total (a pacman mirror is just as slow), so the downloads take hours. The order is MERT-v2, then CLAP, Whisper, MERT-v1, Qwen2-Audio. Workers pause instead of polling while they wait.
 - **When the weights land, the main session runs the MERT and CLAP scripts itself instead of resuming the workers.** The scripts exist, so what's left is running them and reviewing the results. Resuming a worker reloads its full context, which costs more (see `worklog/usage.md`).
 - **No outside lookups about the dataset or its recordings (user rule, anti-cheating).** Don't search for the Discogs-VI paper, song IDs, artists or labels, and don't use audio fingerprinting or search to identify tracks. Work from hypotheses, test them on train/validation only, and write them up in `docs/HYPOTHESES.md`. Public pretrained models and course material are allowed, with citation.
+
+## 2026-09-29
+
+- **MERT-v2 extraction runs in fp32.** The real-weight smoke test on transformers 5.17.0 passes: 24 layers of (750, 1024), all finite, 0.12 s per clip, 2.8 GB peak. bf16 and fp16 are 2x faster but deviate from fp32 by up to 32% (relative error) on some layer's pooled vector, with minimum cosine 0.948. Layer-wise probing needs faithful per-layer features, and fp32 is fast enough (about 5 min for all 2,292 clips).
