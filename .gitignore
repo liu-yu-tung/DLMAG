@@ -19,7 +19,7 @@ dataset_B/
 *.zip
 
 # Extracted features and caches
-features/
+hw*/features/
 cache/
 *.npy
 *.npz

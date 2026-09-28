@@ -51,7 +51,7 @@ def plot_confusion(
         fmt = "{:.0f}"
         kind = "counts"
 
-    full_title = f"{title} ({kind})".strip() if title else kind
+    full_title = f"{title}\n({kind})" if title else kind
 
     fig, ax = plt.subplots(figsize=(6, 6))
     im = ax.imshow(data, cmap="Blues")
@@ -61,7 +61,7 @@ def plot_confusion(
     ax.set_yticklabels(labels)
     ax.set_xlabel("predicted")
     ax.set_ylabel("true")
-    ax.set_title(full_title)
+    ax.set_title(full_title, fontsize=10)
 
     thresh = data.max() / 2 if data.max() > 0 else 0.5
     for i in range(data.shape[0]):
