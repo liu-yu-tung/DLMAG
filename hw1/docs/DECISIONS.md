@@ -22,3 +22,4 @@ Append-only. Newest at the bottom. Format: date, decision, reason, source.
   - Unknown labels in train or validation raise an error instead of silently becoming -1.
   - The sample-rate check raises an error instead of using `assert`, which Python skips under `-O`.
   - `LABELS` is imported at the top of `metrics.py`.
+- **Model downloads use `HF_HUB_DISABLE_XET=1` (plain HTTPS).** The xet backend stalled for over 4 minutes with no progress on MERT-v2 and CLAP. The connection here is about 1 MB/s in total (a pacman mirror is just as slow), so the downloads take hours. The order is MERT-v2, then CLAP, Whisper, MERT-v1, Qwen2-Audio. Workers pause instead of polling while they wait.
