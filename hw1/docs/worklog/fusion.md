@@ -39,3 +39,19 @@ Main session, 2026-09-29. Script: `scripts/bench_fusion.py`. Outputs:
 
 - **A:** MERT-v2 all-layer average + hand-crafted 10 s chunks.
 - **B:** MERT-v2 all-layer average; revisit after the language-ID feature.
+
+## Rerun after the rotary fix (2026-09-29)
+
+The tables above used the broken MERT features. After re-extraction (`bench_fusion.py`, same seeds):
+
+| Method | A | B |
+|---|---:|---:|
+| MERT-v2 all-layer average | 0.943 | 1.034 |
+| MERT-v2 learned layer weights | 0.939 | 1.020 |
+| MERT-v2 all-layer average + hand-crafted 10 s (A) / 30 s (B) | 0.947 | 0.971 |
+| MERT-v2 all-layer average + CLAP | 0.924 | 1.005 |
+| MERT-v2 all-layer average + CLAP + hand-crafted | 0.974 | 0.946 |
+| best single layer (val-selected, reference) | 0.920 (L9) | 1.039 (L21) |
+
+- **B improved** (all-layer average 0.990 to 1.034); **A is about the same** (0.947 to 0.943). Learned weights on B now clearly favor layers 12-24 (about 0.05 vs 0.033 below).
+- **The submission recipes are unchanged** under the selection rule in the plan (simplest recipe within 0.03 of the best): A = MERT average + hand-crafted 10 s (0.947; + CLAP 0.974 is within 0.03 and adds a weak, partly broken model), B = MERT average (1.034). `results/final_validation.json` matches these numbers.

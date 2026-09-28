@@ -1,29 +1,29 @@
 dataset,method,top1,top3,S
-A,MERT-v2 all-layer average + hand-crafted 10 s chunks,0.5303,0.8864,0.9735
-A,"MERT-v2 layer 9 (val-selected), logreg",0.5152,0.8636,0.9470
-A,MERT-v2 all-layer average,0.5152,0.8636,0.9470
-A,"MERT-v2 layer 9 (val-selected, reference)",0.5152,0.8636,0.9470
-A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,0.4924,0.9091,0.9470
-A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,0.5000,0.8788,0.9394
-A,MERT-v2 learned layer weights,0.4924,0.8636,0.9242
-A,MERT-v2 all-layer average + CLAP,0.4848,0.8788,0.9242
-A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,0.4848,0.8712,0.9205
-A,MERT-v2 learned layer weights + CLAP,0.4924,0.8485,0.9167
+A,MERT-v2 all-layer average + CLAP + hand-crafted 10 s chunks,0.5303,0.8864,0.9735
+A,MERT-v2 all-layer average + hand-crafted 10 s chunks,0.5000,0.8939,0.9470
+A,MERT-v2 all-layer average,0.5000,0.8864,0.9432
+A,MERT-v2 learned layer weights,0.5000,0.8788,0.9394
+A,MERT-v2 learned layer weights + hand-crafted 10 s chunks,0.4848,0.8939,0.9318
+A,MERT-v2 all-layer average + CLAP,0.4773,0.8939,0.9242
+A,MERT-v2 learned layer weights + CLAP + hand-crafted 10 s chunks,0.4848,0.8788,0.9242
+A,"MERT-v2 layer 9 (val-selected), logreg",0.4924,0.8561,0.9205
+A,"MERT-v2 layer 9 (val-selected, reference)",0.4924,0.8561,0.9205
+A,MERT-v2 learned layer weights + CLAP,0.4697,0.8561,0.8977
 A,"hand-crafted 10 s chunks, logreg",0.4545,0.8409,0.8750
 A,hand-crafted 10 s chunks,0.4545,0.8409,0.8750
 A,"hand-crafted 30 s, logreg",0.3636,0.8561,0.7917
 A,hand-crafted 30 s,0.3636,0.8561,0.7917
 A,CLAP audio embedding,0.2197,0.6818,0.5606
-B,MERT-v2 all-layer average + CLAP,0.5784,0.8627,1.0098
-B,"MERT-v2 layer 14 (val-selected), logreg",0.5784,0.8431,1.0000
-B,"MERT-v2 layer 14 (val-selected, reference)",0.5784,0.8431,1.0000
-B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,0.5686,0.8627,1.0000
-B,MERT-v2 all-layer average,0.5686,0.8431,0.9902
-B,MERT-v2 learned layer weights,0.5686,0.8431,0.9902
-B,MERT-v2 learned layer weights + CLAP,0.5490,0.8529,0.9755
-B,MERT-v2 all-layer average + hand-crafted 30 s,0.5490,0.8431,0.9706
-B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,0.5294,0.8333,0.9461
-B,MERT-v2 learned layer weights + hand-crafted 30 s,0.5098,0.8137,0.9167
+B,"MERT-v2 layer 21 (val-selected), logreg",0.5980,0.8824,1.0392
+B,"MERT-v2 layer 21 (val-selected, reference)",0.5980,0.8824,1.0392
+B,MERT-v2 all-layer average,0.6078,0.8529,1.0343
+B,MERT-v2 learned layer weights + CLAP,0.5882,0.8725,1.0245
+B,MERT-v2 learned layer weights,0.5686,0.9020,1.0196
+B,MERT-v2 all-layer average + CLAP,0.5686,0.8725,1.0049
+B,MERT-v2 learned layer weights + CLAP + hand-crafted 30 s,0.5588,0.8431,0.9804
+B,MERT-v2 all-layer average + hand-crafted 30 s,0.5392,0.8627,0.9706
+B,MERT-v2 learned layer weights + hand-crafted 30 s,0.5392,0.8627,0.9706
+B,MERT-v2 all-layer average + CLAP + hand-crafted 30 s,0.5196,0.8529,0.9461
 B,"hand-crafted 30 s, svm_rbf",0.3137,0.7353,0.6814
 B,hand-crafted 30 s,0.2941,0.6471,0.6176
 B,CLAP audio embedding,0.2843,0.6373,0.6029

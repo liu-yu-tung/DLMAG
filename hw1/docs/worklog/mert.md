@@ -60,3 +60,17 @@ Status 2026-09-28 23:00: paused while the weights download. Code is written. Onl
   - A: layers 7-12 and 18-24 are all about 0.85-0.92;
   - B: layers 9-24 are all about 0.92-1.00; B's early layers (1-5) are at the hand-crafted level of about 0.67.
 - **Tests:** `tests/test_mert_pooling.py` checks the pooling math and padding mask with a fake model (no GPU). 27 tests pass.
+
+## Rerun after the rotary fix (2026-09-29, 01:30)
+
+The numbers above were measured with uninitialized rotary frequencies (see DECISIONS.md, the `restore_rotary` entry) and are superseded. Features were re-extracted (A 160 s), `bench_mert.py` rerun.
+
+| Dataset | Best layer | Top-1 | Top-3 | S | Best layer mean+std | Layer-average (time-mean features) |
+|---|---:|---:|---:|---:|---:|---:|
+| A | 9 | 0.492 | 0.856 | 0.920 | 0.856 | 0.898 |
+| B | 21 | 0.598 | 0.882 | 1.039 | 1.049 | 0.980 |
+
+- **B now has a clear layer structure:** layers 1-5 are at 0.64-0.67 (hand-crafted level), layers 6-11 climb from 0.80 to 0.94, and layers 12-23 sit at 0.95-1.04.
+- **A stays flat:** 0.81-0.92 across all layers, with no band clearly better. Era cues are spread through the network.
+- **Dtype check rerun (`smoke_mert.py`):** bf16 is now within 0.7% relative error of fp32 (min cosine 0.99997), fp16 within 0.1%, both 3x faster (0.04 s vs 0.12 s per clip) at half the memory (1.5 vs 2.8 GB). The earlier 32% gap was the rotary bug, not precision. The submitted features stay fp32; fp16 is fine for stem features and fine-tuning.
+- **Before/after comparison for the report:** old features are in `features/stale_rope/`.
