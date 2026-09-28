@@ -70,3 +70,12 @@ Figures in `results/`:
 
 - A: the top-3 of 0.856 is already high. Ordinal smoothing may add a little more.
 - B needs language and style cues (MERT, Whisper). US recall is 0 with hand-crafted features.
+
+## Combination and mutual information check (`scripts/analyze_mi.py`, `results/handcrafted_mi.json`)
+
+- **The groups are not redundant with energy:** mean |correlation| is 0.12-0.26. Timbre and harmony carry mutual information comparable to energy.
+- **Adding groups to energy barely helps** (logreg, validation S):
+  - A: energy 0.761, +timbre 0.811, +spectral 0.777, +rhythm 0.765, +harmony 0.724, all 0.792.
+  - B: energy 0.613, +timbre 0.632, all 0.618.
+- **Top-k by MI is worse than using all features** (A top-20: 0.742), because univariate MI misses features that only help in combination.
+- **Validation noise:** with 132 validation clips, S has roughly ±0.05 sampling noise, so these differences aren't significant. Don't pick a subset by validation (that would be tuning on validation). Keep all features; get gains from new information sources (MERT, language ID) through late fusion.

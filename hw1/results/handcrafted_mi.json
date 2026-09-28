@@ -1,0 +1,176 @@
+{
+  "A": {
+    "mi_top": [
+      [
+        "energy_rms_db_mean",
+        0.0887
+      ],
+      [
+        "energy_band_0_60hz_ratio",
+        0.0789
+      ],
+      [
+        "energy_spectral_flux_mean",
+        0.0753
+      ],
+      [
+        "harmony_chroma_change_std",
+        0.0687
+      ],
+      [
+        "timbre_mfcc11_std",
+        0.0644
+      ],
+      [
+        "energy_band_6000_12000hz_ratio",
+        0.0632
+      ],
+      [
+        "spectral_flatness_std",
+        0.0558
+      ],
+      [
+        "spectral_bandwidth_mean",
+        0.0495
+      ],
+      [
+        "timbre_mfcc08_mean",
+        0.0474
+      ],
+      [
+        "spectral_zcr_mean",
+        0.0396
+      ]
+    ],
+    "mi_by_group": {
+      "energy": {
+        "sum": 0.439,
+        "max": 0.0887
+      },
+      "harmony": {
+        "sum": 0.343,
+        "max": 0.0687
+      },
+      "rhythm": {
+        "sum": 0.052,
+        "max": 0.0312
+      },
+      "spectral": {
+        "sum": 0.301,
+        "max": 0.0558
+      },
+      "timbre": {
+        "sum": 0.565,
+        "max": 0.0644
+      }
+    },
+    "mean_abs_corr_with_energy": {
+      "harmony": 0.199,
+      "rhythm": 0.124,
+      "spectral": 0.259,
+      "timbre": 0.203
+    },
+    "energy_plus": {
+      "energy only": 0.7614,
+      "energy+harmony": 0.7235,
+      "energy+rhythm": 0.7652,
+      "energy+spectral": 0.7765,
+      "energy+timbre": 0.8106,
+      "all": 0.7917
+    },
+    "mi_top_k": {
+      "5": 0.697,
+      "10": 0.7159,
+      "20": 0.7424,
+      "40": 0.7348,
+      "97": 0.7917
+    }
+  },
+  "B": {
+    "mi_top": [
+      [
+        "energy_band_1000_2500hz_ratio",
+        0.0624
+      ],
+      [
+        "timbre_mfcc02_mean",
+        0.0577
+      ],
+      [
+        "energy_band_2500_6000hz_ratio",
+        0.0566
+      ],
+      [
+        "timbre_mfcc19_std",
+        0.0519
+      ],
+      [
+        "timbre_mfcc05_std",
+        0.0499
+      ],
+      [
+        "energy_band_6000_12000hz_ratio",
+        0.0488
+      ],
+      [
+        "spectral_rolloff85_std",
+        0.0479
+      ],
+      [
+        "timbre_mfcc06_std",
+        0.047
+      ],
+      [
+        "energy_dynamic_range_db",
+        0.045
+      ],
+      [
+        "timbre_mfcc11_std",
+        0.0445
+      ]
+    ],
+    "mi_by_group": {
+      "energy": {
+        "sum": 0.251,
+        "max": 0.0624
+      },
+      "harmony": {
+        "sum": 0.148,
+        "max": 0.0402
+      },
+      "rhythm": {
+        "sum": 0.025,
+        "max": 0.0165
+      },
+      "spectral": {
+        "sum": 0.148,
+        "max": 0.0479
+      },
+      "timbre": {
+        "sum": 1.138,
+        "max": 0.0577
+      }
+    },
+    "mean_abs_corr_with_energy": {
+      "harmony": 0.212,
+      "rhythm": 0.118,
+      "spectral": 0.234,
+      "timbre": 0.198
+    },
+    "energy_plus": {
+      "energy only": 0.6127,
+      "energy+harmony": 0.5588,
+      "energy+rhythm": 0.6127,
+      "energy+spectral": 0.5931,
+      "energy+timbre": 0.6324,
+      "all": 0.6176
+    },
+    "mi_top_k": {
+      "5": 0.4853,
+      "10": 0.5343,
+      "20": 0.5147,
+      "40": 0.5784,
+      "97": 0.6176
+    }
+  }
+}
