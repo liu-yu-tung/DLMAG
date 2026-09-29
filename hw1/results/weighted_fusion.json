@@ -1,0 +1,109 @@
+{
+  "A": {
+    "components": [
+      "mert_mixture",
+      "demucs_all",
+      "handcrafted"
+    ],
+    "eq": {
+      "S_cv": 0.9064,
+      "S_val": 1.0,
+      "diff_vs_eq_ci95": null
+    },
+    "perclass": {
+      "S_cv": 0.9074,
+      "S_val": 0.9848,
+      "diff_vs_eq_ci95": [
+        -0.0141,
+        0.0161
+      ]
+    },
+    "confbayes": {
+      "S_cv": 0.9001,
+      "S_val": 0.9583,
+      "diff_vs_eq_ci95": [
+        -0.0317,
+        0.019
+      ]
+    },
+    "perclass_weights_all_train": {
+      "mert_mixture": {
+        "1960s": 0.36,
+        "1970s": 0.37,
+        "1980s": 0.27,
+        "1990s": 0.23,
+        "2000s": 0.21,
+        "2010s": 0.3
+      },
+      "demucs_all": {
+        "1960s": 0.32,
+        "1970s": 0.35,
+        "1980s": 0.27,
+        "1990s": 0.27,
+        "2000s": 0.2,
+        "2010s": 0.27
+      },
+      "handcrafted": {
+        "1960s": 0.23,
+        "1970s": 0.23,
+        "1980s": 0.18,
+        "1990s": 0.24,
+        "2000s": 0.26,
+        "2010s": 0.28
+      }
+    }
+  },
+  "B": {
+    "components": [
+      "mert_mixture",
+      "lang_mixture"
+    ],
+    "eq": {
+      "S_cv": 1.0345,
+      "S_val": 1.0392,
+      "diff_vs_eq_ci95": null
+    },
+    "perclass": {
+      "S_cv": 1.0407,
+      "S_val": 1.0392,
+      "diff_vs_eq_ci95": [
+        -0.0075,
+        0.0194
+      ]
+    },
+    "confbayes": {
+      "S_cv": 1.0069,
+      "S_val": 1.0392,
+      "diff_vs_eq_ci95": [
+        -0.0583,
+        0.0006
+      ]
+    },
+    "gate_lang": {
+      "S_cv": 1.0332,
+      "S_val": 1.0343,
+      "diff_vs_eq_ci95": [
+        -0.0132,
+        0.0107
+      ]
+    },
+    "perclass_weights_all_train": {
+      "mert_mixture": {
+        "US": 0.36,
+        "UK": 0.31,
+        "Brazil": 0.46,
+        "Spain": 0.41,
+        "Germany": 0.37,
+        "Italy": 0.41
+      },
+      "lang_mixture": {
+        "US": 0.54,
+        "UK": 0.55,
+        "Brazil": 0.53,
+        "Spain": 0.53,
+        "Germany": 0.55,
+        "Italy": 0.56
+      }
+    }
+  }
+}

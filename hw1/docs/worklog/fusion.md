@@ -130,3 +130,13 @@ The tables above used the broken MERT features. After re-extraction (`bench_fusi
 - **Per-layer validation S:** A 0.78-0.91 (flat, like MERT); B rises from 0.65 (input) to 0.88 at layer 6, then 0.72-0.82.
 - **Fusion (calibrated, CI of the difference against the current recipe):** A MERT + MuQ 0.898 (-0.027 to 0.011); B current + MuQ 1.032 (-0.020 to 0.018). No gain; not adopted.
 - Reading: in our setup MuQ is weaker than MERT-v2 on both tasks and redundant with it.
+
+## Class-specific and conditional fusion (2026-09-29 17:30, `scripts/weighted_fusion.py`, `results/weighted_fusion.json`)
+
+- Rules fitted on 4 folds of the out-of-fold level-1 outputs, scored on the 5th (5-fold CV over them); weights on raw log-probs, so they also absorb each model's temperature.
+- **Equal-weight calibrated (current):** A (MERT + Demucs + hand-crafted) 0.906; B (MERT + language) 1.035.
+- **Per-class weights** w[model, class] (shrinkage 0.1 / 0.01 / 0): A 0.913 / 0.911 / 0.912 (CI of the gain about -0.015 to 0.027); B 1.037 / 1.036 / 1.030. No significant gain.
+- **Confusion-matrix Bayes** (hard predictions, fold confusion matrices as likelihoods): A 0.900, B 1.007 (worse: discards the soft scores).
+- **Language-gated weights on B** (English vs non-English by Whisper's top-1): 1.033, no gain.
+- **Learned weights are interpretable (A, no shrinkage):** hand-crafted is trusted only for 2000s and 2010s (0.29-0.30, slightly negative for 1960s-1980s); Demucs most for 1970s (0.58) and not for 2000s (-0.18); MERT most for 1960s-1970s. B: language weight is about uniform (0.66-1.06), MERT lowest for UK (0.14).
+- Reading: per-class trust exists but the conditional-independence product (equal weights after calibration) already captures nearly all of it.
