@@ -21,7 +21,38 @@ MODEL_ID = "OpenMuQ/MuQ-large-msd-iter"
 
 
 def load(device: str = "cuda"):
-    return MuQ.from_pretrained(MODEL_ID).eval().to(device)
+    """MuQ passes a plain EasyDict as the transformers Wav2Vec2Conformer config; transformers 5 also reads
+    `_attn_implementation` from it, so set eager attention on every such config."""
+    model = MuQ.from_pretrained(MODEL_ID)
+    for m in model.modules():
+        cfg = getattr(m, "config", None)
+        if cfg is not None and not hasattr(cfg, "_attn_implementation"):
+            setattr(cfg, "_attn_implementation", "eager")
+    _restore_hidden_states(model)
+    return model.eval().to(device)
+
+
+def _restore_hidden_states(model) -> None:
+    """transformers 5's Wav2Vec2ConformerEncoder no longer returns hidden_states, which MuQ reads. Rebuild the
+    transformers 4 tuple with forward hooks: (input, outputs of layers 1..N-1, layer-normed output of layer N)."""
+    for enc in model.modules():
+        if type(enc).__name__ != "Wav2Vec2ConformerEncoder":
+            continue
+        orig = enc.forward
+
+        def forward(hidden_states, attention_mask=None, _orig=orig, _enc=enc, **kw):
+            kw.pop("output_hidden_states", None)
+            outs, x0 = [], hidden_states.clone()
+            hooks = [layer.register_forward_hook(lambda m, i, o: outs.append(o)) for layer in _enc.layers]
+            try:
+                res = _orig(hidden_states, attention_mask=attention_mask, **kw)
+            finally:
+                for h in hooks:
+                    h.remove()
+            res["hidden_states"] = (x0, *outs[:-1], res["last_hidden_state"])
+            return res
+
+        enc.forward = forward
 
 
 @torch.inference_mode()

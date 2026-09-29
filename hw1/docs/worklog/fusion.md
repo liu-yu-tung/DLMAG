@@ -122,3 +122,11 @@ The tables above used the broken MERT features. After re-extraction (`bench_fusi
 
 - 5 A folds without the random +-6 dB gain: 0.824 out-of-fold alone (0.813 with it); MERT + it, calibrated, 0.917 (MERT alone 0.906; CI of the difference -0.014 to 0.038; with the gain-augmented CNN it was 0.899).
 - Consistent with absolute level (mastering loudness) being a decade cue that the gain augmentation removes, but inside the noise; not adopted.
+
+## MuQ-large (2026-09-29 17:00, `scripts/extract_muq.py`, `scripts/cv_muq.py`, `results/cv_muq.json`)
+
+- **Porting:** muq 0.1.0 builds a transformers Wav2Vec2Conformer encoder from an EasyDict config. On transformers 5 it needed (1) `_attn_implementation = "eager"` set on that config and (2) hidden states rebuilt with forward hooks, because the transformers 5 encoder no longer returns them (layout kept as in transformers 4: input, layers 1..11, layer-normed layer 12). Features are finite and identical across two loads. Other transformers-5 changes inside the encoder cannot be ruled out; the scores below are well above chance, so the features are meaningful.
+- **Out-of-fold / validation S (all-layer average probe):** A 0.867 / 0.883 (MERT 0.906 / 0.943); B 0.824 / 0.833 (MERT 0.964 / 1.034).
+- **Per-layer validation S:** A 0.78-0.91 (flat, like MERT); B rises from 0.65 (input) to 0.88 at layer 6, then 0.72-0.82.
+- **Fusion (calibrated, CI of the difference against the current recipe):** A MERT + MuQ 0.898 (-0.027 to 0.011); B current + MuQ 1.032 (-0.020 to 0.018). No gain; not adopted.
+- Reading: in our setup MuQ is weaker than MERT-v2 on both tasks and redundant with it.
