@@ -1,0 +1,39 @@
+{
+  "baseline_eps0": {
+    "S_oof": 0.9055,
+    "S_val": 0.9432
+  },
+  "eps0.1": {
+    "S_oof": 0.9162,
+    "S_val": 1.0114,
+    "top1_oof": 0.4844,
+    "top3_oof": 0.8635,
+    "mean_abs_decades_oof": 0.81,
+    "diff_vs_eps0_ci95": [
+      -0.0117,
+      0.0317
+    ]
+  },
+  "eps0.05": {
+    "S_oof": 0.924,
+    "S_val": 0.9886,
+    "top1_oof": 0.4893,
+    "top3_oof": 0.8694,
+    "mean_abs_decades_oof": 0.796,
+    "diff_vs_eps0_ci95": [
+      0.0024,
+      0.0341
+    ]
+  },
+  "eps0.2": {
+    "S_oof": 0.9176,
+    "S_val": 1.0,
+    "top1_oof": 0.4844,
+    "top3_oof": 0.8665,
+    "mean_abs_decades_oof": 0.818,
+    "diff_vs_eps0_ci95": [
+      -0.018,
+      0.0385
+    ]
+  }
+}

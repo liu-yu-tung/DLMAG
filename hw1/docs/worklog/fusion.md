@@ -85,3 +85,10 @@ The tables above used the broken MERT features. After re-extraction (`bench_fusi
 - **A:** MERT alone 0.906 -> remap 0.932 (+0.026, CI -0.003 to 0.056). With hand-crafted: 0.892 -> 0.934. The non-nested stacker (0.945) was optimistic. C was always 0.1, the grid edge.
 - **B:** MERT + language 1.023 equal weight vs 1.020 remap; no gain.
 - **Recipe change (selection rule):** A = MERT all-layer average alone (hand-crafted dropped; remap under the 0.03 bar). B = MERT + Whisper language (mixture), equal weight. Validation: A 0.943, B 1.069. `predict.py` from audio matches the cached-feature predictions on all 234 test clips.
+
+## Ordinal soft labels for the A MERT probe (2026-09-29, `scripts/ordinal_probe.py`, `results/ordinal_probe_A.json`)
+
+- Soft-label cross-entropy via sample weights (each clip also counted as its neighbouring decades with weight eps). Same 5 folds; eps 0.1 fixed in advance.
+- Out-of-fold / validation S: baseline 0.906 / 0.943; eps 0.1: 0.916 / 1.011 (diff CI -0.012 to 0.032); eps 0.05: 0.924 / 0.989 (CI 0.002 to 0.034); eps 0.2: 0.918 / 1.000.
+- Mean error falls from 0.88 to about 0.81 decades. The gain is small (+0.01 to +0.02 out-of-fold) but has the same sign for every eps and on validation, and costs nothing at inference (same model shape).
+- Not adopted yet: under the 0.03 bar. Recheck together with the CNN folds and the remap. Out-of-fold log-probs saved in `features/cv_A_ordinal.npz`.

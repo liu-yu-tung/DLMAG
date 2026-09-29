@@ -40,10 +40,22 @@ def load_cache(key: str, suffix: str) -> tuple[np.ndarray, dict]:
         return mel, {k: z[k] for k in z.files}
 
 
-def augment(x: torch.Tensor, rng: np.random.Generator) -> torch.Tensor:
+def ordinal_targets(k: int, eps: float) -> torch.Tensor:
+    """Row c: eps on each neighbour of class c, the rest on c (edge classes have one neighbour)."""
+    t = torch.zeros(k, k)
+    for c in range(k):
+        nb = [n for n in (c - 1, c + 1) if 0 <= n < k]
+        t[c, nb] = eps
+        t[c, c] = 1 - eps * len(nb)
+    return t
+
+
+def augment(x: torch.Tensor, rng: np.random.Generator, gain: bool = True) -> torch.Tensor:
     """x: (B, 1, 128, T) log-mel. Random gain (+-6 dB as a ln-power shift) and one time and one frequency mask."""
     b, _, f, t = x.shape
-    x = x + torch.as_tensor(rng.uniform(-1.4, 1.4, size=(b, 1, 1, 1)), dtype=x.dtype, device=x.device)
+    shift = rng.uniform(-1.4, 1.4, size=(b, 1, 1, 1))
+    if gain:
+        x = x + torch.as_tensor(shift, dtype=x.dtype, device=x.device)
     for i in range(b):
         fw, tw = int(rng.integers(0, 17)), int(rng.integers(0, 25))
         f0, t0 = int(rng.integers(0, f - fw + 1)), int(rng.integers(0, t - tw + 1))
@@ -80,6 +92,8 @@ def main() -> None:
     ap.add_argument("--resume", action="store_true")
     ap.add_argument("--fold", type=int, default=None, help="hold out this fold of the train split (0-4)")
     ap.add_argument("--nfolds", type=int, default=5)
+    ap.add_argument("--ordinal-eps", type=float, default=0.0, help="soft targets: eps on each neighbouring class (A: decades)")
+    ap.add_argument("--no-gain", action="store_true", help="disable the random gain augmentation (keeps absolute level)")
     ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     args = ap.parse_args()
 
@@ -103,6 +117,7 @@ def main() -> None:
     crop = crop_frames(args.crop_s, SR, HOP)
 
     model = ShortChunkCNN(len(labels)).to(args.device)
+    targets = ordinal_targets(len(labels), args.ordinal_eps).to(args.device) if args.ordinal_eps > 0 else None
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.wd)
     steps_per_epoch = int(np.ceil(len(tr) * args.crops_per_clip / args.batch))
     sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=args.epochs * steps_per_epoch)
@@ -132,8 +147,9 @@ def main() -> None:
             starts = random_starts(rng, mel.shape[2], crop, len(ids))
             x = torch.as_tensor(np.stack([mel[i, :, s : s + crop] for i, s in zip(ids, starts)]).astype(np.float32),
                                 device=args.device)[:, None]
-            x = augment(x, rng)
-            loss = F.cross_entropy(model(x), torch.as_tensor(y[ids], device=args.device))
+            x = augment(x, rng, gain=not args.no_gain)
+            yt = torch.as_tensor(y[ids], device=args.device)
+            loss = F.cross_entropy(model(x), targets[yt] if targets is not None else yt)
             opt.zero_grad(set_to_none=True)
             loss.backward()
             opt.step()
@@ -161,7 +177,7 @@ def main() -> None:
         extra = {"oof": clip_logprobs(model, mel, ho, crop, args.eval_crops, args.device), "oof_pos": ho_pos, "oof_id": sid[ho]}
     np.savez(HW1 / "features" / f"{key}_cnn_s{args.seed}{fold_tag}{args.tag}_logp.npz", val=lp_va, test=lp_te,
              val_id=sid[va], test_id=sid[te], **extra)
-    res = {"dataset": key, "seed": args.seed, "fold": args.fold, "epochs": args.epochs, "crop_s": args.crop_s,
+    res = {"dataset": key, "seed": args.seed, "fold": args.fold, "ordinal_eps": args.ordinal_eps, "no_gain": args.no_gain, "epochs": args.epochs, "crop_s": args.crop_s,
            **{k: round(m[k], 4) for k in ("top1", "top3", "S")}}
     (HW1 / "results" / f"{name}.json").write_text(json.dumps(res, indent=2) + "\n")
     print("final validation", res)
