@@ -59,8 +59,13 @@ def prompt_text(proc, question: str) -> str:
 
 
 @torch.inference_mode()
-def score_clip(proc, model, wav16: np.ndarray, prefix: str, answers: list[str]) -> np.ndarray:
-    """Summed log-prob of each answer (+ <|im_end|>) after the prefix; one batch of len(answers) rows."""
+def score_clip(proc, model, wav16: np.ndarray, prefix: str, answers: list[str], batch: int = 2) -> np.ndarray:
+    """Summed log-prob of each answer (+ <|im_end|>) after the prefix, scored `batch` answers per forward pass
+    (full-vocabulary logits for every position do not fit next to other GPU jobs at batch 6)."""
+    return np.concatenate([_score(proc, model, wav16, prefix, answers[i : i + batch]) for i in range(0, len(answers), batch)])
+
+
+def _score(proc, model, wav16: np.ndarray, prefix: str, answers: list[str]) -> np.ndarray:
     tails = [a + "<|im_end|>" for a in answers]
     n_tail = [len(proc.tokenizer(t, add_special_tokens=False).input_ids) for t in tails]
     inp = proc(text=[prefix + t for t in tails], audio=[wav16] * len(tails), sampling_rate=SR_QWEN,
@@ -68,7 +73,7 @@ def score_clip(proc, model, wav16: np.ndarray, prefix: str, answers: list[str]) 
     inp["input_features"] = inp["input_features"].to(torch.float16)
     ids = inp["input_ids"]
     m = max(n_tail)
-    logits = model(**inp).logits[:, -m - 1 : -1].float()
+    logits = model(**inp, use_cache=False).logits[:, -m - 1 : -1].float()
     logp = torch.log_softmax(logits, -1).gather(-1, ids[:, -m:, None])[..., 0]
     return np.array([logp[i, m - n:].sum().item() for i, n in enumerate(n_tail)])
 
