@@ -1,5 +1,71 @@
 # HW1 plan: music era and release-market classification
 
+## Status and remaining plan (updated 2026-09-29 16:20)
+
+Deadline 2026-10-05 23:59. Grade bar (from the HW): A needs work beyond the basics in implementation, performance or analysis; A+ needs a creative approach with strong accuracy.
+
+### Submission now (verified, pushed)
+
+- **A:** MERT-v2 all-layer average probe. Validation S 0.943 (top-1 0.500, top-3 0.886); 5-fold out-of-fold 0.906.
+- **B:** MERT-v2 + Whisper language ID (mixture), equal-weight log-prob fusion. Validation 1.069 (top-1 0.627, top-3 0.882); out-of-fold 1.023, +0.059 over MERT alone (CI 0.038 to 0.081).
+- `scripts/predict.py` from audio matches the cached-feature predictions on all 234 test clips.
+
+### Selection method (fixed)
+
+- Every candidate is scored on the same 5 stratified train folds (out-of-fold S, paired bootstrap CI against the current recipe); validation is a check only.
+- Adopt a change only if it gains more than 0.03 out-of-fold with a CI above zero; learned layers on top (stackers, remaps) need a nested check.
+
+### What is settled
+
+- **A is near a ceiling:** MERT, the Demucs encoder features (0.852), the CNN (0.813) and hand-crafted features all carry real signal, but no fusion, ordinal loss (+0.01 to +0.02) or remap (+0.026) clears the bar.
+- **B:** language is the only signal that complements MERT; CNN, Demucs, CLAP and mix balance lower it.
+- **Stems (report):** accompaniment carries A, vocals carry B; separation is analysis, not accuracy.
+
+### Running now
+
+| Job | Expected done |
+|---|---|
+| Qwen2-Audio plain prompt on train + test, B then A (`scripts/alm_train_test.sh`) | B about 16:30, A about 19:00 |
+| CNN no-gain folds on A (`scripts/day_0929b.sh`) | about 16:40 |
+| MuQ-large download (1.33 GB), then two-load check, extraction and `scripts/cv_muq.py` | results about 17:30-18:00 |
+| Qwen explanations, 16 validation clips (`scripts/alm_explain.py`) | about 19:05 |
+
+### Remaining work, ranked
+
+| Pri | Item | Serves | When |
+|---|---|---|---|
+| P1 | Qwen screen: train-fitted label-bias correction, out-of-fold fusion with the B recipe; ALM confusion matrices vs MERT | required ALM item, maybe B accuracy | 9/29 evening |
+| P1 | MuQ screen: alone, with MERT, with the current recipes | the one untested source of new information for A | 9/29 evening |
+| P1 | Report (16:9 PDF, about 10 pages) | 50% of the grade | skeleton 9/30, write 10/2-10/4 |
+| P1 | Freeze recipe; README, inference-only `requirements.txt`, fresh-venv reproduction, cloud upload | required deliverables | 10/1 |
+| P2 | MERT top-layer fine-tuning on B, overnight, 2 seeds, fixed epochs | B accuracy | 9/30 night, only if MuQ and Qwen leave B unchanged |
+| P2 | Refit final models on train + validation | small free gain | 10/1, only if the HW allows it (open question) |
+| P3 | Report-only analyses: A error clustering, per-class confusion, t-SNE of MERT/MuQ | analysis depth | during report writing |
+
+- **Dropped:** more hand-crafted or stem features, more fusion variants, ordinal CNN, A fine-tuning (A's signal is spread over all layers), MuQ-MuLan zero-shot (Qwen covers zero-shot), MARBLE runs.
+
+### Report outline (about 10 slides)
+
+1. Task, data, metric, chance level.
+2. Method overview: frozen encoders + probes, the out-of-fold selection protocol.
+3. MERT layer sweep (A flat, B upper layers) and the rotary-buffer bug found and fixed (reproducibility).
+4. Final recipes and validation / out-of-fold scores; confusion matrices.
+5. Source separation: which input carries each label; mix-balance trends by decade; stem spectra.
+6. Week-4 U-Net idea: Demucs encoder features as a classifier input (0.85 on A).
+7. Language: Whisper language ID on B (language by market table); why it helps and nothing else does.
+8. Signal outside MERT: standalone, leave-one-out, complementarity on MERT's misses.
+9. Short-Chunk CNN from scratch; ordinal soft labels (A errors are 62% one decade off).
+10. ALM: Qwen2-Audio zero-shot, prompt comparison, label bias, its explanations; comparison with trained models.
+11. Limits: mono, 12 kHz band limit, small validation, label ambiguity.
+
+### Open decisions for the user
+
+- Refit on train + validation: allowed by the HW?
+- B fine-tuning on 9/30 night: run it, or spend the time on the report?
+
+## Original plan (9/28), kept for the record
+
+
 ## Context
 
 HW1 of DLMAG (CommE5070, NTU 2026). The deadline is 2026-10-05 23:59, 7 days from today (9/28).
