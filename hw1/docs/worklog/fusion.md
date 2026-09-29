@@ -110,3 +110,10 @@ The tables above used the broken MERT features. After re-extraction (`bench_fusi
 - **They subsume the hand-crafted and mix-balance signal:** with Demucs in the pool, hand-crafted's unique contribution falls from +0.071 to about 0; Demucs keeps +0.029 (CI 0.009 to 0.050).
 - **On MERT's A misses** they are the best of all components (true-class rank 2.77 Demucs, 2.80 CNN, against 3.5 uniform; top-1 0.23), yet MERT + either, calibrated, is not better than MERT alone (0.902 and 0.899 vs 0.906). MERT + Demucs + CNN: 0.910 (CI -0.022 to 0.032). Language on A lowers MERT (CI below zero).
 - **Reading:** on A, three independent learned models (MERT, Demucs encoder, CNN) reach 0.81-0.91 and agree too much to help each other by averaging. The ceiling looks like label or data limits (clip-level decade ambiguity) more than missing features.
+
+## CNN ordinal folds and A stacking check (2026-09-29, 16:10)
+
+- **CNN full-train seeds (validation S):** A 0.826 / 0.754 / 0.799 (seeds 0-2), B 0.618 / 0.652 / 0.608. Five-fold out-of-fold: A 0.813, B 0.657.
+- **CNN with ordinal soft targets (eps 0.1), 5 folds on A:** 0.793 alone (0.813 without). It ranks MERT's misses slightly better (true-class rank 2.70 vs 2.80, top-1 0.253 vs 0.233), but MERT + it is 0.896 (MERT alone 0.906).
+- **Stacking the small A gains** (calibrated equal-weight, out-of-fold, CI of the difference against MERT alone): ordinal MERT 0.916 (-0.012 to 0.032); + Demucs 0.921 (-0.011 to 0.041); + Demucs + CNN 0.919; + Demucs + ordinal CNN 0.912. None clears the 0.03 rule or has a CI above zero. A stays MERT alone.
+- **B:** the CNN and Demucs lower MERT (CIs below zero); only language helps.

@@ -1,0 +1,12 @@
+{
+  "dataset": "B",
+  "seed": 0,
+  "fold": 2,
+  "ordinal_eps": 0.0,
+  "no_gain": false,
+  "epochs": 60,
+  "crop_s": 3.7,
+  "top1": 0.3431,
+  "top3": 0.7255,
+  "S": 0.7059
+}
