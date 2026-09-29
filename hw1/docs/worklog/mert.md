@@ -74,3 +74,18 @@ The numbers above were measured with uninitialized rotary frequencies (see DECIS
 - **A stays flat:** 0.81-0.92 across all layers, with no band clearly better. Era cues are spread through the network.
 - **Dtype check rerun (`smoke_mert.py`):** bf16 is now within 0.7% relative error of fp32 (min cosine 0.99997), fp16 within 0.1%, both 3x faster (0.04 s vs 0.12 s per clip) at half the memory (1.5 vs 2.8 GB). The earlier 32% gap was the rotary bug, not precision. The submitted features stay fp32; fp16 is fine for stem features and fine-tuning.
 - **Before/after comparison for the report:** old features are in `features/stale_rope/`.
+
+## Top-block fine-tuning (2026-09-29 night, `scripts/finetune_mert.py`, `scripts/night_ft.sh`, `scripts/cv_finetune.py`, `results/cv_finetune.json`)
+
+- Frozen blocks 1-K run once; their output is cached (float16, 1.9 GB per K for A). Blocks K+1..24 + a head (time mean, LayerNorm, dropout, linear) are trained on it. Fixed in advance: 15 epochs, AdamW (blocks 1e-5, head 1e-3), warmup + cosine, batch 8, random 20 s crops, ordinal soft labels (eps 0.1) on A. Same 5 folds + a full-train fit. K=20 (top 4 blocks) and K=16 (top 8). A: seeds 0 and 1 (log-probs averaged); B: seed 0. About 4 min (top 4) and 9 min (top 8) per fit.
+- 5-fold / validation S, calibrated equal weight; CI of the 5-fold difference:
+
+| Task | Setting | Alone | vs probe | Probe swapped out of recipe | Added to recipe |
+|---|---|---|---|---|---|
+| A | top 8 | 0.938 / 0.974 | +0.022 [-0.008, 0.051] over ordinal probe 0.916 / 1.011 | 0.954 / 0.966 [-0.018, 0.031] | 0.959 / 0.996 [-0.009, 0.033] |
+| A | top 4 | 0.909 / 0.943 | [-0.037, 0.022] | 0.924 / 0.955 [-0.046, -0.001] | 0.951 / 0.992 [-0.016, 0.024] |
+| B | top 8 | 1.014 / 1.029 | +0.050 [0.019, 0.084] over probe 0.964 / 1.034 | 1.050 / 1.069 [-0.009, 0.041] | 1.033 / 1.069 [-0.019, 0.019] |
+| B | top 4 | 0.996 / 0.956 | [0.003, 0.060] | 1.038 / 1.015 [-0.019, 0.029] | 1.041 / 1.049 [-0.011, 0.027] |
+
+- A recipe base: ordinal probe + Qwen zero-shot 0.947 / 0.977. B base: probe + language, calibrated 1.033 / 1.039.
+- **Reading:** fine-tuning 8 blocks beats the frozen probe alone (clearly on B, +0.050 with CI above zero; on A +0.022, CI crosses zero). Inside the recipes the gain shrinks to +0.007 to +0.017 with CIs crossing zero: none clears the 0.03 bar. The language and Qwen components already supply what fine-tuning adds. Top 4 blocks are not enough on A. No recipe change.
