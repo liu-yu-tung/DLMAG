@@ -1,0 +1,2097 @@
+{
+ "A": {
+  "lanes": [
+   {
+    "id": "mert",
+    "name": "MERT-v2",
+    "family": "enc",
+    "rep": "mert_ord10",
+    "variants": [
+     {
+      "id": "mert_mixture",
+      "name": "plain labels"
+     },
+     {
+      "id": "mert_ord10",
+      "name": "ordinal labels, eps 0.1"
+     },
+     {
+      "id": "mert_accompaniment",
+      "name": "on the accompaniment stem"
+     },
+     {
+      "id": "mert_vocals",
+      "name": "on the vocal stem"
+     }
+    ]
+   },
+   {
+    "id": "qwen_zs",
+    "name": "Qwen2-Audio zero-shot",
+    "family": "alm",
+    "rep": "qwen_zs",
+    "variants": [
+     {
+      "id": "qwen_zs",
+      "name": "label-mean removed"
+     }
+    ]
+   },
+   {
+    "id": "qwen_hid",
+    "name": "Qwen2-Audio internal",
+    "family": "alm",
+    "rep": "qh_llm_last",
+    "variants": [
+     {
+      "id": "qh_llm_last",
+      "name": "LLM last state"
+     },
+     {
+      "id": "qh_llm_audio",
+      "name": "LLM over audio"
+     },
+     {
+      "id": "qh_enc",
+      "name": "audio encoder"
+     }
+    ]
+   },
+   {
+    "id": "demucs",
+    "name": "Demucs U-Net encoder",
+    "family": "enc",
+    "rep": "demucs_all",
+    "variants": [
+     {
+      "id": "demucs_all",
+      "name": "11 layers averaged"
+     }
+    ]
+   },
+   {
+    "id": "muq",
+    "name": "MuQ-large",
+    "family": "enc",
+    "rep": "muq",
+    "variants": [
+     {
+      "id": "muq",
+      "name": "12 layers averaged"
+     }
+    ]
+   },
+   {
+    "id": "cnn",
+    "name": "Short-Chunk CNN",
+    "family": "cnn",
+    "rep": "cnn",
+    "variants": [
+     {
+      "id": "cnn",
+      "name": "from scratch"
+     },
+     {
+      "id": "cnn_nogain",
+      "name": "no gain augmentation"
+     },
+     {
+      "id": "cnn_ord10",
+      "name": "ordinal targets"
+     }
+    ]
+   },
+   {
+    "id": "hc",
+    "name": "Hand-crafted",
+    "family": "hc",
+    "rep": "handcrafted",
+    "variants": [
+     {
+      "id": "handcrafted",
+      "name": "97 features"
+     }
+    ]
+   },
+   {
+    "id": "mix",
+    "name": "Mix balance",
+    "family": "hc",
+    "rep": "mixbalance",
+    "variants": [
+     {
+      "id": "mixbalance",
+      "name": "29 stem features"
+     }
+    ]
+   },
+   {
+    "id": "lang",
+    "name": "Whisper language ID",
+    "family": "alm",
+    "rep": "lang_mixture",
+    "variants": [
+     {
+      "id": "lang_mixture",
+      "name": "from the mixture"
+     },
+     {
+      "id": "lang_vocals",
+      "name": "from the vocal stem"
+     }
+    ]
+   },
+   {
+    "id": "clap",
+    "name": "CLAP",
+    "family": "enc",
+    "rep": "clap",
+    "variants": [
+     {
+      "id": "clap",
+      "name": "audio embedding"
+     }
+    ]
+   }
+  ],
+  "singles": {
+   "mert_mixture": {
+    "comps": [
+     "mert_mixture"
+    ],
+    "oof": 0.9055,
+    "val": 0.9432
+   },
+   "mert_ord10": {
+    "comps": [
+     "mert_ord10"
+    ],
+    "oof": 0.9162,
+    "val": 1.0114
+   },
+   "mert_accompaniment": {
+    "comps": [
+     "mert_accompaniment"
+    ],
+    "oof": 0.8743,
+    "val": 0.947
+   },
+   "mert_vocals": {
+    "comps": [
+     "mert_vocals"
+    ],
+    "oof": 0.7958,
+    "val": 0.7462
+   },
+   "qwen_zs": {
+    "comps": [
+     "qwen_zs"
+    ],
+    "oof": 0.8104,
+    "val": 0.7803
+   },
+   "qh_llm_last": {
+    "comps": [
+     "qh_llm_last"
+    ],
+    "oof": 0.8684,
+    "val": 0.8712
+   },
+   "qh_llm_audio": {
+    "comps": [
+     "qh_llm_audio"
+    ],
+    "oof": 0.8514,
+    "val": 0.8674
+   },
+   "qh_enc": {
+    "comps": [
+     "qh_enc"
+    ],
+    "oof": 0.8523,
+    "val": 0.9394
+   },
+   "demucs_all": {
+    "comps": [
+     "demucs_all"
+    ],
+    "oof": 0.8519,
+    "val": 0.9394
+   },
+   "muq": {
+    "comps": [
+     "muq"
+    ],
+    "oof": 0.8665,
+    "val": 0.8826
+   },
+   "cnn": {
+    "comps": [
+     "cnn"
+    ],
+    "oof": 0.8134,
+    "val": 0.8939
+   },
+   "cnn_nogain": {
+    "comps": [
+     "cnn_nogain"
+    ],
+    "oof": 0.8236,
+    "val": 0.8788
+   },
+   "cnn_ord10": {
+    "comps": [
+     "cnn_ord10"
+    ],
+    "oof": 0.7934,
+    "val": 0.875
+   },
+   "handcrafted": {
+    "comps": [
+     "handcrafted"
+    ],
+    "oof": 0.7295,
+    "val": 0.875
+   },
+   "mixbalance": {
+    "comps": [
+     "mixbalance"
+    ],
+    "oof": 0.6745,
+    "val": 0.6402
+   },
+   "lang_mixture": {
+    "comps": [
+     "lang_mixture"
+    ],
+    "oof": 0.5838,
+    "val": 0.6515
+   },
+   "lang_vocals": {
+    "comps": [
+     "lang_vocals"
+    ],
+    "oof": 0.5395,
+    "val": 0.5606
+   },
+   "clap": {
+    "comps": [
+     "clap"
+    ],
+    "oof": 0.5668,
+    "val": 0.5606
+   }
+  },
+  "with_mert": [
+   {
+    "base": [
+     "mert_ord10"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs"
+      ],
+      "oof": 0.9474,
+      "val": 0.9773,
+      "diff": 0.0312,
+      "ci95": [
+       0.0019,
+       0.0585
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "qh_llm_last"
+      ],
+      "oof": 0.9474,
+      "val": 0.9848,
+      "diff": 0.0312,
+      "ci95": [
+       0.0049,
+       0.059
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "cnn"
+      ],
+      "oof": 0.9245,
+      "val": 0.9962,
+      "diff": 0.0083,
+      "ci95": [
+       -0.0185,
+       0.0341
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "muq"
+      ],
+      "oof": 0.9225,
+      "val": 0.9962,
+      "diff": 0.0063,
+      "ci95": [
+       -0.0122,
+       0.0263
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "demucs_all"
+      ],
+      "oof": 0.9206,
+      "val": 1.0038,
+      "diff": 0.0044,
+      "ci95": [
+       -0.021,
+       0.0307
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "clap"
+      ],
+      "oof": 0.9123,
+      "val": 0.9811,
+      "diff": -0.0039,
+      "ci95": [
+       -0.0254,
+       0.0175
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "mixbalance"
+      ],
+      "oof": 0.905,
+      "val": 0.9432,
+      "diff": -0.0112,
+      "ci95": [
+       -0.0346,
+       0.0127
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "handcrafted"
+      ],
+      "oof": 0.9045,
+      "val": 1.0152,
+      "diff": -0.0117,
+      "ci95": [
+       -0.0385,
+       0.0156
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "lang_mixture"
+      ],
+      "oof": 0.8986,
+      "val": 0.9773,
+      "diff": -0.0175,
+      "ci95": [
+       -0.0404,
+       0.0034
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "mert_ord10",
+     "qwen_zs"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "qh_llm_last"
+      ],
+      "oof": 0.9576,
+      "val": 0.9659,
+      "diff": 0.0102,
+      "ci95": [
+       -0.0127,
+       0.0327
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "muq"
+      ],
+      "oof": 0.9552,
+      "val": 1.0076,
+      "diff": 0.0078,
+      "ci95": [
+       -0.0122,
+       0.0297
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "handcrafted"
+      ],
+      "oof": 0.9508,
+      "val": 0.9924,
+      "diff": 0.0034,
+      "ci95": [
+       -0.018,
+       0.0244
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "cnn"
+      ],
+      "oof": 0.9444,
+      "val": 0.9848,
+      "diff": -0.0029,
+      "ci95": [
+       -0.0263,
+       0.0195
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "clap"
+      ],
+      "oof": 0.9425,
+      "val": 0.9735,
+      "diff": -0.0049,
+      "ci95": [
+       -0.0219,
+       0.0107
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "demucs_all"
+      ],
+      "oof": 0.9391,
+      "val": 1.0189,
+      "diff": -0.0083,
+      "ci95": [
+       -0.0297,
+       0.0127
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "lang_mixture"
+      ],
+      "oof": 0.9357,
+      "val": 0.9848,
+      "diff": -0.0117,
+      "ci95": [
+       -0.0283,
+       0.0049
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "mixbalance"
+      ],
+      "oof": 0.9128,
+      "val": 0.9394,
+      "diff": -0.0346,
+      "ci95": [
+       -0.0551,
+       -0.0132
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "mert_ord10",
+     "qwen_zs",
+     "qh_llm_last"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "qh_llm_last",
+       "handcrafted"
+      ],
+      "oof": 0.9542,
+      "val": 1.0189,
+      "diff": -0.0034,
+      "ci95": [
+       -0.0224,
+       0.0151
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "qh_llm_last",
+       "muq"
+      ],
+      "oof": 0.9508,
+      "val": 0.9697,
+      "diff": -0.0068,
+      "ci95": [
+       -0.0263,
+       0.0117
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "qh_llm_last",
+       "clap"
+      ],
+      "oof": 0.9493,
+      "val": 0.9508,
+      "diff": -0.0083,
+      "ci95": [
+       -0.0229,
+       0.0063
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "qh_llm_last",
+       "lang_mixture"
+      ],
+      "oof": 0.9488,
+      "val": 0.9848,
+      "diff": -0.0088,
+      "ci95": [
+       -0.0224,
+       0.0054
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "qh_llm_last",
+       "demucs_all"
+      ],
+      "oof": 0.9469,
+      "val": 1.0038,
+      "diff": -0.0107,
+      "ci95": [
+       -0.0297,
+       0.0083
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "qh_llm_last",
+       "mixbalance"
+      ],
+      "oof": 0.9425,
+      "val": 0.9659,
+      "diff": -0.0151,
+      "ci95": [
+       -0.0322,
+       0.0015
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "qh_llm_last",
+       "cnn"
+      ],
+      "oof": 0.9405,
+      "val": 0.9545,
+      "diff": -0.0171,
+      "ci95": [
+       -0.037,
+       0.0029
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "mert_ord10",
+     "qwen_zs",
+     "qh_llm_last",
+     "handcrafted"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "qh_llm_last",
+       "handcrafted",
+       "clap"
+      ],
+      "oof": 0.9566,
+      "val": 1.0189,
+      "diff": 0.0024,
+      "ci95": [
+       -0.0097,
+       0.0156
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "mert_ord10",
+     "qwen_zs",
+     "qh_llm_last",
+     "handcrafted",
+     "clap"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "qh_llm_last",
+       "handcrafted",
+       "clap",
+       "muq"
+      ],
+      "oof": 0.9537,
+      "val": 1.0,
+      "diff": -0.0029,
+      "ci95": [
+       -0.0185,
+       0.0127
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "mert_ord10",
+     "qwen_zs",
+     "qh_llm_last",
+     "handcrafted",
+     "clap",
+     "muq"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "qh_llm_last",
+       "handcrafted",
+       "clap",
+       "muq",
+       "cnn"
+      ],
+      "oof": 0.9566,
+      "val": 0.9924,
+      "diff": 0.0029,
+      "ci95": [
+       -0.0122,
+       0.018
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "mert_ord10",
+     "qwen_zs",
+     "qh_llm_last",
+     "handcrafted",
+     "clap",
+     "muq",
+     "cnn"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "qh_llm_last",
+       "handcrafted",
+       "clap",
+       "muq",
+       "cnn",
+       "mixbalance"
+      ],
+      "oof": 0.9503,
+      "val": 0.9659,
+      "diff": -0.0063,
+      "ci95": [
+       -0.0185,
+       0.0063
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "mert_ord10",
+     "qwen_zs",
+     "qh_llm_last",
+     "handcrafted",
+     "clap",
+     "muq",
+     "cnn",
+     "mixbalance"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "qh_llm_last",
+       "handcrafted",
+       "clap",
+       "muq",
+       "cnn",
+       "mixbalance",
+       "demucs_all"
+      ],
+      "oof": 0.9464,
+      "val": 0.9811,
+      "diff": -0.0039,
+      "ci95": [
+       -0.0171,
+       0.0088
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "mert_ord10",
+     "qwen_zs",
+     "qh_llm_last",
+     "handcrafted",
+     "clap",
+     "muq",
+     "cnn",
+     "mixbalance",
+     "demucs_all"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "qh_llm_last",
+       "handcrafted",
+       "clap",
+       "muq",
+       "cnn",
+       "mixbalance",
+       "demucs_all",
+       "lang_mixture"
+      ],
+      "oof": 0.9454,
+      "val": 0.9735,
+      "diff": -0.001,
+      "ci95": [
+       -0.0093,
+       0.0083
+      ]
+     }
+    ]
+   }
+  ],
+  "no_mert": [
+   {
+    "base": [
+     "qh_llm_last"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "qh_llm_last",
+       "muq"
+      ],
+      "oof": 0.9152,
+      "val": 0.9091,
+      "diff": 0.0468,
+      "ci95": [
+       0.0219,
+       0.0741
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "qh_llm_last",
+     "muq"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "qh_llm_last",
+       "muq",
+       "qwen_zs"
+      ],
+      "oof": 0.923,
+      "val": 0.9432,
+      "diff": 0.0078,
+      "ci95": [
+       -0.0127,
+       0.0278
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "qh_llm_last",
+     "muq",
+     "qwen_zs"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "qh_llm_last",
+       "muq",
+       "qwen_zs",
+       "cnn"
+      ],
+      "oof": 0.9376,
+      "val": 0.9394,
+      "diff": 0.0146,
+      "ci95": [
+       -0.0049,
+       0.0341
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "qh_llm_last",
+     "muq",
+     "qwen_zs",
+     "cnn"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "qh_llm_last",
+       "muq",
+       "qwen_zs",
+       "cnn",
+       "clap"
+      ],
+      "oof": 0.9381,
+      "val": 0.9432,
+      "diff": 0.0005,
+      "ci95": [
+       -0.0102,
+       0.0112
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "qh_llm_last",
+     "muq",
+     "qwen_zs",
+     "cnn",
+     "clap"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "qh_llm_last",
+       "muq",
+       "qwen_zs",
+       "cnn",
+       "clap",
+       "demucs_all"
+      ],
+      "oof": 0.9449,
+      "val": 0.9773,
+      "diff": 0.0068,
+      "ci95": [
+       -0.0098,
+       0.0224
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "qh_llm_last",
+     "muq",
+     "qwen_zs",
+     "cnn",
+     "clap",
+     "demucs_all"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "qh_llm_last",
+       "muq",
+       "qwen_zs",
+       "cnn",
+       "clap",
+       "demucs_all",
+       "lang_mixture"
+      ],
+      "oof": 0.9391,
+      "val": 0.9962,
+      "diff": -0.0058,
+      "ci95": [
+       -0.0175,
+       0.0054
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "qh_llm_last",
+     "muq",
+     "qwen_zs",
+     "cnn",
+     "clap",
+     "demucs_all",
+     "lang_mixture"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "qh_llm_last",
+       "muq",
+       "qwen_zs",
+       "cnn",
+       "clap",
+       "demucs_all",
+       "lang_mixture",
+       "mixbalance"
+      ],
+      "oof": 0.9366,
+      "val": 0.9583,
+      "diff": -0.0024,
+      "ci95": [
+       -0.0141,
+       0.0097
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "qh_llm_last",
+     "muq",
+     "qwen_zs",
+     "cnn",
+     "clap",
+     "demucs_all",
+     "lang_mixture",
+     "mixbalance"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "qh_llm_last",
+       "muq",
+       "qwen_zs",
+       "cnn",
+       "clap",
+       "demucs_all",
+       "lang_mixture",
+       "mixbalance",
+       "handcrafted"
+      ],
+      "oof": 0.9211,
+      "val": 0.9659,
+      "diff": -0.0156,
+      "ci95": [
+       -0.0283,
+       -0.0029
+      ]
+     }
+    ]
+   }
+  ],
+  "all": {
+   "comps": [
+    "mert_ord10",
+    "qwen_zs",
+    "qh_llm_last",
+    "demucs_all",
+    "muq",
+    "cnn",
+    "handcrafted",
+    "mixbalance",
+    "lang_mixture",
+    "clap"
+   ],
+   "oof": 0.9454,
+   "val": 0.9735
+  }
+ },
+ "B": {
+  "lanes": [
+   {
+    "id": "mert",
+    "name": "MERT-v2",
+    "family": "enc",
+    "rep": "mert_mixture",
+    "variants": [
+     {
+      "id": "mert_mixture",
+      "name": "plain labels"
+     },
+     {
+      "id": "mert_accompaniment",
+      "name": "on the accompaniment stem"
+     },
+     {
+      "id": "mert_vocals",
+      "name": "on the vocal stem"
+     }
+    ]
+   },
+   {
+    "id": "qwen_zs",
+    "name": "Qwen2-Audio zero-shot",
+    "family": "alm",
+    "rep": "qwen_zs",
+    "variants": [
+     {
+      "id": "qwen_zs",
+      "name": "label-mean removed"
+     }
+    ]
+   },
+   {
+    "id": "qwen_hid",
+    "name": "Qwen2-Audio internal",
+    "family": "alm",
+    "rep": "qh_llm_last",
+    "variants": [
+     {
+      "id": "qh_llm_last",
+      "name": "LLM last state"
+     },
+     {
+      "id": "qh_llm_audio",
+      "name": "LLM over audio"
+     },
+     {
+      "id": "qh_enc",
+      "name": "audio encoder"
+     }
+    ]
+   },
+   {
+    "id": "demucs",
+    "name": "Demucs U-Net encoder",
+    "family": "enc",
+    "rep": "demucs_all",
+    "variants": [
+     {
+      "id": "demucs_all",
+      "name": "11 layers averaged"
+     }
+    ]
+   },
+   {
+    "id": "muq",
+    "name": "MuQ-large",
+    "family": "enc",
+    "rep": "muq",
+    "variants": [
+     {
+      "id": "muq",
+      "name": "12 layers averaged"
+     }
+    ]
+   },
+   {
+    "id": "cnn",
+    "name": "Short-Chunk CNN",
+    "family": "cnn",
+    "rep": "cnn",
+    "variants": [
+     {
+      "id": "cnn",
+      "name": "from scratch"
+     }
+    ]
+   },
+   {
+    "id": "hc",
+    "name": "Hand-crafted",
+    "family": "hc",
+    "rep": "handcrafted",
+    "variants": [
+     {
+      "id": "handcrafted",
+      "name": "97 features"
+     }
+    ]
+   },
+   {
+    "id": "mix",
+    "name": "Mix balance",
+    "family": "hc",
+    "rep": "mixbalance",
+    "variants": [
+     {
+      "id": "mixbalance",
+      "name": "29 stem features"
+     }
+    ]
+   },
+   {
+    "id": "lang",
+    "name": "Whisper language ID",
+    "family": "alm",
+    "rep": "lang_mixture",
+    "variants": [
+     {
+      "id": "lang_mixture",
+      "name": "from the mixture"
+     },
+     {
+      "id": "lang_vocals",
+      "name": "from the vocal stem"
+     }
+    ]
+   },
+   {
+    "id": "clap",
+    "name": "CLAP",
+    "family": "enc",
+    "rep": "clap",
+    "variants": [
+     {
+      "id": "clap",
+      "name": "audio embedding"
+     }
+    ]
+   }
+  ],
+  "singles": {
+   "mert_mixture": {
+    "comps": [
+     "mert_mixture"
+    ],
+    "oof": 0.9643,
+    "val": 1.0343
+   },
+   "mert_accompaniment": {
+    "comps": [
+     "mert_accompaniment"
+    ],
+    "oof": 0.7807,
+    "val": 0.8186
+   },
+   "mert_vocals": {
+    "comps": [
+     "mert_vocals"
+    ],
+    "oof": 0.9242,
+    "val": 1.0147
+   },
+   "qwen_zs": {
+    "comps": [
+     "qwen_zs"
+    ],
+    "oof": 0.9561,
+    "val": 0.9853
+   },
+   "qh_llm_last": {
+    "comps": [
+     "qh_llm_last"
+    ],
+    "oof": 1.0232,
+    "val": 0.9804
+   },
+   "qh_llm_audio": {
+    "comps": [
+     "qh_llm_audio"
+    ],
+    "oof": 0.9975,
+    "val": 0.951
+   },
+   "qh_enc": {
+    "comps": [
+     "qh_enc"
+    ],
+    "oof": 0.9856,
+    "val": 1.0098
+   },
+   "demucs_all": {
+    "comps": [
+     "demucs_all"
+    ],
+    "oof": 0.6842,
+    "val": 0.6765
+   },
+   "muq": {
+    "comps": [
+     "muq"
+    ],
+    "oof": 0.8239,
+    "val": 0.8333
+   },
+   "cnn": {
+    "comps": [
+     "cnn"
+    ],
+    "oof": 0.6566,
+    "val": 0.6716
+   },
+   "handcrafted": {
+    "comps": [
+     "handcrafted"
+    ],
+    "oof": 0.5758,
+    "val": 0.6176
+   },
+   "mixbalance": {
+    "comps": [
+     "mixbalance"
+    ],
+    "oof": 0.5169,
+    "val": 0.6373
+   },
+   "lang_mixture": {
+    "comps": [
+     "lang_mixture"
+    ],
+    "oof": 0.9887,
+    "val": 0.9804
+   },
+   "lang_vocals": {
+    "comps": [
+     "lang_vocals"
+    ],
+    "oof": 0.9724,
+    "val": 0.951
+   },
+   "clap": {
+    "comps": [
+     "clap"
+    ],
+    "oof": 0.5157,
+    "val": 0.6029
+   }
+  },
+  "with_mert": [
+   {
+    "base": [
+     "mert_mixture"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs"
+      ],
+      "oof": 1.0395,
+      "val": 1.1029,
+      "diff": 0.0752,
+      "ci95": [
+       0.0438,
+       0.1065
+      ]
+     },
+     {
+      "comps": [
+       "mert_mixture",
+       "qh_llm_last"
+      ],
+      "oof": 1.0388,
+      "val": 1.0196,
+      "diff": 0.0746,
+      "ci95": [
+       0.0464,
+       0.104
+      ]
+     },
+     {
+      "comps": [
+       "mert_mixture",
+       "lang_mixture"
+      ],
+      "oof": 1.0332,
+      "val": 1.0392,
+      "diff": 0.0689,
+      "ci95": [
+       0.0414,
+       0.0977
+      ]
+     },
+     {
+      "comps": [
+       "mert_mixture",
+       "clap"
+      ],
+      "oof": 0.968,
+      "val": 1.0294,
+      "diff": 0.0038,
+      "ci95": [
+       -0.0113,
+       0.0182
+      ]
+     },
+     {
+      "comps": [
+       "mert_mixture",
+       "mixbalance"
+      ],
+      "oof": 0.958,
+      "val": 1.0735,
+      "diff": -0.0063,
+      "ci95": [
+       -0.0232,
+       0.0119
+      ]
+     },
+     {
+      "comps": [
+       "mert_mixture",
+       "handcrafted"
+      ],
+      "oof": 0.9568,
+      "val": 0.9902,
+      "diff": -0.0075,
+      "ci95": [
+       -0.0295,
+       0.0138
+      ]
+     },
+     {
+      "comps": [
+       "mert_mixture",
+       "muq"
+      ],
+      "oof": 0.9436,
+      "val": 0.9706,
+      "diff": -0.0207,
+      "ci95": [
+       -0.0407,
+       -0.0013
+      ]
+     },
+     {
+      "comps": [
+       "mert_mixture",
+       "cnn"
+      ],
+      "oof": 0.9361,
+      "val": 1.0,
+      "diff": -0.0282,
+      "ci95": [
+       -0.052,
+       -0.0056
+      ]
+     },
+     {
+      "comps": [
+       "mert_mixture",
+       "demucs_all"
+      ],
+      "oof": 0.9236,
+      "val": 1.0049,
+      "diff": -0.0407,
+      "ci95": [
+       -0.0658,
+       -0.0175
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "mert_mixture",
+     "qwen_zs"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
+       "qh_llm_last"
+      ],
+      "oof": 1.0514,
+      "val": 1.0882,
+      "diff": 0.0119,
+      "ci95": [
+       -0.0075,
+       0.0313
+      ]
+     },
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
+       "lang_mixture"
+      ],
+      "oof": 1.0464,
+      "val": 1.0735,
+      "diff": 0.0069,
+      "ci95": [
+       -0.0113,
+       0.0257
+      ]
+     },
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
+       "clap"
+      ],
+      "oof": 1.0401,
+      "val": 1.1029,
+      "diff": 0.0006,
+      "ci95": [
+       -0.0132,
+       0.0144
+      ]
+     },
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
+       "demucs_all"
+      ],
+      "oof": 1.0332,
+      "val": 1.1176,
+      "diff": -0.0063,
+      "ci95": [
+       -0.0232,
+       0.0113
+      ]
+     },
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
+       "handcrafted"
+      ],
+      "oof": 1.0313,
+      "val": 1.0735,
+      "diff": -0.0081,
+      "ci95": [
+       -0.0238,
+       0.0088
+      ]
+     },
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
+       "mixbalance"
+      ],
+      "oof": 1.0307,
+      "val": 1.0833,
+      "diff": -0.0088,
+      "ci95": [
+       -0.0219,
+       0.0044
+      ]
+     },
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
+       "muq"
+      ],
+      "oof": 1.0301,
+      "val": 1.0833,
+      "diff": -0.0094,
+      "ci95": [
+       -0.0282,
+       0.0088
+      ]
+     },
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
+       "cnn"
+      ],
+      "oof": 1.0276,
+      "val": 1.1373,
+      "diff": -0.0119,
+      "ci95": [
+       -0.0301,
+       0.0069
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "mert_mixture",
+     "qwen_zs",
+     "qh_llm_last"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
+       "qh_llm_last",
+       "lang_mixture"
+      ],
+      "oof": 1.0589,
+      "val": 1.0588,
+      "diff": 0.0075,
+      "ci95": [
+       -0.0075,
+       0.0219
+      ]
+     },
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
+       "qh_llm_last",
+       "mixbalance"
+      ],
+      "oof": 1.0564,
+      "val": 1.098,
+      "diff": 0.005,
+      "ci95": [
+       -0.0063,
+       0.0169
+      ]
+     },
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
+       "qh_llm_last",
+       "clap"
+      ],
+      "oof": 1.0482,
+      "val": 1.0784,
+      "diff": -0.0031,
+      "ci95": [
+       -0.0138,
+       0.0069
+      ]
+     },
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
+       "qh_llm_last",
+       "handcrafted"
+      ],
+      "oof": 1.042,
+      "val": 1.1029,
+      "diff": -0.0094,
+      "ci95": [
+       -0.0207,
+       0.0019
+      ]
+     },
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
+       "qh_llm_last",
+       "muq"
+      ],
+      "oof": 1.0376,
+      "val": 1.0882,
+      "diff": -0.0138,
+      "ci95": [
+       -0.0282,
+       0.0
+      ]
+     },
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
+       "qh_llm_last",
+       "cnn"
+      ],
+      "oof": 1.0376,
+      "val": 1.1029,
+      "diff": -0.0138,
+      "ci95": [
+       -0.0276,
+       0.0
+      ]
+     },
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
+       "qh_llm_last",
+       "demucs_all"
+      ],
+      "oof": 1.037,
+      "val": 1.1127,
+      "diff": -0.0144,
+      "ci95": [
+       -0.0295,
+       -0.0006
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "mert_mixture",
+     "qwen_zs",
+     "qh_llm_last",
+     "lang_mixture"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
+       "qh_llm_last",
+       "lang_mixture",
+       "demucs_all"
+      ],
+      "oof": 1.0664,
+      "val": 1.0931,
+      "diff": 0.0075,
+      "ci95": [
+       -0.0069,
+       0.0226
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "mert_mixture",
+     "qwen_zs",
+     "qh_llm_last",
+     "lang_mixture",
+     "demucs_all"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
+       "qh_llm_last",
+       "lang_mixture",
+       "demucs_all",
+       "clap"
+      ],
+      "oof": 1.0583,
+      "val": 1.1127,
+      "diff": -0.0081,
+      "ci95": [
+       -0.0194,
+       0.0019
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "mert_mixture",
+     "qwen_zs",
+     "qh_llm_last",
+     "lang_mixture",
+     "demucs_all",
+     "clap"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
+       "qh_llm_last",
+       "lang_mixture",
+       "demucs_all",
+       "clap",
+       "mixbalance"
+      ],
+      "oof": 1.0545,
+      "val": 1.1127,
+      "diff": -0.0038,
+      "ci95": [
+       -0.0119,
+       0.0038
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "mert_mixture",
+     "qwen_zs",
+     "qh_llm_last",
+     "lang_mixture",
+     "demucs_all",
+     "clap",
+     "mixbalance"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
+       "qh_llm_last",
+       "lang_mixture",
+       "demucs_all",
+       "clap",
+       "mixbalance",
+       "handcrafted"
+      ],
+      "oof": 1.0514,
+      "val": 1.1324,
+      "diff": -0.0031,
+      "ci95": [
+       -0.0163,
+       0.01
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "mert_mixture",
+     "qwen_zs",
+     "qh_llm_last",
+     "lang_mixture",
+     "demucs_all",
+     "clap",
+     "mixbalance",
+     "handcrafted"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
+       "qh_llm_last",
+       "lang_mixture",
+       "demucs_all",
+       "clap",
+       "mixbalance",
+       "handcrafted",
+       "cnn"
+      ],
+      "oof": 1.0495,
+      "val": 1.1275,
+      "diff": -0.0019,
+      "ci95": [
+       -0.0132,
+       0.01
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "mert_mixture",
+     "qwen_zs",
+     "qh_llm_last",
+     "lang_mixture",
+     "demucs_all",
+     "clap",
+     "mixbalance",
+     "handcrafted",
+     "cnn"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
+       "qh_llm_last",
+       "lang_mixture",
+       "demucs_all",
+       "clap",
+       "mixbalance",
+       "handcrafted",
+       "cnn",
+       "muq"
+      ],
+      "oof": 1.0338,
+      "val": 1.1078,
+      "diff": -0.0157,
+      "ci95": [
+       -0.0282,
+       -0.0038
+      ]
+     }
+    ]
+   }
+  ],
+  "no_mert": [
+   {
+    "base": [
+     "qh_llm_last"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "qh_llm_last",
+       "lang_mixture"
+      ],
+      "oof": 1.0445,
+      "val": 1.0294,
+      "diff": 0.0213,
+      "ci95": [
+       -0.0044,
+       0.0464
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "qh_llm_last",
+     "lang_mixture"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "qh_llm_last",
+       "lang_mixture",
+       "muq"
+      ],
+      "oof": 1.0595,
+      "val": 1.0098,
+      "diff": 0.015,
+      "ci95": [
+       -0.0088,
+       0.0395
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "qh_llm_last",
+     "lang_mixture",
+     "muq"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "qh_llm_last",
+       "lang_mixture",
+       "muq",
+       "clap"
+      ],
+      "oof": 1.0545,
+      "val": 1.0,
+      "diff": -0.005,
+      "ci95": [
+       -0.0169,
+       0.0063
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "qh_llm_last",
+     "lang_mixture",
+     "muq",
+     "clap"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "qh_llm_last",
+       "lang_mixture",
+       "muq",
+       "clap",
+       "qwen_zs"
+      ],
+      "oof": 1.047,
+      "val": 1.0588,
+      "diff": -0.0075,
+      "ci95": [
+       -0.0282,
+       0.0119
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "qh_llm_last",
+     "lang_mixture",
+     "muq",
+     "clap",
+     "qwen_zs"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "qh_llm_last",
+       "lang_mixture",
+       "muq",
+       "clap",
+       "qwen_zs",
+       "handcrafted"
+      ],
+      "oof": 1.052,
+      "val": 1.0735,
+      "diff": 0.005,
+      "ci95": [
+       -0.0088,
+       0.0188
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "qh_llm_last",
+     "lang_mixture",
+     "muq",
+     "clap",
+     "qwen_zs",
+     "handcrafted"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "qh_llm_last",
+       "lang_mixture",
+       "muq",
+       "clap",
+       "qwen_zs",
+       "handcrafted",
+       "demucs_all"
+      ],
+      "oof": 1.0457,
+      "val": 1.1225,
+      "diff": -0.0063,
+      "ci95": [
+       -0.0207,
+       0.0081
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "qh_llm_last",
+     "lang_mixture",
+     "muq",
+     "clap",
+     "qwen_zs",
+     "handcrafted",
+     "demucs_all"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "qh_llm_last",
+       "lang_mixture",
+       "muq",
+       "clap",
+       "qwen_zs",
+       "handcrafted",
+       "demucs_all",
+       "mixbalance"
+      ],
+      "oof": 1.0439,
+      "val": 1.1127,
+      "diff": -0.0019,
+      "ci95": [
+       -0.01,
+       0.0056
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "qh_llm_last",
+     "lang_mixture",
+     "muq",
+     "clap",
+     "qwen_zs",
+     "handcrafted",
+     "demucs_all",
+     "mixbalance"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "qh_llm_last",
+       "lang_mixture",
+       "muq",
+       "clap",
+       "qwen_zs",
+       "handcrafted",
+       "demucs_all",
+       "mixbalance",
+       "cnn"
+      ],
+      "oof": 1.0426,
+      "val": 1.0833,
+      "diff": -0.0013,
+      "ci95": [
+       -0.0138,
+       0.0107
+      ]
+     }
+    ]
+   }
+  ],
+  "all": {
+   "comps": [
+    "mert_mixture",
+    "qwen_zs",
+    "qh_llm_last",
+    "demucs_all",
+    "muq",
+    "cnn",
+    "handcrafted",
+    "mixbalance",
+    "lang_mixture",
+    "clap"
+   ],
+   "oof": 1.0338,
+   "val": 1.1078
+  }
+ }
+}
