@@ -117,3 +117,8 @@ The tables above used the broken MERT features. After re-extraction (`bench_fusi
 - **CNN with ordinal soft targets (eps 0.1), 5 folds on A:** 0.793 alone (0.813 without). It ranks MERT's misses slightly better (true-class rank 2.70 vs 2.80, top-1 0.253 vs 0.233), but MERT + it is 0.896 (MERT alone 0.906).
 - **Stacking the small A gains** (calibrated equal-weight, out-of-fold, CI of the difference against MERT alone): ordinal MERT 0.916 (-0.012 to 0.032); + Demucs 0.921 (-0.011 to 0.041); + Demucs + CNN 0.919; + Demucs + ordinal CNN 0.912. None clears the 0.03 rule or has a CI above zero. A stays MERT alone.
 - **B:** the CNN and Demucs lower MERT (CIs below zero); only language helps.
+
+## CNN without gain augmentation (2026-09-29 16:45)
+
+- 5 A folds without the random +-6 dB gain: 0.824 out-of-fold alone (0.813 with it); MERT + it, calibrated, 0.917 (MERT alone 0.906; CI of the difference -0.014 to 0.038; with the gain-augmented CNN it was 0.899).
+- Consistent with absolute level (mastering loudness) being a decade cue that the gain augmentation removes, but inside the noise; not adopted.

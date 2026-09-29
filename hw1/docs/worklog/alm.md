@@ -21,3 +21,10 @@
 - **A is weaker** (0.731) and skewed: it almost never answers 1990s or 2000s.
 - **The cue-guided prompt is worse on both** and makes the skew stronger (Spain on B, 1970s on A).
 - **Label bias is large:** removing each label's mean log-prob (fitted on validation itself, so optimistic) gives B 0.98 and A 0.78. A fair version fits this on train; train and test are being scored with the plain prompt.
+
+## B train/test scores and cross-validated screen (2026-09-29 16:45, `scripts/cv_alm.py`, `results/cv_alm.json`)
+
+- Raw zero-shot scores are already out-of-fold (no training). Bias corrections are fitted inside the same 5 train folds.
+- **Alone (out-of-fold / validation S):** raw 0.892 / 0.902; label-mean removed 0.956 / 0.985; logistic remap of the 6 scores 0.998 / 1.000. With a train-fitted remap, zero-shot Qwen matches the trained MERT probe (0.964).
+- **Added to the B recipe** (MERT + language, calibrated, 1.033 out-of-fold): 1.046 (label-mean), 1.043 (remap); CIs -0.009 to 0.036 and -0.011 to 0.030. Not adopted: under the bar, and it would put a 7B model into `predict.py`.
+- **On MERT's 363 misses:** true-class rank 2.63-2.78, top-1 0.32, the same complementarity as Whisper language ID (2.69, 0.33). Qwen's B signal is largely the language signal.

@@ -1,0 +1,53 @@
+{
+  "B": {
+    "current": {
+      "components": "mert_mixture+lang_mixture",
+      "S_oof": 1.0332
+    },
+    "alm_raw": {
+      "alone_S_oof": 0.8922,
+      "alone_S_val": 0.902,
+      "current_plus_S_oof": 1.0313,
+      "current_plus_S_val": 1.0588,
+      "diff_ci95": [
+        -0.0276,
+        0.0251
+      ],
+      "on_mert_misses": {
+        "n": 363,
+        "mean_rank_true": 3.039,
+        "top1": 0.2782
+      }
+    },
+    "alm_prior": {
+      "alone_S_oof": 0.9561,
+      "alone_S_val": 0.9853,
+      "current_plus_S_oof": 1.0464,
+      "current_plus_S_val": 1.0735,
+      "diff_ci95": [
+        -0.0094,
+        0.0357
+      ],
+      "on_mert_misses": {
+        "n": 363,
+        "mean_rank_true": 2.777,
+        "top1": 0.3251
+      }
+    },
+    "alm_remap": {
+      "alone_S_oof": 0.9981,
+      "alone_S_val": 1.0,
+      "current_plus_S_oof": 1.0426,
+      "current_plus_S_val": 1.049,
+      "diff_ci95": [
+        -0.0113,
+        0.0301
+      ],
+      "on_mert_misses": {
+        "n": 363,
+        "mean_rank_true": 2.634,
+        "top1": 0.3223
+      }
+    }
+  }
+}
