@@ -1,11 +1,20 @@
 {
   "A": {
     "recipe": [
-      "mert_layeravg"
+      "mert_ord10",
+      "alm_qwen"
     ],
-    "top1": 0.5,
-    "top3": 0.8864,
-    "S": 0.9432
+    "top1": 0.5227,
+    "top3": 0.9091,
+    "S": 0.9773
+  },
+  "A_fallback": {
+    "recipe": [
+      "mert_ord10"
+    ],
+    "top1": 0.553,
+    "top3": 0.9167,
+    "S": 1.0114
   },
   "B": {
     "recipe": [

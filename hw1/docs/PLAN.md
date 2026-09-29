@@ -1,67 +1,57 @@
 # HW1 plan: music era and release-market classification
 
-## Status and remaining plan (updated 2026-09-29 16:20)
+## Status and remaining plan (updated 2026-09-29 19:32)
 
-Deadline 2026-10-05 23:59. Grade bar (from the HW): A needs work beyond the basics in implementation, performance or analysis; A+ needs a creative approach with strong accuracy.
+Deadline 2026-10-05 23:59. Grade bar: A needs work beyond the basics in implementation, performance or analysis; A+ a creative approach with strong accuracy.
 
-### Submission now (verified, pushed)
+### Submission now
 
-- **A:** MERT-v2 all-layer average probe. Validation S 0.943 (top-1 0.500, top-3 0.886); 5-fold out-of-fold 0.906.
-- **B:** MERT-v2 + Whisper language ID (mixture), equal-weight log-prob fusion. Validation 1.069 (top-1 0.627, top-3 0.882); out-of-fold 1.023, +0.059 over MERT alone (CI 0.038 to 0.081).
-- `scripts/predict.py` from audio matches the cached-feature predictions on all 234 test clips.
+| Task | Recipe | Validation S (top-1 / top-3) | 5-fold out-of-fold S |
+|---|---|---|---|
+| A | MERT-v2 probe with ordinal soft labels (eps 0.1) + zero-shot Qwen2-Audio (label-mean removed), temperature-calibrated equal weight | 0.977 (0.523 / 0.909) | 0.947 (+0.042 over MERT, CI 0.014 to 0.071) |
+| A fallback (`predict.py --no-alm`) | ordinal MERT alone | 1.011 (0.553 / 0.917) | 0.916 |
+| B | MERT-v2 probe + Whisper language ID (mixture), equal weight | 1.069 (0.627 / 0.882) | 1.023 (+0.059, CI 0.038 to 0.081) |
+
+- Checkpoints: `checkpoints/{A,B}.joblib` (train split only). `predict.py` from audio (MERT, Whisper, Qwen) matches `outputs/pred_from_cache.json` on all 234 test clips, including label order (checked 9/29 19:32).
 
 ### Selection method (fixed)
 
-- Every candidate is scored on the same 5 stratified train folds (out-of-fold S, paired bootstrap CI against the current recipe); validation is a check only.
-- Adopt a change only if it gains more than 0.03 out-of-fold with a CI above zero; learned layers on top (stackers, remaps) need a nested check.
+- Same 5 stratified train folds for every candidate; adopt only a gain above 0.03 with a bootstrap CI above zero; nested checks for anything learned on top; validation is a check only.
 
-### What is settled
+### Done today (all logged in `docs/worklog/`, pushed)
 
-- **A is near a ceiling:** MERT, the Demucs encoder features (0.852), the CNN (0.813) and hand-crafted features all carry real signal, but no fusion, ordinal loss (+0.01 to +0.02) or remap (+0.026) clears the bar.
-- **B:** language is the only signal that complements MERT; CNN, Demucs, CLAP and mix balance lower it.
-- **Stems (report):** accompaniment carries A, vocals carry B; separation is analysis, not accuracy.
+- Stems, mix balance, language ID, Demucs U-Net encoder features, Short-Chunk CNN (5 folds + 3 seeds per task, ordinal and no-gain variants), MuQ (ported to transformers 5), Qwen2-Audio (validation, train and test scores, explanations), fusion rules (calibrated, per-class weights, confusion-matrix Bayes, language gating), non-MERT signal analysis, Qwen vs Whisper comparison.
+- Only two things beat plain MERT: language on B, and ordinal MERT + Qwen on A.
 
-### Running now
+### Remaining work
 
-| Job | Expected done |
-|---|---|
-| Qwen2-Audio plain prompt on train + test, B then A (`scripts/alm_train_test.sh`) | B about 16:30, A about 19:00 |
-| CNN no-gain folds on A (`scripts/day_0929b.sh`) | about 16:40 |
-| MuQ-large download (1.33 GB), then two-load check, extraction and `scripts/cv_muq.py` | results about 17:30-18:00 |
-| Qwen explanations, 16 validation clips (`scripts/alm_explain.py`) | about 19:05 |
+| Day | Item | Notes |
+|---|---|---|
+| 9/30 | **Deliverables:** README (setup, data layout, `predict.py` usage, both modes, runtime and GPU needs), inference-only `requirements.txt`, reproduction in a fresh venv (both modes), cloud upload (code + checkpoints, no data or model caches) | the TA must be able to run it |
+| 9/30 | **Report skeleton** (16:9, about 10-11 slides; outline below) and figures from `results/` | 50% of the grade |
+| 9/30 night (optional) | MERT top-layer fine-tuning on B, 2 seeds, fixed epochs; adopt only if it beats the probe by more than 0.05 | user decides; otherwise skip |
+| 10/1 | **Freeze the recipe**; final JSON; re-run the reproduction check | |
+| 10/2-10/4 | Write the report | |
+| 10/5 | Buffer, submit | |
 
-### Remaining work, ranked
-
-| Pri | Item | Serves | When |
-|---|---|---|---|
-| P1 | Qwen screen: train-fitted label-bias correction, out-of-fold fusion with the B recipe; ALM confusion matrices vs MERT | required ALM item, maybe B accuracy | 9/29 evening |
-| P1 | MuQ screen: alone, with MERT, with the current recipes | the one untested source of new information for A | 9/29 evening |
-| P1 | Report (16:9 PDF, about 10 pages) | 50% of the grade | skeleton 9/30, write 10/2-10/4 |
-| P1 | Freeze recipe; README, inference-only `requirements.txt`, fresh-venv reproduction, cloud upload | required deliverables | 10/1 |
-| P2 | MERT top-layer fine-tuning on B, overnight, 2 seeds, fixed epochs | B accuracy | 9/30 night, only if MuQ and Qwen leave B unchanged |
-| P2 | Refit final models on train + validation | small free gain | 10/1, only if the HW allows it (open question) |
-| P3 | Report-only analyses: A error clustering, per-class confusion, t-SNE of MERT/MuQ | analysis depth | during report writing |
-
-- **Dropped:** more hand-crafted or stem features, more fusion variants, ordinal CNN, A fine-tuning (A's signal is spread over all layers), MuQ-MuLan zero-shot (Qwen covers zero-shot), MARBLE runs.
-
-### Report outline (about 10 slides)
+### Report outline
 
 1. Task, data, metric, chance level.
-2. Method overview: frozen encoders + probes, the out-of-fold selection protocol.
-3. MERT layer sweep (A flat, B upper layers) and the rotary-buffer bug found and fixed (reproducibility).
-4. Final recipes and validation / out-of-fold scores; confusion matrices.
-5. Source separation: which input carries each label; mix-balance trends by decade; stem spectra.
-6. Week-4 U-Net idea: Demucs encoder features as a classifier input (0.85 on A).
-7. Language: Whisper language ID on B (language by market table); why it helps and nothing else does.
-8. Signal outside MERT: standalone, leave-one-out, complementarity on MERT's misses.
-9. Short-Chunk CNN from scratch; ordinal soft labels (A errors are 62% one decade off).
-10. ALM: Qwen2-Audio zero-shot, prompt comparison, label bias, its explanations; comparison with trained models.
-11. Limits: mono, 12 kHz band limit, small validation, label ambiguity.
+2. Method: frozen encoders + probes; the 5-fold selection protocol and why validation alone misled us twice.
+3. MERT layer sweep (A flat, B upper layers); the rotary-buffer bug and fix.
+4. Final recipes, scores, confusion matrices.
+5. Source separation: which input carries each label; mix-balance trends; stem spectra.
+6. Week-4 U-Net idea: Demucs encoder features (0.85 on A alone, redundant with MERT).
+7. Language on B: Whisper language by market; Qwen vs Whisper.
+8. Signal outside MERT: standalone, leave-one-out, rank on MERT's misses; per-class fusion weights.
+9. Ordinal structure of A: error distance, soft labels, why higher eps fails.
+10. ALM: Qwen2-Audio zero-shot, prompts, label bias, explanations; why it complements MERT on A.
+11. Limits: mono, 12 kHz band limit, small validation, label ambiguity, MuQ port caveat.
 
 ### Open decisions for the user
 
-- Refit on train + validation: allowed by the HW?
-- B fine-tuning on 9/30 night: run it, or spend the time on the report?
+- Refit final models on train + validation: allowed by the HW?
+- B fine-tuning on the 9/30 night, or skip for the report?
 
 ## Original plan (9/28), kept for the record
 

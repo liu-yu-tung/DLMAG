@@ -54,6 +54,19 @@ def lang_features(lid: LangID, paths: list[str], batch: int = 16) -> np.ndarray:
     return np.concatenate(out).astype(np.float32)
 
 
+def alm_features(key: str, paths: list[str], device: str) -> np.ndarray:
+    """Zero-shot Qwen2-Audio label log-likelihoods (plain prompt), as in scripts/alm_qwen.py."""
+    from alm_qwen import ANSWERS, PROMPTS, load_model, prompt_text, score_clip, to16
+
+    proc, qwen = load_model(device)
+    prefix = prompt_text(proc, PROMPTS[key]["plain"])
+    answers = [ANSWERS[key][l] for l in final.LABELS[key]]
+    out = np.stack([score_clip(proc, qwen, to16(load_audio(p)), prefix, answers) for p in tqdm(paths, desc="Qwen2-Audio")])
+    del qwen
+    torch.cuda.empty_cache()
+    return out
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--data", type=Path, required=True, help="folder containing dataset_A/ and dataset_B/")
@@ -64,6 +77,8 @@ def main() -> None:
     ap.add_argument("--batch", type=int, default=4)
     ap.add_argument("--jobs", type=int, default=6)
     ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
+    ap.add_argument("--no-alm", action="store_true",
+                    help="skip Qwen2-Audio (needs about 10 GB GPU memory) and use each checkpoint's fallback recipe")
     args = ap.parse_args()
 
     model = load_mert(device=args.device)
@@ -76,15 +91,21 @@ def main() -> None:
             raise ValueError(f"no rows with split={args.split} in dataset_{key}")
         ckpt = final.load(args.ckpt_dir / f"{key}.joblib")
         paths = df["path"].tolist()
-        feats = {"mert_layeravg": mert_features(model, paths, args.batch)}
-        if "hc_c10" in ckpt["recipe"]:
+        recipe = ckpt["recipe"]
+        if args.no_alm and "alm_qwen" in recipe:
+            recipe = ckpt["fallback"]
+        mert = mert_features(model, paths, args.batch)
+        feats = {"mert_layeravg": mert, "mert_ord10": mert}
+        if "alm_qwen" in recipe:
+            feats["alm_qwen"] = alm_features(key, paths, args.device)
+        if "hc_c10" in recipe:
             feats["hc_c10"] = hc_features(paths, args.jobs)
-        if "lang_mixture" in ckpt["recipe"]:
+        if "lang_mixture" in recipe:
             lid = lid or LangID(device=args.device)
             feats["lang_mixture"] = lang_features(lid, paths)
-        probs = final.predict_proba(ckpt, feats)
+        probs = final.predict_proba(ckpt, feats, recipe)
         preds[f"dataset_{key}"] = dict(zip(df["sample_id"].tolist(), top3_labels(probs, ckpt["labels"])))
-        print(f"dataset_{key}: {len(df)} clips, recipe {'+'.join(ckpt['recipe'])}")
+        print(f"dataset_{key}: {len(df)} clips, recipe {'+'.join(recipe)}")
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(preds, indent=2) + "\n")

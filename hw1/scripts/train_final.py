@@ -19,9 +19,24 @@ HW1 = Path(__file__).resolve().parents[1]
 FEAT = HW1 / "features"
 
 
+def alm_scores(key: str, ids: np.ndarray) -> np.ndarray:
+    """Cached Qwen2-Audio plain-prompt label log-likelihoods (scripts/alm_qwen.py), in the given clip order."""
+    rows = {}
+    for f in (f"{key}_alm_plain_train_test.npz", f"{key}_alm_plain_validation.npz"):
+        z = np.load(FEAT / f)
+        rows.update(zip(z["sample_id"].tolist(), z["logp"]))
+    missing = [s for s in ids.tolist() if s not in rows]
+    if missing:
+        raise ValueError(f"{len(missing)} clips have no cached Qwen scores")
+    return np.stack([rows[s] for s in ids.tolist()])
+
+
 def cached(key: str) -> tuple[dict[str, np.ndarray], np.ndarray, np.ndarray, np.ndarray]:
     mert = load_features(FEAT / f"{key}_mertv2.npz")
-    feats = {"mert_layeravg": final.mert_means(mert["feats"])}
+    need = set(final.RECIPES[key] + final.FALLBACK.get(key, []))
+    feats = {c: final.mert_means(mert["feats"]) for c in ("mert_layeravg", "mert_ord10") if c in need}
+    if "alm_qwen" in need:
+        feats["alm_qwen"] = alm_scores(key, mert["sample_id"])
     if "hc_c10" in final.RECIPES[key]:
         ch = load_features(FEAT / f"{key}_handcrafted_chunks.npz")
         if not (ch["sample_id"] == mert["sample_id"]).all():
@@ -51,7 +66,11 @@ def main() -> None:
 
         m = evaluate(final.predict_proba(ckpt, sel("validation")), y[split == "validation"], LABELS[key])
         report[key] = {k: round(m[k], 4) for k in ("top1", "top3", "S")}
-        print(f"{key} {'+'.join(ckpt['recipe'])}: validation {report[key]}")
+        print(f"{key} {'+'.join(ckpt['recipe'])}: validation {report[key]} | temperatures {ckpt['temps']}")
+        if ckpt.get("fallback"):
+            mf = evaluate(final.predict_proba(ckpt, sel("validation"), ckpt["fallback"]), y[split == "validation"], LABELS[key])
+            report[f"{key}_fallback"] = {"recipe": ckpt["fallback"], **{k: round(mf[k], 4) for k in ("top1", "top3", "S")}}
+            print(f"{key} fallback {'+'.join(ckpt['fallback'])}: validation {report[f'{key}_fallback']}")
 
         test = split == "test"
         preds[f"dataset_{key}"] = dict(zip(ids[test].tolist(), top3_labels(final.predict_proba(ckpt, sel("test")), LABELS[key])))
@@ -59,7 +78,7 @@ def main() -> None:
     args.cache_pred.parent.mkdir(parents=True, exist_ok=True)
     args.cache_pred.write_text(json.dumps(preds, indent=2))
     (HW1 / "results" / "final_validation.json").write_text(
-        json.dumps({k: {"recipe": final.RECIPES[k], **v} for k, v in report.items()}, indent=2) + "\n")
+        json.dumps({k: {"recipe": final.RECIPES[k], **v} if k in final.RECIPES else v for k, v in report.items()}, indent=2) + "\n")
     print("checkpoints in", args.ckpt_dir, "| cached-feature predictions in", args.cache_pred)
 
 
