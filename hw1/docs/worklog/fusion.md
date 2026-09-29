@@ -102,3 +102,11 @@ The tables above used the broken MERT features. After re-extraction (`bench_fusi
   - A (529 clips): every component ranks the true class better than uniform (2.95-3.26, CIs exclude 3.5), but top-1 is only 0.17-0.22. They order MERT's misses slightly better without flipping them, so equal-weight fusion barely moves S.
   - B (363 clips): language ranks the true class at 2.68 with top-1 0.31-0.33, twice chance; this is why MERT + language works. Hand-crafted, mix balance and CLAP are at uniform there: their signal is the part MERT already has.
 - **Reading:** the non-MERT signals are real but redundant with MERT, except language on B. On A, hand-crafted and mix balance carry production information the other non-MERT features lack, but it overlaps MERT's. Use the "rank of the true class on MERT's misses" test as the cheap screen for new components (CNN, Demucs latent, Qwen).
+
+## Demucs U-Net encoder features and CNN folds in the screen (2026-09-29, `scripts/cv_demucs.py`, `results/cv_demucs.json`, `scripts/non_mert.py`)
+
+- **Demucs encoder features** (week 4 p.70 idea; 11 encoder layers of Hybrid Demucs, mean+std pooled, per-layer probe, all-layer average): A 0.852 out-of-fold / 0.939 validation, the best non-MERT component; deepest spectral layers fe4/fe5 0.764 alone. B 0.684: weak.
+- **Short-Chunk CNN, 5 folds (seed 0):** A 0.813 out-of-fold.
+- **They subsume the hand-crafted and mix-balance signal:** with Demucs in the pool, hand-crafted's unique contribution falls from +0.071 to about 0; Demucs keeps +0.029 (CI 0.009 to 0.050).
+- **On MERT's A misses** they are the best of all components (true-class rank 2.77 Demucs, 2.80 CNN, against 3.5 uniform; top-1 0.23), yet MERT + either, calibrated, is not better than MERT alone (0.902 and 0.899 vs 0.906). MERT + Demucs + CNN: 0.910 (CI -0.022 to 0.032). Language on A lowers MERT (CI below zero).
+- **Reading:** on A, three independent learned models (MERT, Demucs encoder, CNN) reach 0.81-0.91 and agree too much to help each other by averaging. The ceiling looks like label or data limits (clip-level decade ambiguity) more than missing features.

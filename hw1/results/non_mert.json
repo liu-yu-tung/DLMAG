@@ -8,6 +8,8 @@
       "mixbalance": 0.82,
       "lang_vocals": 0.71,
       "lang_mixture": 0.94,
+      "demucs_all": 0.8,
+      "cnn": 0.34,
       "mert_mixture": 0.42
     },
     "alone": {
@@ -45,99 +47,127 @@
           0.5492,
           0.6194
         ]
+      },
+      "demucs_all": {
+        "S": 0.8519,
+        "ci95": [
+          0.8163,
+          0.8894
+        ]
+      },
+      "cnn": {
+        "S": 0.8134,
+        "ci95": [
+          0.7753,
+          0.8494
+        ]
       }
     },
     "combos_top": [
       {
-        "combo": "handcrafted+mixbalance+lang_mixture",
-        "n": 3,
-        "S_eq": 0.7778,
-        "S_cal": 0.7788
-      },
-      {
-        "combo": "handcrafted+mixbalance+lang_vocals+lang_mixture",
+        "combo": "mixbalance+lang_mixture+demucs_all+cnn",
         "n": 4,
-        "S_eq": 0.7739,
-        "S_cal": 0.7729
+        "S_eq": 0.8587,
+        "S_cal": 0.8791
       },
       {
-        "combo": "handcrafted+clap+mixbalance+lang_mixture",
-        "n": 4,
-        "S_eq": 0.7524,
-        "S_cal": 0.77
-      },
-      {
-        "combo": "handcrafted+clap+mixbalance+lang_vocals",
-        "n": 4,
-        "S_eq": 0.7427,
-        "S_cal": 0.7666
-      },
-      {
-        "combo": "handcrafted+mixbalance",
-        "n": 2,
-        "S_eq": 0.7671,
-        "S_cal": 0.7661
-      },
-      {
-        "combo": "handcrafted+clap+mixbalance+lang_vocals+lang_mixture",
+        "combo": "handcrafted+clap+lang_mixture+demucs_all+cnn",
         "n": 5,
-        "S_eq": 0.75,
-        "S_cal": 0.7646
+        "S_eq": 0.8494,
+        "S_cal": 0.8777
       },
       {
-        "combo": "handcrafted+mixbalance+lang_vocals",
-        "n": 3,
-        "S_eq": 0.7646,
-        "S_cal": 0.7636
+        "combo": "handcrafted+lang_vocals+lang_mixture+demucs_all+cnn",
+        "n": 5,
+        "S_eq": 0.8674,
+        "S_cal": 0.8733
       },
       {
-        "combo": "handcrafted+clap+mixbalance",
+        "combo": "lang_vocals+demucs_all+cnn",
         "n": 3,
-        "S_eq": 0.7359,
-        "S_cal": 0.7549
+        "S_eq": 0.8577,
+        "S_cal": 0.8723
+      },
+      {
+        "combo": "clap+lang_vocals+demucs_all+cnn",
+        "n": 4,
+        "S_eq": 0.8538,
+        "S_cal": 0.8723
+      },
+      {
+        "combo": "clap+demucs_all+cnn",
+        "n": 3,
+        "S_eq": 0.8519,
+        "S_cal": 0.8718
+      },
+      {
+        "combo": "handcrafted+clap+demucs_all+cnn",
+        "n": 4,
+        "S_eq": 0.845,
+        "S_cal": 0.8709
+      },
+      {
+        "combo": "mixbalance+lang_vocals+lang_mixture+demucs_all+cnn",
+        "n": 5,
+        "S_eq": 0.8562,
+        "S_cal": 0.8709
       }
     ],
     "full_pool_cal": {
-      "S": 0.7646,
+      "S": 0.8611,
       "ci95": [
-        0.729,
-        0.8012
+        0.8246,
+        0.8982
       ]
     },
     "leave_one_out_cal": {
       "handcrafted": {
-        "drop_cost": 0.0712,
+        "drop_cost": -0.0034,
         "ci95": [
-          0.0458,
-          0.097
-        ]
-      },
-      "clap": {
-        "drop_cost": -0.0083,
-        "ci95": [
-          -0.0283,
-          0.0112
-        ]
-      },
-      "mixbalance": {
-        "drop_cost": 0.0263,
-        "ci95": [
-          0.0039,
-          0.0492
-        ]
-      },
-      "lang_vocals": {
-        "drop_cost": -0.0054,
-        "ci95": [
-          -0.0249,
+          -0.02,
           0.0136
         ]
       },
-      "lang_mixture": {
-        "drop_cost": -0.0019,
+      "clap": {
+        "drop_cost": -0.0054,
         "ci95": [
-          -0.0229,
+          -0.02,
+          0.0083
+        ]
+      },
+      "mixbalance": {
+        "drop_cost": -0.0093,
+        "ci95": [
+          -0.0253,
+          0.0068
+        ]
+      },
+      "lang_vocals": {
+        "drop_cost": -0.0078,
+        "ci95": [
+          -0.0195,
+          0.0034
+        ]
+      },
+      "lang_mixture": {
+        "drop_cost": 0.0019,
+        "ci95": [
+          -0.0136,
           0.0175
+        ]
+      },
+      "demucs_all": {
+        "drop_cost": 0.0292,
+        "ci95": [
+          0.0093,
+          0.0497
+        ]
+      },
+      "cnn": {
+        "drop_cost": 0.0156,
+        "ci95": [
+          -0.0044,
+          0.0351
         ]
       }
     },
@@ -146,61 +176,136 @@
       "handcrafted": {
         "mean_rank_true": 2.947,
         "rank_ci95": [
-          2.8204,
-          3.0699
+          2.8185,
+          3.0738
         ],
         "top1": 0.1966,
         "top1_ci95": [
-          0.1626,
+          0.1645,
           0.2325
         ]
       },
       "clap": {
         "mean_rank_true": 3.132,
         "rank_ci95": [
-          2.9943,
-          3.276
+          2.9905,
+          3.2741
         ],
         "top1": 0.2079,
         "top1_ci95": [
           0.1739,
-          0.2439
+          0.242
         ]
       },
       "mixbalance": {
         "mean_rank_true": 3.034,
         "rank_ci95": [
-          2.9035,
-          3.1777
+          2.9074,
+          3.1645
         ],
         "top1": 0.2193,
         "top1_ci95": [
-          0.1853,
-          0.2552
+          0.1834,
+          0.2533
         ]
       },
       "lang_vocals": {
         "mean_rank_true": 3.255,
         "rank_ci95": [
-          3.1153,
+          3.1134,
           3.397
         ],
         "top1": 0.2004,
         "top1_ci95": [
-          0.1664,
+          0.1682,
           0.2344
         ]
       },
       "lang_mixture": {
         "mean_rank_true": 3.174,
         "rank_ci95": [
-          3.0397,
-          3.3176
+          3.0473,
+          3.3043
         ],
         "top1": 0.172,
         "top1_ci95": [
           0.1399,
           0.206
+        ]
+      },
+      "demucs_all": {
+        "mean_rank_true": 2.766,
+        "rank_ci95": [
+          2.6352,
+          2.8999
+        ],
+        "top1": 0.2287,
+        "top1_ci95": [
+          0.1928,
+          0.2628
+        ]
+      },
+      "cnn": {
+        "mean_rank_true": 2.803,
+        "rank_ci95": [
+          2.6748,
+          2.9301
+        ],
+        "top1": 0.2325,
+        "top1_ci95": [
+          0.1985,
+          0.2684
+        ]
+      }
+    },
+    "mert_plus_cal": {
+      "handcrafted": {
+        "S": 0.8962,
+        "diff_ci95": [
+          -0.0317,
+          0.0151
+        ]
+      },
+      "clap": {
+        "S": 0.8869,
+        "diff_ci95": [
+          -0.0375,
+          0.001
+        ]
+      },
+      "mixbalance": {
+        "S": 0.8933,
+        "diff_ci95": [
+          -0.0356,
+          0.0112
+        ]
+      },
+      "lang_vocals": {
+        "S": 0.884,
+        "diff_ci95": [
+          -0.04,
+          -0.0039
+        ]
+      },
+      "lang_mixture": {
+        "S": 0.8806,
+        "diff_ci95": [
+          -0.0444,
+          -0.0054
+        ]
+      },
+      "demucs_all": {
+        "S": 0.9016,
+        "diff_ci95": [
+          -0.0273,
+          0.0205
+        ]
+      },
+      "cnn": {
+        "S": 0.8986,
+        "diff_ci95": [
+          -0.0336,
+          0.019
         ]
       }
     }
@@ -214,46 +319,90 @@
       "mixbalance": 0.46,
       "lang_vocals": 1.09,
       "lang_mixture": 1.11,
+      "demucs_all": 0.64,
       "mert_mixture": 0.5
     },
     "alone": {
       "handcrafted": {
         "S": 0.5758,
         "ci95": [
-          0.5382,
+          0.5357,
           0.6165
         ]
       },
       "clap": {
         "S": 0.5157,
         "ci95": [
-          0.4762,
-          0.5564
+          0.4768,
+          0.5539
         ]
       },
       "mixbalance": {
         "S": 0.5169,
         "ci95": [
           0.4787,
-          0.5552
+          0.5583
         ]
       },
       "lang_vocals": {
         "S": 0.9724,
         "ci95": [
           0.9279,
-          1.0132
+          1.0157
         ]
       },
       "lang_mixture": {
         "S": 0.9887,
         "ci95": [
-          0.9474,
-          1.032
+          0.9455,
+          1.0307
+        ]
+      },
+      "demucs_all": {
+        "S": 0.6842,
+        "ci95": [
+          0.6441,
+          0.7256
         ]
       }
     },
     "combos_top": [
+      {
+        "combo": "mixbalance+lang_vocals+lang_mixture+demucs_all",
+        "n": 4,
+        "S_eq": 0.995,
+        "S_cal": 1.0025
+      },
+      {
+        "combo": "handcrafted+mixbalance+lang_vocals+lang_mixture+demucs_all",
+        "n": 5,
+        "S_eq": 0.9843,
+        "S_cal": 1.0013
+      },
+      {
+        "combo": "handcrafted+lang_vocals+lang_mixture+demucs_all",
+        "n": 4,
+        "S_eq": 0.9812,
+        "S_cal": 1.0
+      },
+      {
+        "combo": "lang_vocals+lang_mixture+demucs_all",
+        "n": 3,
+        "S_eq": 0.9975,
+        "S_cal": 0.9981
+      },
+      {
+        "combo": "handcrafted+clap+lang_mixture+demucs_all",
+        "n": 4,
+        "S_eq": 0.8985,
+        "S_cal": 0.9962
+      },
+      {
+        "combo": "handcrafted+clap+mixbalance+lang_vocals+lang_mixture+demucs_all",
+        "n": 6,
+        "S_eq": 0.9574,
+        "S_cal": 0.9962
+      },
       {
         "combo": "handcrafted+lang_vocals+lang_mixture",
         "n": 3,
@@ -261,89 +410,60 @@
         "S_cal": 0.995
       },
       {
-        "combo": "handcrafted+mixbalance+lang_vocals+lang_mixture",
-        "n": 4,
-        "S_eq": 0.9662,
-        "S_cal": 0.9944
-      },
-      {
-        "combo": "mixbalance+lang_vocals+lang_mixture",
+        "combo": "handcrafted+lang_mixture+demucs_all",
         "n": 3,
-        "S_eq": 0.9818,
-        "S_cal": 0.9919
-      },
-      {
-        "combo": "lang_vocals+lang_mixture",
-        "n": 2,
-        "S_eq": 0.9912,
-        "S_cal": 0.9912
-      },
-      {
-        "combo": "clap+mixbalance+lang_vocals+lang_mixture",
-        "n": 4,
-        "S_eq": 0.9624,
-        "S_cal": 0.9906
-      },
-      {
-        "combo": "lang_mixture",
-        "n": 1,
-        "S_eq": 0.9887,
-        "S_cal": 0.9887
-      },
-      {
-        "combo": "handcrafted+clap+lang_vocals+lang_mixture",
-        "n": 4,
         "S_eq": 0.9461,
-        "S_cal": 0.9881
-      },
-      {
-        "combo": "clap+mixbalance+lang_mixture",
-        "n": 3,
-        "S_eq": 0.9079,
-        "S_cal": 0.9868
+        "S_cal": 0.995
       }
     ],
     "full_pool_cal": {
-      "S": 0.9856,
+      "S": 0.9962,
       "ci95": [
-        0.9424,
-        1.027
+        0.9549,
+        1.0382
       ]
     },
     "leave_one_out_cal": {
       "handcrafted": {
-        "drop_cost": -0.005,
+        "drop_cost": 0.0013,
         "ci95": [
-          -0.0226,
-          0.0113
+          -0.0144,
+          0.0163
         ]
       },
       "clap": {
-        "drop_cost": -0.0088,
+        "drop_cost": -0.005,
         "ci95": [
-          -0.0207,
-          0.0038
+          -0.0163,
+          0.0063
         ]
       },
       "mixbalance": {
-        "drop_cost": -0.0025,
+        "drop_cost": 0.0019,
         "ci95": [
-          -0.0163,
-          0.0113
+          -0.0107,
+          0.015
         ]
       },
       "lang_vocals": {
-        "drop_cost": 0.0138,
+        "drop_cost": 0.0088,
         "ci95": [
-          -0.0063,
-          0.0332
+          -0.01,
+          0.0276
         ]
       },
       "lang_mixture": {
-        "drop_cost": 0.0313,
+        "drop_cost": 0.0219,
         "ci95": [
-          0.0119,
-          0.0508
+          0.0031,
+          0.042
+        ]
+      },
+      "demucs_all": {
+        "drop_cost": 0.0107,
+        "ci95": [
+          -0.0075,
+          0.0307
         ]
       }
     },
@@ -352,32 +472,32 @@
       "handcrafted": {
         "mean_rank_true": 3.353,
         "rank_ci95": [
-          3.1873,
-          3.5152
+          3.1846,
+          3.5262
         ],
         "top1": 0.146,
         "top1_ci95": [
-          0.1129,
-          0.1846
+          0.1102,
+          0.1873
         ]
       },
       "clap": {
         "mean_rank_true": 3.32,
         "rank_ci95": [
-          3.1488,
-          3.4959
+          3.1433,
+          3.4904
         ],
         "top1": 0.1818,
         "top1_ci95": [
-          0.1405,
-          0.2205
+          0.1459,
+          0.2231
         ]
       },
       "mixbalance": {
         "mean_rank_true": 3.375,
         "rank_ci95": [
-          3.2066,
-          3.5455
+          3.1956,
+          3.5428
         ],
         "top1": 0.1763,
         "top1_ci95": [
@@ -388,25 +508,81 @@
       "lang_vocals": {
         "mean_rank_true": 2.675,
         "rank_ci95": [
-          2.5178,
-          2.8264
+          2.5233,
+          2.832
         ],
         "top1": 0.3058,
         "top1_ci95": [
-          0.2617,
-          0.3499
+          0.259,
+          0.3526
         ]
       },
       "lang_mixture": {
         "mean_rank_true": 2.691,
         "rank_ci95": [
-          2.5262,
-          2.854
+          2.5289,
+          2.8567
         ],
         "top1": 0.3278,
         "top1_ci95": [
           0.2782,
-          0.3774
+          0.3747
+        ]
+      },
+      "demucs_all": {
+        "mean_rank_true": 3.441,
+        "rank_ci95": [
+          3.2754,
+          3.6116
+        ],
+        "top1": 0.157,
+        "top1_ci95": [
+          0.1212,
+          0.1956
+        ]
+      }
+    },
+    "mert_plus_cal": {
+      "handcrafted": {
+        "S": 0.9568,
+        "diff_ci95": [
+          -0.0294,
+          0.0144
+        ]
+      },
+      "clap": {
+        "S": 0.968,
+        "diff_ci95": [
+          -0.0119,
+          0.0194
+        ]
+      },
+      "mixbalance": {
+        "S": 0.958,
+        "diff_ci95": [
+          -0.0238,
+          0.0113
+        ]
+      },
+      "lang_vocals": {
+        "S": 1.0294,
+        "diff_ci95": [
+          0.0382,
+          0.094
+        ]
+      },
+      "lang_mixture": {
+        "S": 1.0332,
+        "diff_ci95": [
+          0.042,
+          0.0965
+        ]
+      },
+      "demucs_all": {
+        "S": 0.9236,
+        "diff_ci95": [
+          -0.0639,
+          -0.0182
         ]
       }
     }

@@ -44,6 +44,15 @@ def main() -> None:
         if dem.exists():
             z["oof_demucs_all"] = dict(np.load(dem))["oof_demucs_all"]
             pool.append("demucs_all")
+        for tag in ("", "_ord10", "_nogain"):
+            files = [HW1 / "features" / f"{key}_cnn_s0_f{f}{tag}_logp.npz" for f in range(5)]
+            if all(f.exists() for f in files):
+                o = np.zeros_like(z["oof_mert_mixture"])
+                for f in files:
+                    d = np.load(f)
+                    o[d["oof_pos"]] = d["oof"]
+                z[f"oof_cnn{tag}"] = o
+                pool.append(f"cnn{tag}")
         y = z["y_train"]
         oof = {c: norm(z[f"oof_{c}"]) for c in pool + ["mert_mixture"]}
         T = {c: minimize_scalar(lambda t: -norm(oof[c] * t)[np.arange(len(y)), y].mean(), bounds=(0.05, 20),
@@ -75,6 +84,11 @@ def main() -> None:
             hit = (rank == 1).astype(float)
             r["on_mert_wrong"][c] = {"mean_rank_true": round(float(rank.mean()), 3), "rank_ci95": ci(rank.astype(float), rng),
                                      "top1": round(float(hit.mean()), 4), "top1_ci95": ci(hit, rng)}
+        base = per_clip(oof["mert_mixture"], y)
+        r["mert_plus_cal"] = {}
+        for c in pool:
+            f = per_clip(np.mean([cal["mert_mixture"], cal[c]], 0), y)
+            r["mert_plus_cal"][c] = {"S": round(float(f.mean()), 4), "diff_ci95": ci(f - base, rng)}
         report[key] = r
 
         print(f"\n== {key} (n={len(y)}, chance S 0.417; non-MERT pool: {', '.join(pool)})")
@@ -82,6 +96,7 @@ def main() -> None:
         print("full pool (calibrated):", r["full_pool_cal"], "| MERT alone", round(float(per_clip(oof['mert_mixture'], y).mean()), 4))
         print("leave-one-out cost:", {c: (v["drop_cost"], v["ci95"]) for c, v in r["leave_one_out_cal"].items()})
         print("best combos:", [(d["combo"], d["S_eq"], d["S_cal"]) for d in r["combos_top"][:5]])
+        print("MERT + one (calibrated):", {c: (v["S"], v["diff_ci95"]) for c, v in r["mert_plus_cal"].items()})
         print(f"on the {wrong.sum()} clips MERT gets wrong (uniform: rank 3.5, top-1 0.167):",
               {c: (v["mean_rank_true"], v["rank_ci95"], v["top1"]) for c, v in r["on_mert_wrong"].items() if c != "n"})
     (HW1 / "results" / "non_mert.json").write_text(json.dumps(report, indent=2) + "\n")
