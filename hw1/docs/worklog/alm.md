@@ -51,3 +51,12 @@
 - **The most complementary A component so far:** on MERT's 529 misses, true-class rank 2.70-2.75 and top-1 0.28 (Demucs 0.23, CNN 0.23-0.25).
 - **With MERT (calibrated):** + Qwen (label-mean) 0.931 (+0.026, CI -0.001 to 0.052); ordinal MERT (eps 0.1) + Qwen 0.947 (+0.042, CI 0.014 to 0.071), validation 0.977 (current 0.943). This is the first A recipe to clear the rule (>0.03, CI above zero). Caveat: the label-mean correction was picked from two options; eps 0.1 was fixed in advance.
 - **Cost if adopted:** `predict.py` for A would need Qwen2-Audio (16 GB download, bitsandbytes, about 10 GB GPU, about 3 s per clip, about 7 min for 132 test clips). Decision pending.
+
+## Qwen2-Audio internal features + probe (2026-09-29 night, `scripts/extract_qwen_hidden.py`, `scripts/cv_qwenhid.py`, `results/cv_qwenhid.json`)
+
+- One forward pass per clip with the plain question, no answer (about 0.4 s per clip). Three feature families, mean-pooled: audio-encoder layers (`enc`), LLM hidden states over the audio tokens (`llm_audio`), LLM hidden state at the last prompt position (`llm_last`). Standard logistic probe per layer, log-probs averaged over layers 4, 8, ..., 32 (grid fixed in advance). Same 5 train folds; fusion is calibrated equal weight.
+- **A alone (out-of-fold / validation S):** enc 0.852 / 0.939; llm_audio 0.851 / 0.867; llm_last 0.868 / 0.871. All above the zero-shot scores (0.810) but below MERT (0.906). LLM layers 4-12 are best on A; later layers fall off.
+- **A fused (current = ordinal MERT + zero-shot Qwen, 0.947 / 0.977):** best is current + llm_last, 0.958 / 0.966 (+0.011, CI -0.013 to 0.032). Probe in place of the zero-shot scores: 0.926-0.947. None clears the 0.03 bar.
+- **B alone:** enc 0.986 / 1.010 (upper encoder layers 20-32 carry it); llm_audio 0.998 / 0.951; llm_last 1.023 / 0.980. One Qwen probe matches MERT + Whisper language (1.033 out-of-fold here; the Qwen encoder is Whisper-derived, so it carries the language cue).
+- **B fused (current = MERT + language, calibrated here: 1.033 / 1.039):** current + llm_last 1.056 / 1.010 (+0.023, CI 0.003 to 0.044); validation drops. Under the 0.03 bar.
+- No recipe change. Report material: the ALM's internal states are a better A/B feature than its answers, but they overlap with MERT and Whisper.
