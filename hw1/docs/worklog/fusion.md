@@ -63,3 +63,11 @@ The tables above used the broken MERT features. After re-extraction (`bench_fusi
 - **Forced-adjacent top-3** (best run of three neighbouring decades): OOF 0.900 (+0.008), validation 0.955; no clear gain.
 - **Rounded expected decade** as top-1: 0.423, worse than argmax (0.471).
 - **Reading:** the OOF gain (+0.02) is under the 0.03 rule and the validation gain (+0.05) is inside its noise, so smoothing is not adopted yet. Recheck on the fused pool with the cross-validated selection.
+
+## Cross-validated fusion selection (2026-09-29, `scripts/cv_fusion.py`, `results/cv_fusion.json`, `results/tables/cv_fusion_{A,B}.csv`)
+
+- **Method:** 11 components (MERT all-layer average on mixture, vocals, accompaniment, drums, bass, other; hand-crafted; CLAP; mix balance; language ID from vocals and from mixture). Each gets 5-fold out-of-fold log-probs on train (1,026 clips for A, 798 for B) plus a train-only fit for validation. Every fusion of up to 4 components (equal-weight log-prob mean) is scored on the out-of-fold set. Rule: fewest components within 0.03 of the best out-of-fold S. Validation is reported only. Cached in `features/cv_{A,B}.npz`.
+- **B:** the rule picks MERT mixture + language (mixture): out-of-fold S 1.023 against 0.964 for MERT alone, a paired difference of +0.059 (95% bootstrap CI 0.038 to 0.081). Validation agrees in sign (1.069 vs 1.034). Language alone scores 0.989 out-of-fold, higher than MERT alone (0.964). This overturns the earlier validation-only reading ("no gain beyond noise"): on 798 clips the language feature adds real signal.
+- **A:** the rule picks MERT mixture alone (out-of-fold 0.905). The current recipe, MERT + hand-crafted 10 s, scores 0.892 out-of-fold, so hand-crafted adds nothing (difference for mixture alone: +0.013, CI -0.006 to 0.031). The best 4-component subsets reach only 0.916, inside the noise.
+- **Stacker** (logistic regression on all 11 components' out-of-fold log-probs, C=0.01, cross-validated): A 0.945 out-of-fold and 0.966 validation, clearly above every equal-weight subset (0.916); B 1.006 and 1.039, below the B subset. Worth carrying into the next round for A.
+- **Not yet decided:** the submission recipes are unchanged. Next: check the A stacker with a proper nested fit, refit choices (train only vs train+val), and add the CNN and MuQ components tonight.

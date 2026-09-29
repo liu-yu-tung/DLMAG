@@ -1,0 +1,182 @@
+{
+  "A": {
+    "n_train": 1026,
+    "components": [
+      "mert_mixture",
+      "mert_vocals",
+      "mert_accompaniment",
+      "mert_drums",
+      "mert_bass",
+      "mert_other",
+      "handcrafted",
+      "clap",
+      "mixbalance",
+      "lang_vocals",
+      "lang_mixture"
+    ],
+    "best": {
+      "components": "mert_mixture+mert_vocals+mert_accompaniment+mert_drums",
+      "n": 4,
+      "S_oof": 0.9161793372319688,
+      "S_val": 0.9015151515151515
+    },
+    "chosen_by_rule": {
+      "components": "mert_mixture",
+      "n": 1,
+      "S_oof": 0.905458089668616,
+      "S_val": 0.9431818181818182
+    },
+    "current": {
+      "components": "mert_mixture+handcrafted",
+      "S_oof": 0.8923001949317739,
+      "S_val": 0.946969696969697
+    },
+    "chosen_minus_current_oof": {
+      "mean": 0.013157894736842105,
+      "ci95": [
+        -0.005847953216374269,
+        0.03070175438596491
+      ]
+    },
+    "stacker_all_components": {
+      "S_oof": 0.9454191033138402,
+      "S_val": 0.9659090909090909
+    },
+    "singles": {
+      "mert_mixture": {
+        "S_oof": 0.9055,
+        "S_val": 0.9432
+      },
+      "mert_accompaniment": {
+        "S_oof": 0.8743,
+        "S_val": 0.947
+      },
+      "mert_drums": {
+        "S_oof": 0.8294,
+        "S_val": 0.8485
+      },
+      "mert_bass": {
+        "S_oof": 0.8212,
+        "S_val": 0.7765
+      },
+      "mert_vocals": {
+        "S_oof": 0.7958,
+        "S_val": 0.7462
+      },
+      "mert_other": {
+        "S_oof": 0.7315,
+        "S_val": 0.7879
+      },
+      "handcrafted": {
+        "S_oof": 0.7295,
+        "S_val": 0.875
+      },
+      "mixbalance": {
+        "S_oof": 0.6745,
+        "S_val": 0.6402
+      },
+      "lang_mixture": {
+        "S_oof": 0.5838,
+        "S_val": 0.6515
+      },
+      "clap": {
+        "S_oof": 0.5668,
+        "S_val": 0.5606
+      },
+      "lang_vocals": {
+        "S_oof": 0.5395,
+        "S_val": 0.5606
+      }
+    }
+  },
+  "B": {
+    "n_train": 798,
+    "components": [
+      "mert_mixture",
+      "mert_vocals",
+      "mert_accompaniment",
+      "mert_drums",
+      "mert_bass",
+      "mert_other",
+      "handcrafted",
+      "clap",
+      "mixbalance",
+      "lang_vocals",
+      "lang_mixture"
+    ],
+    "best": {
+      "components": "mert_mixture+lang_vocals+lang_mixture",
+      "n": 3,
+      "S_oof": 1.0344611528822054,
+      "S_val": 1.0196078431372548
+    },
+    "chosen_by_rule": {
+      "components": "mert_mixture+lang_mixture",
+      "n": 2,
+      "S_oof": 1.0231829573934836,
+      "S_val": 1.0686274509803921
+    },
+    "current": {
+      "components": "mert_mixture",
+      "S_oof": 0.9642857142857143,
+      "S_val": 1.0343137254901962
+    },
+    "chosen_minus_current_oof": {
+      "mean": 0.05889724310776942,
+      "ci95": [
+        0.03759398496240601,
+        0.08145363408521303
+      ]
+    },
+    "stacker_all_components": {
+      "S_oof": 1.005639097744361,
+      "S_val": 1.0392156862745099
+    },
+    "singles": {
+      "lang_mixture": {
+        "S_oof": 0.9887,
+        "S_val": 0.9804
+      },
+      "lang_vocals": {
+        "S_oof": 0.9724,
+        "S_val": 0.951
+      },
+      "mert_mixture": {
+        "S_oof": 0.9643,
+        "S_val": 1.0343
+      },
+      "mert_vocals": {
+        "S_oof": 0.9242,
+        "S_val": 1.0147
+      },
+      "mert_accompaniment": {
+        "S_oof": 0.7807,
+        "S_val": 0.8186
+      },
+      "mert_other": {
+        "S_oof": 0.7312,
+        "S_val": 0.7451
+      },
+      "mert_drums": {
+        "S_oof": 0.6992,
+        "S_val": 0.6765
+      },
+      "mert_bass": {
+        "S_oof": 0.6648,
+        "S_val": 0.6912
+      },
+      "handcrafted": {
+        "S_oof": 0.5758,
+        "S_val": 0.6176
+      },
+      "mixbalance": {
+        "S_oof": 0.5169,
+        "S_val": 0.6373
+      },
+      "clap": {
+        "S_oof": 0.5157,
+        "S_val": 0.6029
+      }
+    }
+  }
+}
