@@ -4,6 +4,7 @@ A recipe is a list of components; the clip score is the equal-weight mean of com
 (no weight is tuned on validation). Components:
   mert_layeravg  one logistic regression per MERT-v2 layer on the time-mean embedding, log-probs averaged
   hc_c10         logistic regression on hand-crafted features of 10 s chunks, chunk log-probs averaged
+  lang_mixture   logistic regression on Whisper language log-probs of the mixture (100 languages)
 """
 
 from pathlib import Path
@@ -14,7 +15,7 @@ import numpy as np
 from hw1.data import LABELS
 from hw1.probe import fuse_logprobs, make_model
 
-RECIPES = {"A": ["mert_layeravg", "hc_c10"], "B": ["mert_layeravg"]}
+RECIPES = {"A": ["mert_layeravg"], "B": ["mert_layeravg", "lang_mixture"]}
 MERT_DIM = 1024
 HC_CHUNK_S = 10
 EPS = 1e-9
@@ -34,6 +35,8 @@ def fit(key: str, feats: dict[str, np.ndarray], y: np.ndarray) -> dict:
             models[comp] = [make_model("logreg").fit(X[:, l], y) for l in range(X.shape[1])]
         elif comp == "hc_c10":
             models[comp] = make_model("logreg").fit(X.reshape(-1, X.shape[2]), np.repeat(y, X.shape[1]))
+        elif comp == "lang_mixture":
+            models[comp] = make_model("logreg").fit(X, y)
         else:
             raise ValueError(f"unknown component {comp}")
     return {"key": key, "labels": LABELS[key], "recipe": RECIPES[key], "models": models}
@@ -48,6 +51,8 @@ def component_logprobs(ckpt: dict, feats: dict[str, np.ndarray]) -> dict[str, np
         elif comp == "hc_c10":
             n, k, f = X.shape
             out[comp] = np.log(m.predict_proba(X.reshape(-1, f)) + EPS).reshape(n, k, -1).mean(axis=1)
+        elif comp == "lang_mixture":
+            out[comp] = np.log(m.predict_proba(X) + EPS)
     return out
 
 

@@ -19,6 +19,7 @@ from tqdm import tqdm
 from hw1 import final
 from hw1.data import load_audio, load_manifest
 from hw1.features.handcrafted import extract_chunks
+from hw1.features.langid import LangID
 from hw1.features.mert import load_mert, pooled_layers
 from hw1.metrics import top3_labels, validate_predictions
 
@@ -45,6 +46,14 @@ def hc_features(paths: list[str], jobs: int) -> np.ndarray:
     return np.stack(rows)
 
 
+def lang_features(lid: LangID, paths: list[str], batch: int = 16) -> np.ndarray:
+    batches = [paths[i : i + batch] for i in range(0, len(paths), batch)]
+    with ThreadPoolExecutor(4) as pool:
+        out = [lid.log_probs(wavs, 24000) for wavs in tqdm(pool.map(lambda b: [load_audio(p) for p in b], batches),
+                                                         total=len(batches), desc="Whisper language ID")]
+    return np.concatenate(out).astype(np.float32)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--data", type=Path, required=True, help="folder containing dataset_A/ and dataset_B/")
@@ -58,7 +67,7 @@ def main() -> None:
     args = ap.parse_args()
 
     model = load_mert(device=args.device)
-    preds, manifests = {}, {}
+    preds, manifests, lid = {}, {}, None
     for key in args.datasets:
         df = load_manifest(args.data / f"dataset_{key}")
         manifests[f"dataset_{key}"] = df
@@ -70,6 +79,9 @@ def main() -> None:
         feats = {"mert_layeravg": mert_features(model, paths, args.batch)}
         if "hc_c10" in ckpt["recipe"]:
             feats["hc_c10"] = hc_features(paths, args.jobs)
+        if "lang_mixture" in ckpt["recipe"]:
+            lid = lid or LangID(device=args.device)
+            feats["lang_mixture"] = lang_features(lid, paths)
         probs = final.predict_proba(ckpt, feats)
         preds[f"dataset_{key}"] = dict(zip(df["sample_id"].tolist(), top3_labels(probs, ckpt["labels"])))
         print(f"dataset_{key}: {len(df)} clips, recipe {'+'.join(ckpt['recipe'])}")

@@ -2,6 +2,9 @@
 
 Epoch count is fixed in advance (--epochs); validation is logged per epoch for the report curve and never used
 to pick an epoch. Clip score = mean of crop log-softmax over evenly spaced crops. Resumable via --resume.
+
+With --fold k, trains on the train split minus fold k of a 5-fold StratifiedKFold (random_state=0, the same folds as
+scripts/cv_fusion.py) and also saves out-of-fold log-probs for the held-out fold, so the CNN can join the fusion search.
 """
 
 import argparse
@@ -14,6 +17,7 @@ from pathlib import Path
 import numpy as np
 import torch
 import torch.nn.functional as F
+from sklearn.model_selection import StratifiedKFold
 
 from hw1.data import LABELS
 from hw1.features.logmel import HOP, SR
@@ -74,12 +78,15 @@ def main() -> None:
     ap.add_argument("--limit", type=int, default=None, help="use only the first N train clips (dry run)")
     ap.add_argument("--tag", default="", help="suffix for run/output names, e.g. _dryrun")
     ap.add_argument("--resume", action="store_true")
+    ap.add_argument("--fold", type=int, default=None, help="hold out this fold of the train split (0-4)")
+    ap.add_argument("--nfolds", type=int, default=5)
     ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     args = ap.parse_args()
 
     key, labels = args.dataset, LABELS[args.dataset]
     seed_all(args.seed)
-    name = f"cnn_{key}_s{args.seed}{args.tag}"
+    fold_tag = f"_f{args.fold}" if args.fold is not None else ""
+    name = f"cnn_{key}_s{args.seed}{fold_tag}{args.tag}"
     run_dir = HW1 / "runs" / name
     run_dir.mkdir(parents=True, exist_ok=True)
 
@@ -88,6 +95,10 @@ def main() -> None:
     split, sid = meta["split"], meta["sample_id"]
     y = np.array([labels.index(l) if l else -1 for l in meta["label"]])
     tr = np.where(split == "train")[0][: args.limit]
+    ho_pos = None
+    if args.fold is not None:
+        a, ho_pos = list(StratifiedKFold(args.nfolds, shuffle=True, random_state=0).split(tr, y[tr]))[args.fold]
+        ho, tr = tr[ho_pos], tr[a]
     va, te = np.where(split == "validation")[0], np.where(split == "test")[0]
     crop = crop_frames(args.crop_s, SR, HOP)
 
@@ -145,9 +156,12 @@ def main() -> None:
     m = evaluate(np.exp(lp_va), y[va], labels)
     (HW1 / "checkpoints").mkdir(exist_ok=True)
     torch.save(model.state_dict(), HW1 / "checkpoints" / f"{name}.pt")
-    np.savez(HW1 / "features" / f"{key}_cnn_s{args.seed}{args.tag}_logp.npz", val=lp_va, test=lp_te,
-             val_id=sid[va], test_id=sid[te])
-    res = {"dataset": key, "seed": args.seed, "epochs": args.epochs, "crop_s": args.crop_s,
+    extra = {}
+    if ho_pos is not None:
+        extra = {"oof": clip_logprobs(model, mel, ho, crop, args.eval_crops, args.device), "oof_pos": ho_pos, "oof_id": sid[ho]}
+    np.savez(HW1 / "features" / f"{key}_cnn_s{args.seed}{fold_tag}{args.tag}_logp.npz", val=lp_va, test=lp_te,
+             val_id=sid[va], test_id=sid[te], **extra)
+    res = {"dataset": key, "seed": args.seed, "fold": args.fold, "epochs": args.epochs, "crop_s": args.crop_s,
            **{k: round(m[k], 4) for k in ("top1", "top3", "S")}}
     (HW1 / "results" / f"{name}.json").write_text(json.dumps(res, indent=2) + "\n")
     print("final validation", res)

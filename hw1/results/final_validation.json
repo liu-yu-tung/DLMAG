@@ -1,19 +1,19 @@
 {
   "A": {
     "recipe": [
-      "mert_layeravg",
-      "hc_c10"
+      "mert_layeravg"
     ],
     "top1": 0.5,
-    "top3": 0.8939,
-    "S": 0.947
+    "top3": 0.8864,
+    "S": 0.9432
   },
   "B": {
     "recipe": [
-      "mert_layeravg"
+      "mert_layeravg",
+      "lang_mixture"
     ],
-    "top1": 0.6078,
-    "top3": 0.8529,
-    "S": 1.0343
+    "top1": 0.6275,
+    "top3": 0.8824,
+    "S": 1.0686
   }
 }

@@ -27,6 +27,11 @@ def cached(key: str) -> tuple[dict[str, np.ndarray], np.ndarray, np.ndarray, np.
         if not (ch["sample_id"] == mert["sample_id"]).all():
             raise ValueError("clip order differs between MERT and hand-crafted features")
         feats["hc_c10"] = ch[f"c{final.HC_CHUNK_S}"]
+    if "lang_mixture" in final.RECIPES[key]:
+        lid = load_features(FEAT / f"{key}_langid.npz")
+        if not (lid["sample_id"] == mert["sample_id"]).all():
+            raise ValueError("clip order differs between MERT and language-ID features")
+        feats["lang_mixture"] = lid["mixture"]
     y = np.array([LABELS[key].index(l) if l else -1 for l in mert["label"]])
     return feats, y, mert["split"], mert["sample_id"]
 

@@ -78,3 +78,10 @@ The tables above used the broken MERT features. After re-extraction (`bench_fusi
 - **A, most of the stacker gain is not fusion:** a stacker on MERT mixture alone (a 6-to-6 linear remap of its log-probs) gives 0.922/1.023 at C=0.01, against 0.905/0.943 without it. This is a class-bias and neighbour-decade correction, the same effect as the ordinal smoothing (+0.02 out-of-fold).
 - **A, the all-11 stacker is sensitive to C:** 0.932 (C=0.001), 0.945 (0.01), 0.922 (0.1) out-of-fold. It would need Demucs, Whisper, CLAP and hand-crafted features at inference. Not adopted without a nested check.
 - **Temperatures:** fitted on out-of-fold data, the MERT components need T of about 0.4 (over-confident after averaging 24 layer log-probs); language needs about 1.0-1.1. This is why equal-weight fusion lets MERT dominate.
+
+## Nested remap check and recipe change (2026-09-29, `scripts/nested_remap.py`, `results/nested_remap.json`)
+
+- Outer 5-fold on train; the remap (logistic regression on component log-probs, C picked by inner CV from 0.001/0.01/0.1) is fit on inner out-of-fold log-probs only.
+- **A:** MERT alone 0.906 -> remap 0.932 (+0.026, CI -0.003 to 0.056). With hand-crafted: 0.892 -> 0.934. The non-nested stacker (0.945) was optimistic. C was always 0.1, the grid edge.
+- **B:** MERT + language 1.023 equal weight vs 1.020 remap; no gain.
+- **Recipe change (selection rule):** A = MERT all-layer average alone (hand-crafted dropped; remap under the 0.03 bar). B = MERT + Whisper language (mixture), equal weight. Validation: A 0.943, B 1.069. `predict.py` from audio matches the cached-feature predictions on all 234 test clips.
