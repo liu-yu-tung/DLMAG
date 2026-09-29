@@ -36,3 +36,18 @@
 - **Qwen's raw answer follows the sung language** (cross-table of Whisper's top-1 language vs Qwen's zero-shot answer): pt -> Brazil 117/119, de -> Germany 22/24, es -> Spain 71/81, en -> US 384/481 (UK only 57). Differences: Italian is often answered as Spain (22/63), and English is almost always mapped to the US.
 - **Small complementary part:** Qwen + Whisper (calibrated) 1.026 against Qwen 0.998 (+0.028, CI 0.005 to 0.051); once MERT is in the fusion the Qwen gain shrinks to about +0.01 (not significant).
 - Reading: zero-shot Qwen answers the market question mostly by "detect language, map to country, English means US".
+
+## Explanations (2026-09-29 17:23, `scripts/alm_explain.py`, `results/alm_explanations.md`)
+
+- 16 validation clips (per task, 4 ranked right and 4 wrong), plain prompt plus "explain in two or three sentences which sounds led you to that answer", greedy.
+- **The reasons cite a "description" that does not exist** ("the description mentions an 'American' sound", "a '50s vibe'"): the model talks as if it had been given a caption, a trace of its caption-style training data.
+- **Genre-to-era shortcuts:** "country rock -> 1970s", "bossa nova, acoustic guitar -> 1960s", "synthesizers and electronic beats -> 2010s"; on B, "English lyrics, rock -> United States".
+- **Factual and perceptual errors:** "country rock emerged in the mid-1970s"; "'76' is a common British number plate format"; a German clip described as "a female vocalist singing in Spanish"; one answer outside the label set (1950s).
+- **Free answers often disagree with the ranking:** 5 of 16 (for example ranked 1970s but answered 1960s; ranked Germany but answered Spain). The explanations are post-hoc stories, not the mechanism behind the scores.
+
+## A train/test scores and screen (2026-09-29 17:50, `results/cv_alm.json`)
+
+- **Alone (out-of-fold / validation):** raw 0.766 / 0.731; label-mean removed 0.810 / 0.780; remap 0.839 / 0.886.
+- **The most complementary A component so far:** on MERT's 529 misses, true-class rank 2.70-2.75 and top-1 0.28 (Demucs 0.23, CNN 0.23-0.25).
+- **With MERT (calibrated):** + Qwen (label-mean) 0.931 (+0.026, CI -0.001 to 0.052); ordinal MERT (eps 0.1) + Qwen 0.947 (+0.042, CI 0.014 to 0.071), validation 0.977 (current 0.943). This is the first A recipe to clear the rule (>0.03, CI above zero). Caveat: the label-mean correction was picked from two options; eps 0.1 was fixed in advance.
+- **Cost if adopted:** `predict.py` for A would need Qwen2-Audio (16 GB download, bitsandbytes, about 10 GB GPU, about 3 s per clip, about 7 min for 132 test clips). Decision pending.

@@ -49,5 +49,56 @@
         "top1": 0.3223
       }
     }
+  },
+  "A": {
+    "current": {
+      "components": "mert_mixture",
+      "S_oof": 0.9055
+    },
+    "alm_raw": {
+      "alone_S_oof": 0.7656,
+      "alone_S_val": 0.7311,
+      "current_plus_S_oof": 0.9167,
+      "current_plus_S_val": 0.9962,
+      "diff_ci95": [
+        -0.0146,
+        0.037
+      ],
+      "on_mert_misses": {
+        "n": 529,
+        "mean_rank_true": 3.017,
+        "top1": 0.2514
+      }
+    },
+    "alm_prior": {
+      "alone_S_oof": 0.8104,
+      "alone_S_val": 0.7803,
+      "current_plus_S_oof": 0.9313,
+      "current_plus_S_val": 0.9659,
+      "diff_ci95": [
+        -0.0005,
+        0.0531
+      ],
+      "on_mert_misses": {
+        "n": 529,
+        "mean_rank_true": 2.747,
+        "top1": 0.2817
+      }
+    },
+    "alm_remap": {
+      "alone_S_oof": 0.8392,
+      "alone_S_val": 0.8864,
+      "current_plus_S_oof": 0.9288,
+      "current_plus_S_val": 1.0152,
+      "diff_ci95": [
+        -0.0029,
+        0.0487
+      ],
+      "on_mert_misses": {
+        "n": 529,
+        "mean_rank_true": 2.696,
+        "top1": 0.2817
+      }
+    }
   }
 }
