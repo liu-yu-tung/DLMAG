@@ -28,3 +28,11 @@
 - **Alone (out-of-fold / validation S):** raw 0.892 / 0.902; label-mean removed 0.956 / 0.985; logistic remap of the 6 scores 0.998 / 1.000. With a train-fitted remap, zero-shot Qwen matches the trained MERT probe (0.964).
 - **Added to the B recipe** (MERT + language, calibrated, 1.033 out-of-fold): 1.046 (label-mean), 1.043 (remap); CIs -0.009 to 0.036 and -0.011 to 0.030. Not adopted: under the bar, and it would put a 7B model into `predict.py`.
 - **On MERT's 363 misses:** true-class rank 2.63-2.78, top-1 0.32, the same complementarity as Whisper language ID (2.69, 0.33). Qwen's B signal is largely the language signal.
+
+## Qwen vs Whisper language ID on B (2026-09-29 17:10; train out-of-fold, Qwen = fold-fitted remap of its zero-shot scores, Whisper = logistic probe on its 100 language log-probs)
+
+- **Nearly the same information.** Top-1 0.575 for both; same top-1 prediction on 71% of clips; correctness correlation 0.68; each is right alone on only 7.8% of clips, both wrong on 34.7%.
+- **Same per-market profile (top-1):** Brazil 0.88 / 0.88, Italy 0.63 / 0.55, Spain 0.61 / 0.59, US 0.56 / 0.59, UK 0.49 / 0.53, Germany 0.28 / 0.32 (Qwen / Whisper). Both fail where the singing is in English.
+- **Qwen's raw answer follows the sung language** (cross-table of Whisper's top-1 language vs Qwen's zero-shot answer): pt -> Brazil 117/119, de -> Germany 22/24, es -> Spain 71/81, en -> US 384/481 (UK only 57). Differences: Italian is often answered as Spain (22/63), and English is almost always mapped to the US.
+- **Small complementary part:** Qwen + Whisper (calibrated) 1.026 against Qwen 0.998 (+0.028, CI 0.005 to 0.051); once MERT is in the fusion the Qwen gain shrinks to about +0.01 (not significant).
+- Reading: zero-shot Qwen answers the market question mostly by "detect language, map to country, English means US".
