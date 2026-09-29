@@ -92,3 +92,13 @@ The tables above used the broken MERT features. After re-extraction (`bench_fusi
 - Out-of-fold / validation S: baseline 0.906 / 0.943; eps 0.1: 0.916 / 1.011 (diff CI -0.012 to 0.032); eps 0.05: 0.924 / 0.989 (CI 0.002 to 0.034); eps 0.2: 0.918 / 1.000.
 - Mean error falls from 0.88 to about 0.81 decades. The gain is small (+0.01 to +0.02 out-of-fold) but has the same sign for every eps and on validation, and costs nothing at inference (same model shape).
 - Not adopted yet: under the 0.03 bar. Recheck together with the CNN folds and the remap. Out-of-fold log-probs saved in `features/cv_A_ordinal.npz`.
+
+## Signal outside MERT (2026-09-29, `scripts/non_mert.py`, `results/non_mert.json`; cached out-of-fold log-probs, no training)
+
+- **Every non-MERT component is above chance** (S 0.417; all bootstrap CIs exclude it). A: hand-crafted 0.730, mix balance 0.675, language (mixture) 0.584, CLAP 0.567, language (vocals) 0.540. B: language (mixture) 0.989, language (vocals) 0.972, hand-crafted 0.576, mix balance 0.517, CLAP 0.516.
+- **Language on A is above chance although almost every clip is English.** The 100-dim Whisper distribution must be reading recording or vocal character, not the language itself.
+- **Unique contribution inside the non-MERT pool** (leave-one-out from the calibrated full fusion): A: hand-crafted +0.071 (CI 0.046 to 0.097) and mix balance +0.026 (0.004 to 0.049) are unique; CLAP and language are redundant. B: only language (mixture) is unique (+0.031).
+- **Complementarity with MERT** (clips MERT gets wrong; uniform rank of the true class is 3.5, top-1 chance 0.167):
+  - A (529 clips): every component ranks the true class better than uniform (2.95-3.26, CIs exclude 3.5), but top-1 is only 0.17-0.22. They order MERT's misses slightly better without flipping them, so equal-weight fusion barely moves S.
+  - B (363 clips): language ranks the true class at 2.68 with top-1 0.31-0.33, twice chance; this is why MERT + language works. Hand-crafted, mix balance and CLAP are at uniform there: their signal is the part MERT already has.
+- **Reading:** the non-MERT signals are real but redundant with MERT, except language on B. On A, hand-crafted and mix balance carry production information the other non-MERT features lack, but it overlaps MERT's. Use the "rank of the true class on MERT's misses" test as the cheap screen for new components (CNN, Demucs latent, Qwen).

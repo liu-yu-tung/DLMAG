@@ -1,0 +1,414 @@
+{
+  "A": {
+    "n": 1026,
+    "chance_S": 0.4167,
+    "temperature": {
+      "handcrafted": 0.65,
+      "clap": 0.27,
+      "mixbalance": 0.82,
+      "lang_vocals": 0.71,
+      "lang_mixture": 0.94,
+      "mert_mixture": 0.42
+    },
+    "alone": {
+      "handcrafted": {
+        "S": 0.7295,
+        "ci95": [
+          0.6939,
+          0.7666
+        ]
+      },
+      "clap": {
+        "S": 0.5668,
+        "ci95": [
+          0.5317,
+          0.6033
+        ]
+      },
+      "mixbalance": {
+        "S": 0.6745,
+        "ci95": [
+          0.6374,
+          0.7105
+        ]
+      },
+      "lang_vocals": {
+        "S": 0.5395,
+        "ci95": [
+          0.5029,
+          0.5731
+        ]
+      },
+      "lang_mixture": {
+        "S": 0.5838,
+        "ci95": [
+          0.5492,
+          0.6194
+        ]
+      }
+    },
+    "combos_top": [
+      {
+        "combo": "handcrafted+mixbalance+lang_mixture",
+        "n": 3,
+        "S_eq": 0.7778,
+        "S_cal": 0.7788
+      },
+      {
+        "combo": "handcrafted+mixbalance+lang_vocals+lang_mixture",
+        "n": 4,
+        "S_eq": 0.7739,
+        "S_cal": 0.7729
+      },
+      {
+        "combo": "handcrafted+clap+mixbalance+lang_mixture",
+        "n": 4,
+        "S_eq": 0.7524,
+        "S_cal": 0.77
+      },
+      {
+        "combo": "handcrafted+clap+mixbalance+lang_vocals",
+        "n": 4,
+        "S_eq": 0.7427,
+        "S_cal": 0.7666
+      },
+      {
+        "combo": "handcrafted+mixbalance",
+        "n": 2,
+        "S_eq": 0.7671,
+        "S_cal": 0.7661
+      },
+      {
+        "combo": "handcrafted+clap+mixbalance+lang_vocals+lang_mixture",
+        "n": 5,
+        "S_eq": 0.75,
+        "S_cal": 0.7646
+      },
+      {
+        "combo": "handcrafted+mixbalance+lang_vocals",
+        "n": 3,
+        "S_eq": 0.7646,
+        "S_cal": 0.7636
+      },
+      {
+        "combo": "handcrafted+clap+mixbalance",
+        "n": 3,
+        "S_eq": 0.7359,
+        "S_cal": 0.7549
+      }
+    ],
+    "full_pool_cal": {
+      "S": 0.7646,
+      "ci95": [
+        0.729,
+        0.8012
+      ]
+    },
+    "leave_one_out_cal": {
+      "handcrafted": {
+        "drop_cost": 0.0712,
+        "ci95": [
+          0.0458,
+          0.097
+        ]
+      },
+      "clap": {
+        "drop_cost": -0.0083,
+        "ci95": [
+          -0.0283,
+          0.0112
+        ]
+      },
+      "mixbalance": {
+        "drop_cost": 0.0263,
+        "ci95": [
+          0.0039,
+          0.0492
+        ]
+      },
+      "lang_vocals": {
+        "drop_cost": -0.0054,
+        "ci95": [
+          -0.0249,
+          0.0136
+        ]
+      },
+      "lang_mixture": {
+        "drop_cost": -0.0019,
+        "ci95": [
+          -0.0229,
+          0.0175
+        ]
+      }
+    },
+    "on_mert_wrong": {
+      "n": 529,
+      "handcrafted": {
+        "mean_rank_true": 2.947,
+        "rank_ci95": [
+          2.8204,
+          3.0699
+        ],
+        "top1": 0.1966,
+        "top1_ci95": [
+          0.1626,
+          0.2325
+        ]
+      },
+      "clap": {
+        "mean_rank_true": 3.132,
+        "rank_ci95": [
+          2.9943,
+          3.276
+        ],
+        "top1": 0.2079,
+        "top1_ci95": [
+          0.1739,
+          0.2439
+        ]
+      },
+      "mixbalance": {
+        "mean_rank_true": 3.034,
+        "rank_ci95": [
+          2.9035,
+          3.1777
+        ],
+        "top1": 0.2193,
+        "top1_ci95": [
+          0.1853,
+          0.2552
+        ]
+      },
+      "lang_vocals": {
+        "mean_rank_true": 3.255,
+        "rank_ci95": [
+          3.1153,
+          3.397
+        ],
+        "top1": 0.2004,
+        "top1_ci95": [
+          0.1664,
+          0.2344
+        ]
+      },
+      "lang_mixture": {
+        "mean_rank_true": 3.174,
+        "rank_ci95": [
+          3.0397,
+          3.3176
+        ],
+        "top1": 0.172,
+        "top1_ci95": [
+          0.1399,
+          0.206
+        ]
+      }
+    }
+  },
+  "B": {
+    "n": 798,
+    "chance_S": 0.4167,
+    "temperature": {
+      "handcrafted": 0.38,
+      "clap": 0.2,
+      "mixbalance": 0.46,
+      "lang_vocals": 1.09,
+      "lang_mixture": 1.11,
+      "mert_mixture": 0.5
+    },
+    "alone": {
+      "handcrafted": {
+        "S": 0.5758,
+        "ci95": [
+          0.5382,
+          0.6165
+        ]
+      },
+      "clap": {
+        "S": 0.5157,
+        "ci95": [
+          0.4762,
+          0.5564
+        ]
+      },
+      "mixbalance": {
+        "S": 0.5169,
+        "ci95": [
+          0.4787,
+          0.5552
+        ]
+      },
+      "lang_vocals": {
+        "S": 0.9724,
+        "ci95": [
+          0.9279,
+          1.0132
+        ]
+      },
+      "lang_mixture": {
+        "S": 0.9887,
+        "ci95": [
+          0.9474,
+          1.032
+        ]
+      }
+    },
+    "combos_top": [
+      {
+        "combo": "handcrafted+lang_vocals+lang_mixture",
+        "n": 3,
+        "S_eq": 0.9655,
+        "S_cal": 0.995
+      },
+      {
+        "combo": "handcrafted+mixbalance+lang_vocals+lang_mixture",
+        "n": 4,
+        "S_eq": 0.9662,
+        "S_cal": 0.9944
+      },
+      {
+        "combo": "mixbalance+lang_vocals+lang_mixture",
+        "n": 3,
+        "S_eq": 0.9818,
+        "S_cal": 0.9919
+      },
+      {
+        "combo": "lang_vocals+lang_mixture",
+        "n": 2,
+        "S_eq": 0.9912,
+        "S_cal": 0.9912
+      },
+      {
+        "combo": "clap+mixbalance+lang_vocals+lang_mixture",
+        "n": 4,
+        "S_eq": 0.9624,
+        "S_cal": 0.9906
+      },
+      {
+        "combo": "lang_mixture",
+        "n": 1,
+        "S_eq": 0.9887,
+        "S_cal": 0.9887
+      },
+      {
+        "combo": "handcrafted+clap+lang_vocals+lang_mixture",
+        "n": 4,
+        "S_eq": 0.9461,
+        "S_cal": 0.9881
+      },
+      {
+        "combo": "clap+mixbalance+lang_mixture",
+        "n": 3,
+        "S_eq": 0.9079,
+        "S_cal": 0.9868
+      }
+    ],
+    "full_pool_cal": {
+      "S": 0.9856,
+      "ci95": [
+        0.9424,
+        1.027
+      ]
+    },
+    "leave_one_out_cal": {
+      "handcrafted": {
+        "drop_cost": -0.005,
+        "ci95": [
+          -0.0226,
+          0.0113
+        ]
+      },
+      "clap": {
+        "drop_cost": -0.0088,
+        "ci95": [
+          -0.0207,
+          0.0038
+        ]
+      },
+      "mixbalance": {
+        "drop_cost": -0.0025,
+        "ci95": [
+          -0.0163,
+          0.0113
+        ]
+      },
+      "lang_vocals": {
+        "drop_cost": 0.0138,
+        "ci95": [
+          -0.0063,
+          0.0332
+        ]
+      },
+      "lang_mixture": {
+        "drop_cost": 0.0313,
+        "ci95": [
+          0.0119,
+          0.0508
+        ]
+      }
+    },
+    "on_mert_wrong": {
+      "n": 363,
+      "handcrafted": {
+        "mean_rank_true": 3.353,
+        "rank_ci95": [
+          3.1873,
+          3.5152
+        ],
+        "top1": 0.146,
+        "top1_ci95": [
+          0.1129,
+          0.1846
+        ]
+      },
+      "clap": {
+        "mean_rank_true": 3.32,
+        "rank_ci95": [
+          3.1488,
+          3.4959
+        ],
+        "top1": 0.1818,
+        "top1_ci95": [
+          0.1405,
+          0.2205
+        ]
+      },
+      "mixbalance": {
+        "mean_rank_true": 3.375,
+        "rank_ci95": [
+          3.2066,
+          3.5455
+        ],
+        "top1": 0.1763,
+        "top1_ci95": [
+          0.1377,
+          0.2149
+        ]
+      },
+      "lang_vocals": {
+        "mean_rank_true": 2.675,
+        "rank_ci95": [
+          2.5178,
+          2.8264
+        ],
+        "top1": 0.3058,
+        "top1_ci95": [
+          0.2617,
+          0.3499
+        ]
+      },
+      "lang_mixture": {
+        "mean_rank_true": 2.691,
+        "rank_ci95": [
+          2.5262,
+          2.854
+        ],
+        "top1": 0.3278,
+        "top1_ci95": [
+          0.2782,
+          0.3774
+        ]
+      }
+    }
+  }
+}
