@@ -92,6 +92,8 @@ The tables above used the broken MERT features. After re-extraction (`bench_fusi
 - Out-of-fold / validation S: baseline 0.906 / 0.943; eps 0.1: 0.916 / 1.011 (diff CI -0.012 to 0.032); eps 0.05: 0.924 / 0.989 (CI 0.002 to 0.034); eps 0.2: 0.918 / 1.000.
 - Mean error falls from 0.88 to about 0.81 decades. The gain is small (+0.01 to +0.02 out-of-fold) but has the same sign for every eps and on validation, and costs nothing at inference (same model shape).
 - Not adopted yet: under the 0.03 bar. Recheck together with the CNN folds and the remap. Out-of-fold log-probs saved in `features/cv_A_ordinal.npz`.
+- **Wider sweep (same folds, same file):** out-of-fold S / validation S. eps 0.25: 0.898 / 1.015; eps 0.3: 0.887 / 0.947. Gaussian targets over decade distance, sigma 0.5: 0.911 / 1.027; sigma 0.75: 0.916 / 0.989; sigma 1.0: 0.902 / 0.951.
+- Out-of-fold top-3 stays at 0.864-0.872 for every variant; stronger smoothing only lowers top-1 (0.489 at eps 0.05 to 0.453 at eps 0.3). Higher eps does not help S. None beats eps 0.05-0.2, so eps 0.1 (fixed in advance) stays.
 
 ## Signal outside MERT (2026-09-29, `scripts/non_mert.py`, `results/non_mert.json`; cached out-of-fold log-probs, no training)
 
