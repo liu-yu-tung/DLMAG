@@ -35,5 +35,60 @@
       -0.018,
       0.0385
     ]
+  },
+  "eps0.25": {
+    "S_oof": 0.8981,
+    "S_val": 1.0152,
+    "top1_oof": 0.4639,
+    "top3_oof": 0.8684,
+    "mean_abs_decades_oof": 0.83,
+    "diff_vs_eps0_ci95": [
+      -0.0439,
+      0.0253
+    ]
+  },
+  "eps0.3": {
+    "S_oof": 0.8869,
+    "S_val": 0.947,
+    "top1_oof": 0.4532,
+    "top3_oof": 0.8674,
+    "mean_abs_decades_oof": 0.839,
+    "diff_vs_eps0_ci95": [
+      -0.0565,
+      0.0205
+    ]
+  },
+  "gauss0.5": {
+    "S_oof": 0.9108,
+    "S_val": 1.0265,
+    "top1_oof": 0.4786,
+    "top3_oof": 0.8645,
+    "mean_abs_decades_oof": 0.818,
+    "diff_vs_eps0_ci95": [
+      -0.0166,
+      0.0258
+    ]
+  },
+  "gauss0.75": {
+    "S_oof": 0.9157,
+    "S_val": 0.9886,
+    "top1_oof": 0.4805,
+    "top3_oof": 0.8704,
+    "mean_abs_decades_oof": 0.808,
+    "diff_vs_eps0_ci95": [
+      -0.021,
+      0.0419
+    ]
+  },
+  "gauss1.0": {
+    "S_oof": 0.902,
+    "S_val": 0.9508,
+    "top1_oof": 0.4659,
+    "top3_oof": 0.8723,
+    "mean_abs_decades_oof": 0.795,
+    "diff_vs_eps0_ci95": [
+      -0.0375,
+      0.0322
+    ]
   }
 }
