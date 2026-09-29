@@ -71,3 +71,10 @@ The tables above used the broken MERT features. After re-extraction (`bench_fusi
 - **A:** the rule picks MERT mixture alone (out-of-fold 0.905). The current recipe, MERT + hand-crafted 10 s, scores 0.892 out-of-fold, so hand-crafted adds nothing (difference for mixture alone: +0.013, CI -0.006 to 0.031). The best 4-component subsets reach only 0.916, inside the noise.
 - **Stacker** (logistic regression on all 11 components' out-of-fold log-probs, C=0.01, cross-validated): A 0.945 out-of-fold and 0.966 validation, clearly above every equal-weight subset (0.916); B 1.006 and 1.039, below the B subset. Worth carrying into the next round for A.
 - **Not yet decided:** the submission recipes are unchanged. Next: check the A stacker with a proper nested fit, refit choices (train only vs train+val), and add the CNN and MuQ components tonight.
+
+## Stacker robustness check (2026-09-29, `scripts/check_stacker.py`; numbers are out-of-fold / validation S)
+
+- **B, MERT + language (mixture) holds under every fusion method:** equal weight 1.023/1.069, temperature-calibrated 1.033/1.039, stacker 0.99-1.01. MERT alone is 0.964/1.034. Adopt.
+- **A, most of the stacker gain is not fusion:** a stacker on MERT mixture alone (a 6-to-6 linear remap of its log-probs) gives 0.922/1.023 at C=0.01, against 0.905/0.943 without it. This is a class-bias and neighbour-decade correction, the same effect as the ordinal smoothing (+0.02 out-of-fold).
+- **A, the all-11 stacker is sensitive to C:** 0.932 (C=0.001), 0.945 (0.01), 0.922 (0.1) out-of-fold. It would need Demucs, Whisper, CLAP and hand-crafted features at inference. Not adopted without a nested check.
+- **Temperatures:** fitted on out-of-fold data, the MERT components need T of about 0.4 (over-confident after averaging 24 layer log-probs); language needs about 1.0-1.1. This is why equal-weight fusion lets MERT dominate.
