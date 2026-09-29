@@ -142,3 +142,13 @@ The tables above used the broken MERT features. After re-extraction (`bench_fusi
 - **Language-gated weights on B** (English vs non-English by Whisper's top-1): 1.033, no gain.
 - **Learned weights are interpretable (A, no shrinkage):** hand-crafted is trusted only for 2000s and 2010s (0.29-0.30, slightly negative for 1960s-1980s); Demucs most for 1970s (0.58) and not for 2000s (-0.18); MERT most for 1960s-1970s. B: language weight is about uniform (0.66-1.06), MERT lowest for UK (0.14).
 - Reading: per-class trust exists but the conditional-independence product (equal weights after calibration) already captures nearly all of it.
+
+## Why validation sits above the 5-fold scores (2026-09-30, `scripts/val_gap.py`)
+
+- MERT probes, 5-fold S → validation S of the five 80%-train fold models (mean, range) → validation S of the full-train model:
+  - A layer average: 0.906 → 0.925 (0.879-0.966) → 0.943.
+  - A ordinal: 0.916 → 0.968 (0.947-0.981) → 1.011.
+  - B layer average: 0.964 → 1.001 (0.980-1.029) → 1.034.
+- **Training-set size** accounts for about half of the gap: the full-train model sees 25% more clips (+0.018 to +0.043).
+- **Validation noise:** bootstrap SE 0.048-0.061, and the fold models alone vary by up to 0.09 on the same validation clips. The remaining +0.02 to +0.05 is within one SE, so a split difference cannot be separated from noise.
+- **Uneven across components:** components with no training (zero-shot Qwen: A 0.766 / 0.731) or a small input (Whisper language, B 0.989 / 0.980) get no size bonus. Validation therefore favours MERT-heavy recipes, which is why the A fallback (1.011) looks better than the recipe with Qwen (0.977) on validation while the 5-fold comparison says the opposite.
