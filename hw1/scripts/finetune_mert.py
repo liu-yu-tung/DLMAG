@@ -19,7 +19,7 @@ from pathlib import Path
 import numpy as np
 import torch
 import torch.nn.functional as F
-from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import StratifiedGroupKFold, StratifiedKFold
 from torch import nn
 
 from hw1.data import LABELS, load_audio, load_manifest
@@ -128,6 +128,8 @@ def main() -> None:
     ap.add_argument("--batch", type=int, default=8)
     ap.add_argument("--eps", type=float, default=None, help="ordinal soft-label eps; default 0.1 for A, 0 for B")
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--grouped", action="store_true",
+                    help="5 folds from scripts/grouped_cv.py (features/cvg_{key}.npz), no full fit; tag ..._g_s{seed}")
     args = ap.parse_args()
     key = args.dataset
     if args.cache:
@@ -144,11 +146,22 @@ def main() -> None:
     tr, va, te = (np.where(split == s)[0] for s in ("train", "validation", "test"))
     base = load_mert(device="cpu")
     k_cls = len(LABELS[key])
-    tag = f"ft_{key}_L{args.from_layer}_s{args.seed}"
+    tag = f"ft_{key}_L{args.from_layer}{'_g' if args.grouped else ''}_s{args.seed}"
     out_path = FEAT / f"{tag}.npz"
     res = dict(np.load(out_path)) if out_path.exists() else {}
     folds = list(StratifiedKFold(5, shuffle=True, random_state=0).split(tr, y[tr]))
+    if args.grouped:
+        ref = np.load(FEAT / f"{key}_mertv2.npz")
+        ref_tr = ref["sample_id"][ref["split"] == "train"]
+        g = np.load(FEAT / f"cvg_{key}.npz")
+        pos = {s: i for i, s in enumerate(ids[tr])}
+        to_df = np.array([pos[s] for s in ref_tr])
+        assert (g["y_train"] == y[tr][to_df]).all()
+        folds = [(to_df[a], to_df[b]) for a, b in
+                 StratifiedGroupKFold(5, shuffle=True, random_state=0).split(ref_tr, g["y_train"], g["grouped_groups"])]
     todo = list(range(5)) + ["full"] if args.folds == "all" else ["full" if args.folds == "full" else int(args.folds)]
+    if args.grouped:
+        todo = [f for f in todo if f != "full"]
     for f in todo:
         t0 = time.time()
         if f == "full":

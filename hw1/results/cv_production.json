@@ -1,0 +1,145 @@
+{
+ "alone": {
+  "handcrafted": {
+   "stratified": 0.7295,
+   "grouped": 0.7203,
+   "val": 0.875
+  },
+  "M": {
+   "stratified": 0.598,
+   "grouped": 0.5877,
+   "val": 0.6629
+  },
+  "H": {
+   "stratified": 0.5882,
+   "grouped": 0.5789,
+   "val": 0.5189
+  },
+  "MH": {
+   "stratified": 0.6769,
+   "grouped": 0.6774,
+   "val": 0.6742
+  }
+ },
+ "R": {
+  "stratified": 0.9474,
+  "grouped": 0.9142,
+  "val": 0.9773
+ },
+ "R+hc": {
+  "stratified": 0.9508,
+  "grouped": 0.9327,
+  "val": 0.9924,
+  "stratified_diff": 0.0034,
+  "stratified_ci95": [
+   -0.0166,
+   0.0244
+  ],
+  "grouped_diff": 0.0185,
+  "grouped_ci95": [
+   -0.0019,
+   0.04
+  ],
+  "val_diff": 0.0152
+ },
+ "over_R+hc": {
+  "M": {
+   "stratified": 0.9522,
+   "grouped": 0.9337,
+   "val": 1.0417,
+   "stratified_diff": 0.0015,
+   "stratified_ci95": [
+    -0.0141,
+    0.0166
+   ],
+   "grouped_diff": 0.001,
+   "grouped_ci95": [
+    -0.0146,
+    0.0175
+   ],
+   "val_diff": 0.0492
+  },
+  "H": {
+   "stratified": 0.9454,
+   "grouped": 0.9347,
+   "val": 0.9432,
+   "stratified_diff": -0.0054,
+   "stratified_ci95": [
+    -0.019,
+    0.0093
+   ],
+   "grouped_diff": 0.0019,
+   "grouped_ci95": [
+    -0.0127,
+    0.0175
+   ],
+   "val_diff": -0.0492
+  },
+  "MH": {
+   "stratified": 0.9537,
+   "grouped": 0.9396,
+   "val": 0.9848,
+   "stratified_diff": 0.0029,
+   "stratified_ci95": [
+    -0.0156,
+    0.0205
+   ],
+   "grouped_diff": 0.0068,
+   "grouped_ci95": [
+    -0.0107,
+    0.0239
+   ],
+   "val_diff": -0.0076
+  }
+ },
+ "over_R": {
+  "M": {
+   "stratified": 0.942,
+   "grouped": 0.9347,
+   "val": 0.9697,
+   "stratified_diff": -0.0054,
+   "stratified_ci95": [
+    -0.0253,
+    0.0136
+   ],
+   "grouped_diff": 0.0205,
+   "grouped_ci95": [
+    0.0024,
+    0.0395
+   ],
+   "val_diff": -0.0076
+  },
+  "H": {
+   "stratified": 0.9449,
+   "grouped": 0.9103,
+   "val": 0.9545,
+   "stratified_diff": -0.0024,
+   "stratified_ci95": [
+    -0.018,
+    0.0136
+   ],
+   "grouped_diff": -0.0039,
+   "grouped_ci95": [
+    -0.02,
+    0.0127
+   ],
+   "val_diff": -0.0227
+  },
+  "MH": {
+   "stratified": 0.9576,
+   "grouped": 0.9293,
+   "val": 0.9697,
+   "stratified_diff": 0.0102,
+   "stratified_ci95": [
+    -0.0088,
+    0.0317
+   ],
+   "grouped_diff": 0.0151,
+   "grouped_ci95": [
+    -0.0058,
+    0.0351
+   ],
+   "val_diff": -0.0076
+  }
+ }
+}

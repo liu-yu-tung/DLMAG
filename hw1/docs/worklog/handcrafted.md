@@ -100,3 +100,16 @@ Figures in `results/`:
   - Energy is flat (about 0.76-0.78) and rhythm stays near chance at every length.
   - Heatmap: `results/chunks_A_group_length.png`.
 - **Caveat:** the 30 s → 10 s gain (+0.08) is just above the roughly ±0.05 validation noise, but it holds for every group except rhythm, which makes it believable.
+
+## Production features: mastering and 5-12 kHz shape (2026-09-30, `src/hw1/features/production.py`, `scripts/extract_production.py`, `scripts/cv_production.py`, `results/cv_production.json`)
+
+- **Why:** per-class fusion weights trust hand-crafted only for the 2000s-2010s, and the main A confusions are 2000s-2010s and 1960s-1970s. The existing features see mastering and the high band only through coarse means.
+- **Features (27, list fixed before scoring), A only, 31 s for 1290 clips:**
+  - `master_*` (13): short-term level percentiles and spread (400 ms RMS, unweighted), crest factor per 50 ms frame, peak dBFS, PAPR, full-scale and near-peak sample shares, flat-topped peak runs per second.
+  - `high_*` (14): long-term spectrum relative to 1-4 kHz: 5 band levels from 5 to 12 kHz, slopes 2-5 / 5-12 / 8-12 kHz, the last frequency within 30/40/50 dB, 5-12 kHz flatness, spread and 10th percentile of the 7-12 kHz frame share.
+  - Most clips peak at exactly 0 dBFS (the data look peak-normalized), so full-scale and near-peak shares nearly coincide; `high_edge_50db_khz` is 12 kHz on most clips.
+- **Results, stratified / grouped / validation S (chance 0.417):**
+  - Alone: hand-crafted 0.730 / 0.720 / 0.875; M 0.598 / 0.588 / 0.663; H 0.588 / 0.579 / 0.519; MH 0.677 / 0.677 / 0.674.
+  - Added to R + hand-crafted (R = ordinal MERT + Qwen zero-shot; 0.951 / 0.933 / 0.992): M +0.002 / +0.001 / +0.049; H -0.005 / +0.002 / -0.049; MH +0.003 / +0.007 [-0.011, 0.024] / -0.008.
+  - In place of hand-crafted, added to R (0.947 / 0.914 / 0.977): M -0.005 / +0.021 [0.002, 0.040] / -0.008; H -0.002 / -0.004 / -0.023; MH +0.010 / +0.015 / -0.008.
+- **Reading:** both groups carry era signal (MH alone about the level of the mix-balance features) but add nothing on top of the existing hand-crafted set; on the 5-fold scores every gain is under +0.01. The ±0.05 validation swings are one SE. The existing energy group (RMS, dynamic range, band ratios) already holds most of it. No change.
