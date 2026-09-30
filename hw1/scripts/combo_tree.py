@@ -8,7 +8,9 @@ Routes, all scored the same way:
   level 2+ greedy: the best combination so far (by out-of-fold S) + each remaining component, until all are in
   no MERT  the same greedy route started from the best non-MERT component
 Greedy picks use the out-of-fold set, so later levels are slightly optimistic. Each fused row has the paired
-bootstrap CI of its difference to the combination it extends. Writes results/combo_tree.json.
+bootstrap CI of its difference to the combination it extends. Rows whose components all have grouped out-of-fold
+log-probs (features/cvg_{key}.npz, scripts/grouped_cv.py) also get the grouped 5-fold S ("grp") and its difference.
+Writes results/combo_tree.json.
 """
 
 import json
@@ -79,11 +81,18 @@ def main() -> None:
     out = {}
     for key in ("A", "B"):
         comp, ytr, yva = load(key)
+
+        def temp(o):
+            return minimize_scalar(lambda t: -norm(o * t)[np.arange(len(ytr)), ytr].mean(), bounds=(0.05, 20), method="bounded").x
         cal = {}
         for c, (o, v) in comp.items():
             o, v = norm(o), norm(v)
-            t = minimize_scalar(lambda t: -norm(o * t)[np.arange(len(ytr)), ytr].mean(), bounds=(0.05, 20), method="bounded").x
+            t = temp(o)
             cal[c] = (norm(o * t), norm(v * t))
+        g = np.load(FEAT / f"cvg_{key}.npz")
+        assert (g["y_train"] == ytr).all()
+        gcal = {k[8:]: norm(norm(g[k]) * temp(norm(g[k]))) for k in g.files if k.startswith("grouped_") and k != "grouped_groups"}
+        rng_g = np.random.default_rng(1)
 
         def score(cs):
             po = per_clip(np.mean([cal[c][0] for c in cs], 0), ytr)
@@ -97,6 +106,12 @@ def main() -> None:
                 bo, _ = score(parent)
                 r["diff"] = round(float(po.mean() - bo.mean()), 4)
                 r["ci95"] = ci(po - bo, rng)
+            if all(c in gcal for c in cs):
+                pg = per_clip(np.mean([gcal[c] for c in cs], 0), ytr)
+                r["grp"] = round(float(pg.mean()), 4)
+                if parent and all(c in gcal for c in parent):
+                    bg = per_clip(np.mean([gcal[c] for c in parent], 0), ytr)
+                    r["grp_diff"], r["grp_ci95"] = round(float(pg.mean() - bg.mean()), 4), ci(pg - bg, rng_g)
             return r
 
         lanes = LANES[key]
