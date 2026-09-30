@@ -1,0 +1,174 @@
+{
+  "A": {
+    "components": [
+      "mert_ord10",
+      "qwen_zs",
+      "ft_L12"
+    ],
+    "eq": {
+      "S_cv": 0.9693,
+      "S_val": 1.0,
+      "diff_vs_eq_ci95": null
+    },
+    "eq2": {
+      "S_cv": 0.9474,
+      "S_val": 0.9773,
+      "diff_vs_eq_ci95": [
+        -0.0419,
+        -0.001
+      ]
+    },
+    "bias": {
+      "S_cv": 0.9751,
+      "S_val": 1.0152,
+      "diff_vs_eq_ci95": [
+        -0.0078,
+        0.0205
+      ]
+    },
+    "perclass_lam10": {
+      "S_cv": 0.9717,
+      "S_val": 1.0189,
+      "diff_vs_eq_ci95": [
+        -0.0161,
+        0.021
+      ]
+    },
+    "perclass_lam1": {
+      "S_cv": 0.9737,
+      "S_val": 1.0152,
+      "diff_vs_eq_ci95": [
+        -0.0146,
+        0.0224
+      ]
+    },
+    "perclass_lam0.1": {
+      "S_cv": 0.9669,
+      "S_val": 1.0341,
+      "diff_vs_eq_ci95": [
+        -0.0224,
+        0.0166
+      ]
+    },
+    "perclass_lam0": {
+      "S_cv": 0.9678,
+      "S_val": 1.0341,
+      "diff_vs_eq_ci95": [
+        -0.0214,
+        0.019
+      ]
+    },
+    "perclass_lam1_weights_all_train": {
+      "mert_ord10": {
+        "1960s": 0.26,
+        "1970s": 0.34,
+        "1980s": 0.27,
+        "1990s": 0.29,
+        "2000s": 0.23,
+        "2010s": 0.23
+      },
+      "qwen_zs": {
+        "1960s": 0.27,
+        "1970s": 0.33,
+        "1980s": 0.25,
+        "1990s": 0.2,
+        "2000s": 0.16,
+        "2010s": 0.24
+      },
+      "ft_L12": {
+        "1960s": 0.24,
+        "1970s": 0.31,
+        "1980s": 0.36,
+        "1990s": 0.24,
+        "2000s": 0.2,
+        "2010s": 0.2
+      }
+    }
+  },
+  "B": {
+    "components": [
+      "mert_mixture",
+      "lang_mixture",
+      "ft_L12"
+    ],
+    "eq": {
+      "S_cv": 1.0508,
+      "S_val": 1.0637,
+      "diff_vs_eq_ci95": null
+    },
+    "eq2": {
+      "S_cv": 1.0345,
+      "S_val": 1.0392,
+      "diff_vs_eq_ci95": [
+        -0.0351,
+        0.0031
+      ]
+    },
+    "bias": {
+      "S_cv": 1.0514,
+      "S_val": 1.0637,
+      "diff_vs_eq_ci95": [
+        -0.0056,
+        0.0063
+      ]
+    },
+    "perclass_lam10": {
+      "S_cv": 1.0338,
+      "S_val": 1.0588,
+      "diff_vs_eq_ci95": [
+        -0.0338,
+        0.0013
+      ]
+    },
+    "perclass_lam1": {
+      "S_cv": 1.037,
+      "S_val": 1.049,
+      "diff_vs_eq_ci95": [
+        -0.0282,
+        0.0013
+      ]
+    },
+    "perclass_lam0.1": {
+      "S_cv": 1.052,
+      "S_val": 1.0637,
+      "diff_vs_eq_ci95": [
+        -0.0157,
+        0.0175
+      ]
+    },
+    "perclass_lam0": {
+      "S_cv": 1.0576,
+      "S_val": 1.0735,
+      "diff_vs_eq_ci95": [
+        -0.0132,
+        0.0276
+      ]
+    },
+    "perclass_lam1_weights_all_train": {
+      "mert_mixture": {
+        "US": 0.2,
+        "UK": 0.12,
+        "Brazil": 0.24,
+        "Spain": 0.19,
+        "Germany": 0.21,
+        "Italy": 0.22
+      },
+      "lang_mixture": {
+        "US": 0.38,
+        "UK": 0.37,
+        "Brazil": 0.34,
+        "Spain": 0.33,
+        "Germany": 0.38,
+        "Italy": 0.37
+      },
+      "ft_L12": {
+        "US": 0.08,
+        "UK": 0.15,
+        "Brazil": 0.31,
+        "Spain": 0.22,
+        "Germany": 0.12,
+        "Italy": 0.13
+      }
+    }
+  }
+}

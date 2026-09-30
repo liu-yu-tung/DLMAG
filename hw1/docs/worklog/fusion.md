@@ -152,3 +152,28 @@ The tables above used the broken MERT features. After re-extraction (`bench_fusi
 - **Training-set size** accounts for about half of the gap: the full-train model sees 25% more clips (+0.018 to +0.043).
 - **Validation noise:** bootstrap SE 0.048-0.061, and the fold models alone vary by up to 0.09 on the same validation clips. The remaining +0.02 to +0.05 is within one SE, so a split difference cannot be separated from noise.
 - **Uneven across components:** components with no training (zero-shot Qwen: A 0.766 / 0.731) or a small input (Whisper language, B 0.989 / 0.980) get no size bonus. Validation therefore favours MERT-heavy recipes, which is why the A fallback (1.011) looks better than the recipe with Qwen (0.977) on validation while the 5-fold comparison says the opposite.
+
+## Per-class fusion with fine-tuned MERT top 12 (2026-09-30, `scripts/weighted_fusion_ft.py`, `results/weighted_fusion_ft.json`)
+
+- Pools: A = ordinal probe + Qwen zero-shot + ft_L12 (3 seeds averaged), B = probe + language + ft_L12. Rules fitted on 4 folds of the out-of-fold set, scored on the 5th (StratifiedKFold(5, random_state=2)).
+- 5-fold / validation S: A eq 0.969 / 1.000, bias 0.975 / 1.015 (diff [-0.008, 0.021]), perclass lam1 0.974 / 1.015; B eq 1.051 / 1.064, perclass lam0 1.058 / 1.073 (diff [-0.013, 0.028]).
+- Reading: no rule beats calibrated equal weight. The 2-part recipe vs the 3-part pool on A: [-0.042, -0.001], so adding fine-tuning is where the gain is, not the weighting.
+
+## Grouped 5-fold: proxy check for artist leakage (2026-09-30, `scripts/grouped_cv.py`, `results/grouped_cv.json`)
+
+- **Why:** the manifests have no artist column. The HW only says artists do not overlap across train, validation and test ("Each example is the middle 30 seconds of one recording", so one recording gives one clip). Same artist or another version of the same song inside train is possible and unknown.
+- **Evidence before the check:** no train clip has a MERT neighbour with cosine > 0.9 (no near-copies). Held-out 1-NN label match is higher with the stratified folds than validation -> train: A 0.365 vs 0.303, B 0.442 vs 0.392.
+- **Proxy:** Ward clusters on the MERT layer mean (centered, L2-normalized), kept on one side by StratifiedGroupKFold(5). Rule fixed before scoring: the smallest mean group size whose held-out 1-NN match is at or below the validation level; harsh = 4x that size.
+  - A: no size reaches 0.303; the match levels off at 0.312 from size 8; fallback size 16 (64 clusters). Harsh = the same setting.
+  - B: size 2 (0.384); harsh size 8.
+  - Grouping on MERT also removes genuine same-era or same-market neighbours, so the grouped scores are a pessimistic bound, hardest on MERT-based components.
+- **Components alone, stratified -> grouped (-> harsh on B):**
+  - A: MERT 0.906 -> 0.892; ordinal MERT 0.916 -> 0.887; Qwen hidden (llm_last) 0.868 -> 0.849; language 0.584 -> 0.527; Qwen zero-shot 0.810 -> 0.814.
+  - B: MERT 0.964 -> 0.941 -> 0.952; language 0.989 -> 0.990 -> 0.998; Qwen hidden 1.023 -> 1.011 -> 1.016; Qwen zero-shot 0.956 -> 0.956 -> 0.954.
+- **Recipe decisions, gain over the parent (CI):**
+  - A ordinal MERT + Qwen zero-shot over ordinal MERT: +0.031 [0.002, 0.059] -> +0.027 [-0.001, 0.054].
+  - A + hand-crafted: +0.003 -> +0.019 [-0.001, 0.040]; + Qwen hidden: +0.010 -> +0.010; + language: -0.012 -> -0.002.
+  - A MERT + hand-crafted (old recipe) over MERT: -0.009 -> -0.021.
+  - B MERT + language over MERT: +0.069 [0.041, 0.095] -> +0.066 [0.041, 0.092] -> +0.053 [0.026, 0.080].
+  - B + Qwen hidden: +0.023 [0.002, 0.042] -> +0.029 [0.008, 0.051] -> +0.024 [0.003, 0.046]; + hand-crafted: +0.002 -> -0.012 -> -0.001.
+- **Reading:** trained probes on large inputs lose 0.01-0.03 under grouping; zero-shot Qwen and the 100-number language input do not move, as expected if the stratified folds leak through similar clips. Every recipe decision keeps its sign and about its size; none crosses the 0.03 bar in the other direction. One change: ordinal MERT's lead over the plain probe (+0.011) disappears (-0.005); validation still favours it (1.011 vs 0.943 layer average). Fine-tuned MERT, the CNN, Demucs and MuQ are not rerun (GPU); their 5-fold gains stay unverified under grouping.

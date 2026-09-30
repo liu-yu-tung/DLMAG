@@ -1,0 +1,546 @@
+{
+ "A": {
+  "val_to_train_nn_match": 0.303,
+  "stratified_nn_match": 0.3645,
+  "grid": {
+   "2": {
+    "n_clusters": 513,
+    "largest_cluster": 8,
+    "nn_match": 0.3402,
+    "fold_sizes": [
+     205,
+     204,
+     205,
+     206,
+     206
+    ]
+   },
+   "3": {
+    "n_clusters": 342,
+    "largest_cluster": 16,
+    "nn_match": 0.3324,
+    "fold_sizes": [
+     205,
+     206,
+     205,
+     205,
+     205
+    ]
+   },
+   "4": {
+    "n_clusters": 256,
+    "largest_cluster": 16,
+    "nn_match": 0.346,
+    "fold_sizes": [
+     204,
+     203,
+     208,
+     209,
+     202
+    ]
+   },
+   "6": {
+    "n_clusters": 171,
+    "largest_cluster": 21,
+    "nn_match": 0.3324,
+    "fold_sizes": [
+     205,
+     205,
+     207,
+     207,
+     202
+    ]
+   },
+   "8": {
+    "n_clusters": 128,
+    "largest_cluster": 23,
+    "nn_match": 0.3129,
+    "fold_sizes": [
+     200,
+     205,
+     208,
+     202,
+     211
+    ]
+   },
+   "12": {
+    "n_clusters": 85,
+    "largest_cluster": 39,
+    "nn_match": 0.3119,
+    "fold_sizes": [
+     202,
+     209,
+     207,
+     207,
+     201
+    ]
+   },
+   "16": {
+    "n_clusters": 64,
+    "largest_cluster": 51,
+    "nn_match": 0.3129,
+    "fold_sizes": [
+     205,
+     201,
+     200,
+     211,
+     209
+    ]
+   }
+  },
+  "chosen_mean_group_size": 16,
+  "harsh_mean_group_size": 16,
+  "singles": {
+   "mert_mixture": {
+    "stratified": 0.9055,
+    "grouped": 0.8923,
+    "harsh": 0.8923
+   },
+   "handcrafted": {
+    "stratified": 0.7295,
+    "grouped": 0.7203,
+    "harsh": 0.7203
+   },
+   "clap": {
+    "stratified": 0.5668,
+    "grouped": 0.5341,
+    "harsh": 0.5341
+   },
+   "mixbalance": {
+    "stratified": 0.6745,
+    "grouped": 0.6662,
+    "harsh": 0.6662
+   },
+   "lang_vocals": {
+    "stratified": 0.5395,
+    "grouped": 0.5083,
+    "harsh": 0.5083
+   },
+   "lang_mixture": {
+    "stratified": 0.5838,
+    "grouped": 0.5273,
+    "harsh": 0.5273
+   },
+   "mert_ord10": {
+    "stratified": 0.9162,
+    "grouped": 0.8874,
+    "harsh": 0.8874
+   },
+   "qh_llm_last": {
+    "stratified": 0.8684,
+    "grouped": 0.8489,
+    "harsh": 0.8489
+   },
+   "qwen_zs": {
+    "stratified": 0.8104,
+    "grouped": 0.8138,
+    "harsh": 0.8138
+   }
+  },
+  "fusions": {
+   "mert_mixture": {
+    "stratified": {
+     "S": 0.9055
+    },
+    "grouped": {
+     "S": 0.8923
+    },
+    "harsh": {
+     "S": 0.8923
+    }
+   },
+   "mert_ord10": {
+    "stratified": {
+     "S": 0.9162
+    },
+    "grouped": {
+     "S": 0.8874
+    },
+    "harsh": {
+     "S": 0.8874
+    }
+   },
+   "ord10+qwen_zs": {
+    "stratified": {
+     "S": 0.9474,
+     "diff": 0.0312,
+     "ci95": [
+      0.0019,
+      0.0585
+     ]
+    },
+    "grouped": {
+     "S": 0.9142,
+     "diff": 0.0268,
+     "ci95": [
+      -0.0005,
+      0.0541
+     ]
+    },
+    "harsh": {
+     "S": 0.9142,
+     "diff": 0.0268,
+     "ci95": [
+      -0.002,
+      0.0536
+     ]
+    }
+   },
+   "mert_mixture+handcrafted": {
+    "stratified": {
+     "S": 0.8962,
+     "diff": -0.0093,
+     "ci95": [
+      -0.0331,
+      0.0141
+     ]
+    },
+    "grouped": {
+     "S": 0.8718,
+     "diff": -0.0205,
+     "ci95": [
+      -0.0448,
+      0.0044
+     ]
+    },
+    "harsh": {
+     "S": 0.8718,
+     "diff": -0.0205,
+     "ci95": [
+      -0.0453,
+      0.0039
+     ]
+    }
+   },
+   "ord10+qwen_zs+handcrafted": {
+    "stratified": {
+     "S": 0.9508,
+     "diff": 0.0034,
+     "ci95": [
+      -0.0185,
+      0.0244
+     ]
+    },
+    "grouped": {
+     "S": 0.9327,
+     "diff": 0.0185,
+     "ci95": [
+      -0.001,
+      0.04
+     ]
+    },
+    "harsh": {
+     "S": 0.9327,
+     "diff": 0.0185,
+     "ci95": [
+      -0.0029,
+      0.0395
+     ]
+    }
+   },
+   "ord10+qwen_zs+qh_llm_last": {
+    "stratified": {
+     "S": 0.9576,
+     "diff": 0.0102,
+     "ci95": [
+      -0.0127,
+      0.0327
+     ]
+    },
+    "grouped": {
+     "S": 0.9245,
+     "diff": 0.0102,
+     "ci95": [
+      -0.0117,
+      0.0327
+     ]
+    },
+    "harsh": {
+     "S": 0.9245,
+     "diff": 0.0102,
+     "ci95": [
+      -0.0112,
+      0.0322
+     ]
+    }
+   },
+   "ord10+qwen_zs+lang_mixture": {
+    "stratified": {
+     "S": 0.9357,
+     "diff": -0.0117,
+     "ci95": [
+      -0.0297,
+      0.0054
+     ]
+    },
+    "grouped": {
+     "S": 0.9118,
+     "diff": -0.0024,
+     "ci95": [
+      -0.0166,
+      0.0107
+     ]
+    },
+    "harsh": {
+     "S": 0.9118,
+     "diff": -0.0024,
+     "ci95": [
+      -0.0156,
+      0.0117
+     ]
+    }
+   }
+  }
+ },
+ "B": {
+  "val_to_train_nn_match": 0.3922,
+  "stratified_nn_match": 0.4424,
+  "grid": {
+   "2": {
+    "n_clusters": 399,
+    "largest_cluster": 9,
+    "nn_match": 0.3835,
+    "fold_sizes": [
+     160,
+     160,
+     160,
+     159,
+     159
+    ]
+   },
+   "3": {
+    "n_clusters": 266,
+    "largest_cluster": 11,
+    "nn_match": 0.3835,
+    "fold_sizes": [
+     160,
+     160,
+     159,
+     159,
+     160
+    ]
+   },
+   "4": {
+    "n_clusters": 199,
+    "largest_cluster": 12,
+    "nn_match": 0.4135,
+    "fold_sizes": [
+     158,
+     160,
+     162,
+     159,
+     159
+    ]
+   },
+   "6": {
+    "n_clusters": 133,
+    "largest_cluster": 17,
+    "nn_match": 0.386,
+    "fold_sizes": [
+     159,
+     159,
+     162,
+     159,
+     159
+    ]
+   },
+   "8": {
+    "n_clusters": 99,
+    "largest_cluster": 25,
+    "nn_match": 0.3922,
+    "fold_sizes": [
+     157,
+     159,
+     162,
+     158,
+     162
+    ]
+   },
+   "12": {
+    "n_clusters": 66,
+    "largest_cluster": 28,
+    "nn_match": 0.396,
+    "fold_sizes": [
+     161,
+     166,
+     158,
+     160,
+     153
+    ]
+   },
+   "16": {
+    "n_clusters": 49,
+    "largest_cluster": 42,
+    "nn_match": 0.3647,
+    "fold_sizes": [
+     169,
+     161,
+     163,
+     161,
+     144
+    ]
+   }
+  },
+  "chosen_mean_group_size": 2,
+  "harsh_mean_group_size": 8,
+  "singles": {
+   "mert_mixture": {
+    "stratified": 0.9643,
+    "grouped": 0.9405,
+    "harsh": 0.9518
+   },
+   "handcrafted": {
+    "stratified": 0.5758,
+    "grouped": 0.5614,
+    "harsh": 0.5708
+   },
+   "clap": {
+    "stratified": 0.5157,
+    "grouped": 0.4893,
+    "harsh": 0.4919
+   },
+   "mixbalance": {
+    "stratified": 0.5169,
+    "grouped": 0.5031,
+    "harsh": 0.5489
+   },
+   "lang_vocals": {
+    "stratified": 0.9724,
+    "grouped": 0.9605,
+    "harsh": 0.9586
+   },
+   "lang_mixture": {
+    "stratified": 0.9887,
+    "grouped": 0.99,
+    "harsh": 0.9975
+   },
+   "qh_llm_last": {
+    "stratified": 1.0232,
+    "grouped": 1.0113,
+    "harsh": 1.0163
+   },
+   "qwen_zs": {
+    "stratified": 0.9561,
+    "grouped": 0.9561,
+    "harsh": 0.9536
+   }
+  },
+  "fusions": {
+   "mert_mixture": {
+    "stratified": {
+     "S": 0.9643
+    },
+    "grouped": {
+     "S": 0.9405
+    },
+    "harsh": {
+     "S": 0.9518
+    }
+   },
+   "mert_mixture+lang_mixture": {
+    "stratified": {
+     "S": 1.0332,
+     "diff": 0.0689,
+     "ci95": [
+      0.0407,
+      0.0946
+     ]
+    },
+    "grouped": {
+     "S": 1.0069,
+     "diff": 0.0664,
+     "ci95": [
+      0.0407,
+      0.0915
+     ]
+    },
+    "harsh": {
+     "S": 1.005,
+     "diff": 0.0533,
+     "ci95": [
+      0.0263,
+      0.0802
+     ]
+    }
+   },
+   "mert_mixture+lang_mixture+qh_llm_last": {
+    "stratified": {
+     "S": 1.0558,
+     "diff": 0.0226,
+     "ci95": [
+      0.0019,
+      0.042
+     ]
+    },
+    "grouped": {
+     "S": 1.0357,
+     "diff": 0.0288,
+     "ci95": [
+      0.0081,
+      0.0508
+     ]
+    },
+    "harsh": {
+     "S": 1.0294,
+     "diff": 0.0244,
+     "ci95": [
+      0.0031,
+      0.0457
+     ]
+    }
+   },
+   "mert_mixture+lang_mixture+handcrafted": {
+    "stratified": {
+     "S": 1.0351,
+     "diff": 0.0019,
+     "ci95": [
+      -0.0144,
+      0.0182
+     ]
+    },
+    "grouped": {
+     "S": 0.995,
+     "diff": -0.0119,
+     "ci95": [
+      -0.0282,
+      0.0044
+     ]
+    },
+    "harsh": {
+     "S": 1.0038,
+     "diff": -0.0013,
+     "ci95": [
+      -0.0188,
+      0.0163
+     ]
+    }
+   },
+   "mert_mixture+qh_llm_last": {
+    "stratified": {
+     "S": 1.0388,
+     "diff": 0.0746,
+     "ci95": [
+      0.0476,
+      0.1028
+     ]
+    },
+    "grouped": {
+     "S": 1.0163,
+     "diff": 0.0758,
+     "ci95": [
+      0.0489,
+      0.1047
+     ]
+    },
+    "harsh": {
+     "S": 1.0157,
+     "diff": 0.0639,
+     "ci95": [
+      0.0382,
+      0.0902
+     ]
+    }
+   }
+  }
+ }
+}
