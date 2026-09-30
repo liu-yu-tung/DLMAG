@@ -89,3 +89,18 @@ The numbers above were measured with uninitialized rotary frequencies (see DECIS
 
 - A recipe base: ordinal probe + Qwen zero-shot 0.947 / 0.977. B base: probe + language, calibrated 1.033 / 1.039.
 - **Reading:** fine-tuning 8 blocks beats the frozen probe alone (clearly on B, +0.050 with CI above zero; on A +0.022, CI crosses zero). Inside the recipes the gain shrinks to +0.007 to +0.017 with CIs crossing zero: none clears the 0.03 bar. The language and Qwen components already supply what fine-tuning adds. Top 4 blocks are not enough on A. No recipe change.
+
+## More seeds and top 12 (2026-09-30, `scripts/chain_ft.sh`)
+
+- Chain with a GPU logger (`runs/night_ft/gpu.csv`, one row per minute) and cool-downs: 02:30-07:06 (top 8 seeds to 3 per task, K=12 caches, top 12 seed 0) and 13:33-18:33 (top 12 seeds 1 and 2 per task). All 11 jobs exit 0. Peak 83 C; 6 software-slowdown rows in the afternoon run triggered two 20 min rests; fold times did not change. Top 12: about 11 min per fit on A, 9 min on B, 10 GB GPU memory.
+- 3 seeds per setting, log-probs averaged; 5-fold / validation S, CI of the 5-fold difference to the base:
+
+| Task | Setting | Alone vs probe | Probe swapped out of recipe | Added to recipe |
+|---|---|---|---|---|
+| A | top 8 | 0.941 / 0.974 [-0.004, 0.053] | 0.951 / 0.974 [-0.021, 0.029] | 0.963 / 1.004 [-0.005, 0.037] |
+| A | top 12 | 0.950 / 0.992 [0.003, 0.063] | 0.960 / 0.974 [-0.011, 0.037] | 0.969 / 1.000 [0.001, 0.042] |
+| B | top 8 | 1.031 / 1.029 [0.035, 0.097] | 1.055 / 1.064 [-0.004, 0.046] | 1.035 / 1.074 [-0.018, 0.020] |
+| B | top 12 | 1.038 / 1.049 [0.045, 0.103] | 1.046 / 1.069 [-0.013, 0.038] | 1.051 / 1.064 [0.000, 0.036] |
+
+- Bases as above: A probe 0.916 / 1.011, recipe 0.947 / 0.977; B probe 0.964 / 1.034, recipe 1.033 / 1.039.
+- **Reading:** alone, depth helps on A (top 4 0.909, top 8 0.941, top 12 0.950) and B gains +0.07 over the probe from top 8 on. The third seed shrank the top-8 recipe gain on A (0.959 to 0.951). Inside the recipes every setting stays at +0.004 to +0.022; the best (A recipe + top 12, B probe swapped for top 8) do not clear the 0.03 bar. **Decision (user, 2026-09-30): keep both recipes;** fine-tuning goes into the report as analysis.

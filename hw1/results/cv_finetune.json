@@ -1,45 +1,92 @@
 {
   "A": {
+    "ft_L12": {
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "per_seed_oof": [
+        0.9566,
+        0.9425,
+        0.9386
+      ],
+      "alone": {
+        "S_oof": 0.9503,
+        "S_val": 0.9924,
+        "base": "mert_ord10",
+        "base_S_oof": 0.9162,
+        "base_S_val": 1.0114,
+        "diff_ci95": [
+          0.0029,
+          0.0629
+        ]
+      },
+      "swap_into_recipe": {
+        "S_oof": 0.9596,
+        "S_val": 0.9735,
+        "base": "mert_ord10+qwen_zs",
+        "base_S_oof": 0.9474,
+        "base_S_val": 0.9773,
+        "diff_ci95": [
+          -0.0112,
+          0.037
+        ]
+      },
+      "add_to_recipe": {
+        "S_oof": 0.9693,
+        "S_val": 1.0,
+        "base": "mert_ord10+qwen_zs",
+        "base_S_oof": 0.9474,
+        "base_S_val": 0.9773,
+        "diff_ci95": [
+          0.0005,
+          0.0424
+        ]
+      }
+    },
     "ft_L16": {
       "seeds": [
         0,
-        1
+        1,
+        2
       ],
       "per_seed_oof": [
         0.9498,
-        0.9401
+        0.9401,
+        0.9357
       ],
       "alone": {
-        "S_oof": 0.9376,
+        "S_oof": 0.941,
         "S_val": 0.9735,
         "base": "mert_ord10",
         "base_S_oof": 0.9162,
         "base_S_val": 1.0114,
         "diff_ci95": [
-          -0.0083,
-          0.0507
+          -0.0044,
+          0.0531
         ]
       },
       "swap_into_recipe": {
-        "S_oof": 0.9537,
-        "S_val": 0.9659,
+        "S_oof": 0.9513,
+        "S_val": 0.9735,
         "base": "mert_ord10+qwen_zs",
         "base_S_oof": 0.9474,
         "base_S_val": 0.9773,
         "diff_ci95": [
-          -0.0175,
-          0.0307
+          -0.0205,
+          0.0292
         ]
       },
       "add_to_recipe": {
-        "S_oof": 0.9591,
-        "S_val": 0.9962,
+        "S_oof": 0.9625,
+        "S_val": 1.0038,
         "base": "mert_ord10+qwen_zs",
         "base_S_oof": 0.9474,
         "base_S_val": 0.9773,
         "diff_ci95": [
-          -0.0088,
-          0.0327
+          -0.0054,
+          0.0365
         ]
       }
     },
@@ -59,8 +106,8 @@
         "base_S_oof": 0.9162,
         "base_S_val": 1.0114,
         "diff_ci95": [
-          -0.0366,
-          0.0219
+          -0.0361,
+          0.0249
         ]
       },
       "swap_into_recipe": {
@@ -70,8 +117,8 @@
         "base_S_oof": 0.9474,
         "base_S_val": 0.9773,
         "diff_ci95": [
-          -0.0458,
-          -0.001
+          -0.0473,
+          0.0015
         ]
       },
       "add_to_recipe": {
@@ -82,50 +129,99 @@
         "base_S_val": 0.9773,
         "diff_ci95": [
           -0.0156,
-          0.0239
+          0.0244
         ]
       }
     }
   },
   "B": {
-    "ft_L16": {
+    "ft_L12": {
       "seeds": [
-        0
+        0,
+        1,
+        2
       ],
       "per_seed_oof": [
-        1.0138
+        1.0332,
+        1.0238,
+        1.0332
       ],
       "alone": {
-        "S_oof": 1.0138,
+        "S_oof": 1.0382,
+        "S_val": 1.049,
+        "base": "mert_mixture",
+        "base_S_oof": 0.9643,
+        "base_S_val": 1.0343,
+        "diff_ci95": [
+          0.0445,
+          0.1028
+        ]
+      },
+      "swap_into_recipe": {
+        "S_oof": 1.0464,
+        "S_val": 1.0686,
+        "base": "mert_mixture+lang_mixture",
+        "base_S_oof": 1.0332,
+        "base_S_val": 1.0392,
+        "diff_ci95": [
+          -0.0132,
+          0.0376
+        ]
+      },
+      "add_to_recipe": {
+        "S_oof": 1.0514,
+        "S_val": 1.0637,
+        "base": "mert_mixture+lang_mixture",
+        "base_S_oof": 1.0332,
+        "base_S_val": 1.0392,
+        "diff_ci95": [
+          0.0,
+          0.0363
+        ]
+      }
+    },
+    "ft_L16": {
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "per_seed_oof": [
+        1.0138,
+        1.0226,
+        1.0182
+      ],
+      "alone": {
+        "S_oof": 1.0307,
         "S_val": 1.0294,
         "base": "mert_mixture",
         "base_S_oof": 0.9643,
         "base_S_val": 1.0343,
         "diff_ci95": [
-          0.0188,
-          0.084
+          0.0351,
+          0.0971
         ]
       },
       "swap_into_recipe": {
-        "S_oof": 1.0495,
-        "S_val": 1.0686,
+        "S_oof": 1.0545,
+        "S_val": 1.0637,
         "base": "mert_mixture+lang_mixture",
         "base_S_oof": 1.0332,
         "base_S_val": 1.0392,
         "diff_ci95": [
-          -0.0088,
-          0.0407
+          -0.0038,
+          0.0458
         ]
       },
       "add_to_recipe": {
-        "S_oof": 1.0332,
-        "S_val": 1.0686,
+        "S_oof": 1.0345,
+        "S_val": 1.0735,
         "base": "mert_mixture+lang_mixture",
         "base_S_oof": 1.0332,
         "base_S_val": 1.0392,
         "diff_ci95": [
-          -0.0194,
-          0.0194
+          -0.0182,
+          0.0201
         ]
       }
     },
@@ -143,8 +239,8 @@
         "base_S_oof": 0.9643,
         "base_S_val": 1.0343,
         "diff_ci95": [
-          0.0025,
-          0.0595
+          0.0031,
+          0.0614
         ]
       },
       "swap_into_recipe": {
@@ -155,7 +251,7 @@
         "base_S_val": 1.0392,
         "diff_ci95": [
           -0.0188,
-          0.0294
+          0.0288
         ]
       },
       "add_to_recipe": {
@@ -165,8 +261,8 @@
         "base_S_oof": 1.0332,
         "base_S_val": 1.0392,
         "diff_ci95": [
-          -0.0113,
-          0.0269
+          -0.0107,
+          0.0263
         ]
       }
     }
