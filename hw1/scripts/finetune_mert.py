@@ -54,6 +54,9 @@ class Top(nn.Module):
         super().__init__()
         self.blocks = copy.deepcopy(mert.layers[k:]).float()
         self.rot = copy.deepcopy(mert.embed_positions).float()
+        # drop any cos/sin table from an earlier fp32 MERT pass: training builds it under bf16 autocast
+        self.rot._cos = self.rot._sin = None
+        self.rot._sequence_length = 0
         self.head = nn.Sequential(nn.LayerNorm(DIM), nn.Dropout(0.2), nn.Linear(DIM, n_cls))
 
     def forward(self, h):

@@ -26,6 +26,18 @@
     ]
    },
    {
+    "id": "ft",
+    "name": "MERT-v2 fine-tuned",
+    "family": "enc",
+    "rep": "ft12",
+    "variants": [
+     {
+      "id": "ft12",
+      "name": "top 12 blocks, 3 seeds averaged"
+     }
+    ]
+   },
+   {
     "id": "qwen_zs",
     "name": "Qwen2-Audio zero-shot",
     "family": "alm",
@@ -185,6 +197,14 @@
     "oof": 0.7958,
     "val": 0.7462
    },
+   "ft12": {
+    "comps": [
+     "ft12"
+    ],
+    "oof": 0.9503,
+    "val": 0.9924,
+    "grp": 0.9381
+   },
    "qwen_zs": {
     "comps": [
      "qwen_zs"
@@ -306,14 +326,14 @@
       "val": 0.9773,
       "diff": 0.0312,
       "ci95": [
-       0.0019,
-       0.0585
+       0.0029,
+       0.0604
       ],
       "grp": 0.9142,
       "grp_diff": 0.0268,
       "grp_ci95": [
-       0.0,
-       0.0546
+       -0.002,
+       0.0541
       ]
      },
      {
@@ -325,14 +345,33 @@
       "val": 0.9848,
       "diff": 0.0312,
       "ci95": [
-       0.0049,
-       0.059
+       0.0034,
+       0.057
       ],
       "grp": 0.9113,
       "grp_diff": 0.0239,
       "grp_ci95": [
-       -0.0034,
-       0.0502
+       -0.0029,
+       0.0497
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "ft12"
+      ],
+      "oof": 0.943,
+      "val": 0.9962,
+      "diff": 0.0268,
+      "ci95": [
+       0.0063,
+       0.0468
+      ],
+      "grp": 0.9323,
+      "grp_diff": 0.0448,
+      "grp_ci95": [
+       0.0234,
+       0.0663
       ]
      },
      {
@@ -344,8 +383,8 @@
       "val": 0.9962,
       "diff": 0.0083,
       "ci95": [
-       -0.0185,
-       0.0341
+       -0.019,
+       0.0361
       ]
      },
      {
@@ -357,8 +396,8 @@
       "val": 0.9962,
       "diff": 0.0063,
       "ci95": [
-       -0.0122,
-       0.0263
+       -0.0132,
+       0.0258
       ]
      },
      {
@@ -370,7 +409,7 @@
       "val": 1.0038,
       "diff": 0.0044,
       "ci95": [
-       -0.021,
+       -0.0219,
        0.0307
       ]
      },
@@ -383,14 +422,14 @@
       "val": 0.9811,
       "diff": -0.0039,
       "ci95": [
-       -0.0254,
+       -0.0249,
        0.0175
       ],
       "grp": 0.8787,
       "grp_diff": -0.0088,
       "grp_ci95": [
-       -0.0297,
-       0.0097
+       -0.0283,
+       0.0112
       ]
      },
      {
@@ -402,14 +441,14 @@
       "val": 0.9432,
       "diff": -0.0112,
       "ci95": [
-       -0.0346,
-       0.0127
+       -0.0351,
+       0.0122
       ],
       "grp": 0.8713,
       "grp_diff": -0.0161,
       "grp_ci95": [
-       -0.0404,
-       0.0083
+       -0.0414,
+       0.0098
       ]
      },
      {
@@ -421,14 +460,14 @@
       "val": 1.0152,
       "diff": -0.0117,
       "ci95": [
-       -0.0385,
-       0.0156
+       -0.0375,
+       0.0136
       ],
       "grp": 0.8879,
       "grp_diff": 0.0005,
       "grp_ci95": [
-       -0.0263,
-       0.0273
+       -0.0258,
+       0.0263
       ]
      },
      {
@@ -440,14 +479,14 @@
       "val": 0.9773,
       "diff": -0.0175,
       "ci95": [
-       -0.0404,
-       0.0034
+       -0.039,
+       0.0049
       ],
       "grp": 0.8723,
       "grp_diff": -0.0151,
       "grp_ci95": [
-       -0.0346,
-       0.0024
+       -0.0336,
+       0.0039
       ]
      }
     ]
@@ -462,19 +501,39 @@
       "comps": [
        "mert_ord10",
        "qwen_zs",
+       "ft12"
+      ],
+      "oof": 0.9693,
+      "val": 1.0,
+      "diff": 0.0219,
+      "ci95": [
+       0.0034,
+       0.0419
+      ],
+      "grp": 0.9522,
+      "grp_diff": 0.038,
+      "grp_ci95": [
+       0.018,
+       0.058
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
        "qh_llm_last"
       ],
       "oof": 0.9576,
       "val": 0.9659,
       "diff": 0.0102,
       "ci95": [
-       -0.0127,
-       0.0327
+       -0.0122,
+       0.0336
       ],
       "grp": 0.9245,
       "grp_diff": 0.0102,
       "grp_ci95": [
-       -0.0127,
+       -0.0102,
        0.0317
       ]
      },
@@ -488,8 +547,8 @@
       "val": 1.0076,
       "diff": 0.0078,
       "ci95": [
-       -0.0122,
-       0.0297
+       -0.0132,
+       0.0278
       ]
      },
      {
@@ -502,8 +561,8 @@
       "val": 0.9924,
       "diff": 0.0034,
       "ci95": [
-       -0.018,
-       0.0244
+       -0.019,
+       0.0249
       ],
       "grp": 0.9327,
       "grp_diff": 0.0185,
@@ -522,8 +581,8 @@
       "val": 0.9848,
       "diff": -0.0029,
       "ci95": [
-       -0.0263,
-       0.0195
+       -0.0253,
+       0.0214
       ]
      },
      {
@@ -536,7 +595,7 @@
       "val": 0.9735,
       "diff": -0.0049,
       "ci95": [
-       -0.0219,
+       -0.0214,
        0.0107
       ],
       "grp": 0.9254,
@@ -556,7 +615,7 @@
       "val": 1.0189,
       "diff": -0.0083,
       "ci95": [
-       -0.0297,
+       -0.0292,
        0.0127
       ]
      },
@@ -570,14 +629,14 @@
       "val": 0.9848,
       "diff": -0.0117,
       "ci95": [
-       -0.0283,
-       0.0049
+       -0.0292,
+       0.0039
       ],
       "grp": 0.9118,
       "grp_diff": -0.0024,
       "grp_ci95": [
-       -0.0156,
-       0.0107
+       -0.0161,
+       0.0117
       ]
      },
      {
@@ -590,13 +649,198 @@
       "val": 0.9394,
       "diff": -0.0346,
       "ci95": [
-       -0.0551,
-       -0.0132
+       -0.056,
+       -0.0151
       ],
       "grp": 0.9142,
       "grp_diff": 0.0,
       "grp_ci95": [
-       -0.021,
+       -0.0205,
+       0.0215
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "mert_ord10",
+     "qwen_zs",
+     "ft12"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "ft12",
+       "cnn"
+      ],
+      "oof": 0.9805,
+      "val": 1.0341,
+      "diff": 0.0112,
+      "ci95": [
+       -0.0088,
+       0.0317
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "ft12",
+       "lang_mixture"
+      ],
+      "oof": 0.9712,
+      "val": 1.0189,
+      "diff": 0.0019,
+      "ci95": [
+       -0.0122,
+       0.0166
+      ],
+      "grp": 0.9561,
+      "grp_diff": 0.0039,
+      "grp_ci95": [
+       -0.0078,
+       0.0151
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "ft12",
+       "handcrafted"
+      ],
+      "oof": 0.9688,
+      "val": 1.053,
+      "diff": -0.0005,
+      "ci95": [
+       -0.019,
+       0.02
+      ],
+      "grp": 0.9586,
+      "grp_diff": 0.0063,
+      "grp_ci95": [
+       -0.0117,
+       0.0253
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "ft12",
+       "qh_llm_last"
+      ],
+      "oof": 0.9683,
+      "val": 0.9886,
+      "diff": -0.001,
+      "ci95": [
+       -0.0205,
+       0.018
+      ],
+      "grp": 0.9474,
+      "grp_diff": -0.0049,
+      "grp_ci95": [
+       -0.0224,
+       0.0127
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "ft12",
+       "clap"
+      ],
+      "oof": 0.9683,
+      "val": 1.0038,
+      "diff": -0.001,
+      "ci95": [
+       -0.0146,
+       0.0141
+      ],
+      "grp": 0.9586,
+      "grp_diff": 0.0063,
+      "grp_ci95": [
+       -0.0068,
+       0.0205
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "ft12",
+       "mixbalance"
+      ],
+      "oof": 0.9654,
+      "val": 0.9583,
+      "diff": -0.0039,
+      "ci95": [
+       -0.0219,
+       0.0146
+      ],
+      "grp": 0.9503,
+      "grp_diff": -0.0019,
+      "grp_ci95": [
+       -0.019,
+       0.0141
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "ft12",
+       "muq"
+      ],
+      "oof": 0.9649,
+      "val": 1.0227,
+      "diff": -0.0044,
+      "ci95": [
+       -0.0239,
+       0.0136
+      ]
+     },
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "ft12",
+       "demucs_all"
+      ],
+      "oof": 0.96,
+      "val": 1.0492,
+      "diff": -0.0093,
+      "ci95": [
+       -0.0273,
+       0.0093
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "mert_ord10",
+     "qwen_zs",
+     "ft12",
+     "cnn"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "ft12",
+       "cnn",
+       "clap"
+      ],
+      "oof": 0.9873,
+      "val": 1.0189,
+      "diff": 0.0068,
+      "ci95": [
+       -0.0068,
        0.021
       ]
      }
@@ -606,178 +850,8 @@
     "base": [
      "mert_ord10",
      "qwen_zs",
-     "qh_llm_last"
-    ],
-    "rows": [
-     {
-      "comps": [
-       "mert_ord10",
-       "qwen_zs",
-       "qh_llm_last",
-       "handcrafted"
-      ],
-      "oof": 0.9542,
-      "val": 1.0189,
-      "diff": -0.0034,
-      "ci95": [
-       -0.0224,
-       0.0151
-      ],
-      "grp": 0.9332,
-      "grp_diff": 0.0088,
-      "grp_ci95": [
-       -0.0097,
-       0.0278
-      ]
-     },
-     {
-      "comps": [
-       "mert_ord10",
-       "qwen_zs",
-       "qh_llm_last",
-       "muq"
-      ],
-      "oof": 0.9508,
-      "val": 0.9697,
-      "diff": -0.0068,
-      "ci95": [
-       -0.0263,
-       0.0117
-      ]
-     },
-     {
-      "comps": [
-       "mert_ord10",
-       "qwen_zs",
-       "qh_llm_last",
-       "clap"
-      ],
-      "oof": 0.9493,
-      "val": 0.9508,
-      "diff": -0.0083,
-      "ci95": [
-       -0.0229,
-       0.0063
-      ],
-      "grp": 0.9201,
-      "grp_diff": -0.0044,
-      "grp_ci95": [
-       -0.0166,
-       0.0073
-      ]
-     },
-     {
-      "comps": [
-       "mert_ord10",
-       "qwen_zs",
-       "qh_llm_last",
-       "lang_mixture"
-      ],
-      "oof": 0.9488,
-      "val": 0.9848,
-      "diff": -0.0088,
-      "ci95": [
-       -0.0224,
-       0.0054
-      ],
-      "grp": 0.9206,
-      "grp_diff": -0.0039,
-      "grp_ci95": [
-       -0.0156,
-       0.0078
-      ]
-     },
-     {
-      "comps": [
-       "mert_ord10",
-       "qwen_zs",
-       "qh_llm_last",
-       "demucs_all"
-      ],
-      "oof": 0.9469,
-      "val": 1.0038,
-      "diff": -0.0107,
-      "ci95": [
-       -0.0297,
-       0.0083
-      ]
-     },
-     {
-      "comps": [
-       "mert_ord10",
-       "qwen_zs",
-       "qh_llm_last",
-       "mixbalance"
-      ],
-      "oof": 0.9425,
-      "val": 0.9659,
-      "diff": -0.0151,
-      "ci95": [
-       -0.0322,
-       0.0015
-      ],
-      "grp": 0.922,
-      "grp_diff": -0.0024,
-      "grp_ci95": [
-       -0.02,
-       0.0151
-      ]
-     },
-     {
-      "comps": [
-       "mert_ord10",
-       "qwen_zs",
-       "qh_llm_last",
-       "cnn"
-      ],
-      "oof": 0.9405,
-      "val": 0.9545,
-      "diff": -0.0171,
-      "ci95": [
-       -0.037,
-       0.0029
-      ]
-     }
-    ]
-   },
-   {
-    "base": [
-     "mert_ord10",
-     "qwen_zs",
-     "qh_llm_last",
-     "handcrafted"
-    ],
-    "rows": [
-     {
-      "comps": [
-       "mert_ord10",
-       "qwen_zs",
-       "qh_llm_last",
-       "handcrafted",
-       "clap"
-      ],
-      "oof": 0.9566,
-      "val": 1.0189,
-      "diff": 0.0024,
-      "ci95": [
-       -0.0097,
-       0.0156
-      ],
-      "grp": 0.9288,
-      "grp_diff": -0.0044,
-      "grp_ci95": [
-       -0.0166,
-       0.0073
-      ]
-     }
-    ]
-   },
-   {
-    "base": [
-     "mert_ord10",
-     "qwen_zs",
-     "qh_llm_last",
-     "handcrafted",
+     "ft12",
+     "cnn",
      "clap"
     ],
     "rows": [
@@ -785,17 +859,17 @@
       "comps": [
        "mert_ord10",
        "qwen_zs",
-       "qh_llm_last",
-       "handcrafted",
+       "ft12",
+       "cnn",
        "clap",
        "muq"
       ],
-      "oof": 0.9537,
-      "val": 1.0,
-      "diff": -0.0029,
+      "oof": 0.9761,
+      "val": 1.0152,
+      "diff": -0.0112,
       "ci95": [
-       -0.0185,
-       0.0127
+       -0.0278,
+       0.0054
       ]
      }
     ]
@@ -804,8 +878,8 @@
     "base": [
      "mert_ord10",
      "qwen_zs",
-     "qh_llm_last",
-     "handcrafted",
+     "ft12",
+     "cnn",
      "clap",
      "muq"
     ],
@@ -814,50 +888,18 @@
       "comps": [
        "mert_ord10",
        "qwen_zs",
-       "qh_llm_last",
-       "handcrafted",
-       "clap",
-       "muq",
-       "cnn"
-      ],
-      "oof": 0.9566,
-      "val": 0.9924,
-      "diff": 0.0029,
-      "ci95": [
-       -0.0122,
-       0.018
-      ]
-     }
-    ]
-   },
-   {
-    "base": [
-     "mert_ord10",
-     "qwen_zs",
-     "qh_llm_last",
-     "handcrafted",
-     "clap",
-     "muq",
-     "cnn"
-    ],
-    "rows": [
-     {
-      "comps": [
-       "mert_ord10",
-       "qwen_zs",
-       "qh_llm_last",
-       "handcrafted",
-       "clap",
-       "muq",
+       "ft12",
        "cnn",
+       "clap",
+       "muq",
        "mixbalance"
       ],
-      "oof": 0.9503,
-      "val": 0.9659,
-      "diff": -0.0063,
+      "oof": 0.9781,
+      "val": 0.9924,
+      "diff": 0.0019,
       "ci95": [
-       -0.0185,
-       0.0063
+       -0.0102,
+       0.0146
       ]
      }
     ]
@@ -866,11 +908,10 @@
     "base": [
      "mert_ord10",
      "qwen_zs",
-     "qh_llm_last",
-     "handcrafted",
+     "ft12",
+     "cnn",
      "clap",
      "muq",
-     "cnn",
      "mixbalance"
     ],
     "rows": [
@@ -878,20 +919,19 @@
       "comps": [
        "mert_ord10",
        "qwen_zs",
-       "qh_llm_last",
-       "handcrafted",
+       "ft12",
+       "cnn",
        "clap",
        "muq",
-       "cnn",
        "mixbalance",
-       "demucs_all"
+       "handcrafted"
       ],
-      "oof": 0.9464,
-      "val": 0.9811,
-      "diff": -0.0039,
+      "oof": 0.9698,
+      "val": 0.9848,
+      "diff": -0.0083,
       "ci95": [
-       -0.0171,
-       0.0088
+       -0.0219,
+       0.0049
       ]
      }
     ]
@@ -900,34 +940,106 @@
     "base": [
      "mert_ord10",
      "qwen_zs",
-     "qh_llm_last",
-     "handcrafted",
+     "ft12",
+     "cnn",
      "clap",
      "muq",
-     "cnn",
      "mixbalance",
-     "demucs_all"
+     "handcrafted"
     ],
     "rows": [
      {
       "comps": [
        "mert_ord10",
        "qwen_zs",
-       "qh_llm_last",
-       "handcrafted",
+       "ft12",
+       "cnn",
        "clap",
        "muq",
-       "cnn",
        "mixbalance",
-       "demucs_all",
+       "handcrafted",
+       "qh_llm_last"
+      ],
+      "oof": 0.9698,
+      "val": 0.9811,
+      "diff": 0.0,
+      "ci95": [
+       -0.0156,
+       0.0171
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "mert_ord10",
+     "qwen_zs",
+     "ft12",
+     "cnn",
+     "clap",
+     "muq",
+     "mixbalance",
+     "handcrafted",
+     "qh_llm_last"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "ft12",
+       "cnn",
+       "clap",
+       "muq",
+       "mixbalance",
+       "handcrafted",
+       "qh_llm_last",
        "lang_mixture"
       ],
-      "oof": 0.9454,
-      "val": 0.9735,
-      "diff": -0.001,
+      "oof": 0.9649,
+      "val": 1.0114,
+      "diff": -0.0049,
       "ci95": [
-       -0.0093,
-       0.0083
+       -0.0146,
+       0.0049
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "mert_ord10",
+     "qwen_zs",
+     "ft12",
+     "cnn",
+     "clap",
+     "muq",
+     "mixbalance",
+     "handcrafted",
+     "qh_llm_last",
+     "lang_mixture"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "mert_ord10",
+       "qwen_zs",
+       "ft12",
+       "cnn",
+       "clap",
+       "muq",
+       "mixbalance",
+       "handcrafted",
+       "qh_llm_last",
+       "lang_mixture",
+       "demucs_all"
+      ],
+      "oof": 0.9596,
+      "val": 1.0,
+      "diff": -0.0054,
+      "ci95": [
+       -0.0156,
+       0.0054
       ]
      }
     ]
@@ -948,8 +1060,8 @@
       "val": 0.9091,
       "diff": 0.0468,
       "ci95": [
-       0.0219,
-       0.0741
+       0.0205,
+       0.0731
       ]
      }
     ]
@@ -970,8 +1082,8 @@
       "val": 0.9432,
       "diff": 0.0078,
       "ci95": [
-       -0.0127,
-       0.0278
+       -0.0117,
+       0.0288
       ]
      }
     ]
@@ -994,7 +1106,7 @@
       "val": 0.9394,
       "diff": 0.0146,
       "ci95": [
-       -0.0049,
+       -0.0054,
        0.0341
       ]
      }
@@ -1048,8 +1160,8 @@
       "val": 0.9773,
       "diff": 0.0068,
       "ci95": [
-       -0.0098,
-       0.0224
+       -0.0112,
+       0.0229
       ]
      }
     ]
@@ -1078,8 +1190,8 @@
       "val": 0.9962,
       "diff": -0.0058,
       "ci95": [
-       -0.0175,
-       0.0054
+       -0.018,
+       0.0063
       ]
      }
     ]
@@ -1145,7 +1257,7 @@
       "diff": -0.0156,
       "ci95": [
        -0.0283,
-       -0.0029
+       -0.0034
       ]
      }
     ]
@@ -1154,6 +1266,7 @@
   "all": {
    "comps": [
     "mert_ord10",
+    "ft12",
     "qwen_zs",
     "qh_llm_last",
     "demucs_all",
@@ -1164,8 +1277,37 @@
     "lang_mixture",
     "clap"
    ],
-   "oof": 0.9454,
-   "val": 0.9735
+   "oof": 0.9596,
+   "val": 1.0
+  },
+  "submitted": {
+   "comps": [
+    "mert_ord10",
+    "qwen_zs",
+    "ft12"
+   ],
+   "oof": 0.9693,
+   "val": 1.0,
+   "diff": 0.0219,
+   "ci95": [
+    0.0005,
+    0.0434
+   ],
+   "grp": 0.9522,
+   "grp_diff": 0.038,
+   "grp_ci95": [
+    0.0175,
+    0.0575
+   ]
+  },
+  "previous": {
+   "comps": [
+    "mert_ord10",
+    "qwen_zs"
+   ],
+   "oof": 0.9474,
+   "val": 0.9773,
+   "grp": 0.9142
   }
  },
  "B": {
@@ -1187,6 +1329,18 @@
      {
       "id": "mert_vocals",
       "name": "on the vocal stem"
+     }
+    ]
+   },
+   {
+    "id": "ft",
+    "name": "MERT-v2 fine-tuned",
+    "family": "enc",
+    "rep": "ft12",
+    "variants": [
+     {
+      "id": "ft12",
+      "name": "top 12 blocks, 3 seeds averaged"
      }
     ]
    },
@@ -1334,6 +1488,14 @@
     "oof": 0.9242,
     "val": 1.0147
    },
+   "ft12": {
+    "comps": [
+     "ft12"
+    ],
+    "oof": 1.0382,
+    "val": 1.049,
+    "grp": 0.9937
+   },
    "qwen_zs": {
     "comps": [
      "qwen_zs"
@@ -1441,13 +1603,13 @@
       "val": 1.1029,
       "diff": 0.0752,
       "ci95": [
-       0.0438,
-       0.1065
+       0.0439,
+       0.1078
       ],
       "grp": 1.0056,
       "grp_diff": 0.0652,
       "grp_ci95": [
-       0.0345,
+       0.0338,
        0.0971
       ]
      },
@@ -1460,14 +1622,14 @@
       "val": 1.0196,
       "diff": 0.0746,
       "ci95": [
-       0.0464,
-       0.104
+       0.0476,
+       0.1021
       ],
       "grp": 1.0163,
       "grp_diff": 0.0758,
       "grp_ci95": [
-       0.0445,
-       0.104
+       0.0464,
+       0.1046
       ]
      },
      {
@@ -1479,14 +1641,33 @@
       "val": 1.0392,
       "diff": 0.0689,
       "ci95": [
-       0.0414,
-       0.0977
+       0.042,
+       0.0965
       ],
       "grp": 1.0069,
       "grp_diff": 0.0664,
       "grp_ci95": [
        0.0407,
        0.0927
+      ]
+     },
+     {
+      "comps": [
+       "mert_mixture",
+       "ft12"
+      ],
+      "oof": 1.0276,
+      "val": 1.0196,
+      "diff": 0.0633,
+      "ci95": [
+       0.0401,
+       0.0865
+      ],
+      "grp": 0.9919,
+      "grp_diff": 0.0514,
+      "grp_ci95": [
+       0.0276,
+       0.0752
       ]
      },
      {
@@ -1499,7 +1680,7 @@
       "diff": 0.0038,
       "ci95": [
        -0.0113,
-       0.0182
+       0.0194
       ],
       "grp": 0.9417,
       "grp_diff": 0.0013,
@@ -1517,14 +1698,14 @@
       "val": 1.0735,
       "diff": -0.0063,
       "ci95": [
-       -0.0232,
-       0.0119
+       -0.0244,
+       0.0113
       ],
       "grp": 0.9355,
       "grp_diff": -0.005,
       "grp_ci95": [
-       -0.0213,
-       0.0094
+       -0.0207,
+       0.0107
       ]
      },
      {
@@ -1536,13 +1717,13 @@
       "val": 0.9902,
       "diff": -0.0075,
       "ci95": [
-       -0.0295,
-       0.0138
+       -0.0294,
+       0.015
       ],
       "grp": 0.9261,
       "grp_diff": -0.0144,
       "grp_ci95": [
-       -0.0363,
+       -0.0351,
        0.0069
       ]
      },
@@ -1555,7 +1736,7 @@
       "val": 0.9706,
       "diff": -0.0207,
       "ci95": [
-       -0.0407,
+       -0.0414,
        -0.0013
       ]
      },
@@ -1569,7 +1750,7 @@
       "diff": -0.0282,
       "ci95": [
        -0.052,
-       -0.0056
+       -0.0044
       ]
      },
      {
@@ -1581,8 +1762,8 @@
       "val": 1.0049,
       "diff": -0.0407,
       "ci95": [
-       -0.0658,
-       -0.0175
+       -0.0652,
+       -0.0163
       ]
      }
     ]
@@ -1597,6 +1778,26 @@
       "comps": [
        "mert_mixture",
        "qwen_zs",
+       "ft12"
+      ],
+      "oof": 1.0514,
+      "val": 1.1176,
+      "diff": 0.0119,
+      "ci95": [
+       -0.0069,
+       0.0313
+      ],
+      "grp": 1.0194,
+      "grp_diff": 0.0138,
+      "grp_ci95": [
+       -0.0069,
+       0.0332
+      ]
+     },
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
        "qh_llm_last"
       ],
       "oof": 1.0514,
@@ -1604,13 +1805,13 @@
       "diff": 0.0119,
       "ci95": [
        -0.0075,
-       0.0313
+       0.0307
       ],
       "grp": 1.0282,
       "grp_diff": 0.0226,
       "grp_ci95": [
        0.0031,
-       0.0426
+       0.0407
       ]
      },
      {
@@ -1623,14 +1824,14 @@
       "val": 1.0735,
       "diff": 0.0069,
       "ci95": [
-       -0.0113,
-       0.0257
+       -0.0107,
+       0.0251
       ],
       "grp": 1.0194,
       "grp_diff": 0.0138,
       "grp_ci95": [
-       -0.005,
-       0.0326
+       -0.0044,
+       0.032
       ]
      },
      {
@@ -1643,13 +1844,13 @@
       "val": 1.1029,
       "diff": 0.0006,
       "ci95": [
-       -0.0132,
+       -0.0138,
        0.0144
       ],
       "grp": 1.0119,
       "grp_diff": 0.0063,
       "grp_ci95": [
-       -0.0044,
+       -0.005,
        0.0175
       ]
      },
@@ -1663,7 +1864,7 @@
       "val": 1.1176,
       "diff": -0.0063,
       "ci95": [
-       -0.0232,
+       -0.0244,
        0.0113
       ]
      },
@@ -1677,13 +1878,13 @@
       "val": 1.0735,
       "diff": -0.0081,
       "ci95": [
-       -0.0238,
+       -0.0244,
        0.0088
       ],
       "grp": 1.0,
       "grp_diff": -0.0056,
       "grp_ci95": [
-       -0.0213,
+       -0.0201,
        0.0094
       ]
      },
@@ -1697,13 +1898,13 @@
       "val": 1.0833,
       "diff": -0.0088,
       "ci95": [
-       -0.0219,
+       -0.0213,
        0.0044
       ],
       "grp": 1.0013,
       "grp_diff": -0.0044,
       "grp_ci95": [
-       -0.0157,
+       -0.0163,
        0.0075
       ]
      },
@@ -1717,8 +1918,8 @@
       "val": 1.0833,
       "diff": -0.0094,
       "ci95": [
-       -0.0282,
-       0.0088
+       -0.0294,
+       0.0094
       ]
      },
      {
@@ -1741,136 +1942,157 @@
     "base": [
      "mert_mixture",
      "qwen_zs",
-     "qh_llm_last"
+     "ft12"
     ],
     "rows": [
      {
       "comps": [
        "mert_mixture",
        "qwen_zs",
-       "qh_llm_last",
-       "lang_mixture"
+       "ft12",
+       "qh_llm_last"
       ],
-      "oof": 1.0589,
-      "val": 1.0588,
-      "diff": 0.0075,
+      "oof": 1.0614,
+      "val": 1.1078,
+      "diff": 0.01,
       "ci95": [
-       -0.0075,
-       0.0219
+       -0.0044,
+       0.0251
       ],
-      "grp": 1.0332,
-      "grp_diff": 0.005,
+      "grp": 1.0357,
+      "grp_diff": 0.0163,
       "grp_ci95": [
-       -0.0088,
-       0.0194
+       0.0013,
+       0.0313
       ]
      },
      {
       "comps": [
        "mert_mixture",
        "qwen_zs",
-       "qh_llm_last",
+       "ft12",
        "mixbalance"
       ],
-      "oof": 1.0564,
-      "val": 1.098,
-      "diff": 0.005,
+      "oof": 1.0545,
+      "val": 1.1373,
+      "diff": 0.0031,
       "ci95": [
        -0.0063,
-       0.0169
+       0.0119
       ],
-      "grp": 1.0238,
-      "grp_diff": -0.0044,
+      "grp": 1.0163,
+      "grp_diff": -0.0031,
       "grp_ci95": [
-       -0.0132,
-       0.0038
+       -0.0125,
+       0.0056
       ]
      },
      {
       "comps": [
        "mert_mixture",
        "qwen_zs",
-       "qh_llm_last",
+       "ft12",
        "clap"
       ],
-      "oof": 1.0482,
-      "val": 1.0784,
-      "diff": -0.0031,
+      "oof": 1.0539,
+      "val": 1.1225,
+      "diff": 0.0025,
       "ci95": [
-       -0.0138,
-       0.0069
+       -0.0056,
+       0.0107
       ],
-      "grp": 1.032,
-      "grp_diff": 0.0038,
+      "grp": 1.0263,
+      "grp_diff": 0.0069,
       "grp_ci95": [
-       -0.0038,
-       0.0119
+       -0.0013,
+       0.0157
       ]
      },
      {
       "comps": [
        "mert_mixture",
        "qwen_zs",
-       "qh_llm_last",
-       "handcrafted"
-      ],
-      "oof": 1.042,
-      "val": 1.1029,
-      "diff": -0.0094,
-      "ci95": [
-       -0.0207,
-       0.0019
-      ],
-      "grp": 1.0244,
-      "grp_diff": -0.0038,
-      "grp_ci95": [
-       -0.015,
-       0.0082
-      ]
-     },
-     {
-      "comps": [
-       "mert_mixture",
-       "qwen_zs",
-       "qh_llm_last",
-       "muq"
-      ],
-      "oof": 1.0376,
-      "val": 1.0882,
-      "diff": -0.0138,
-      "ci95": [
-       -0.0282,
-       0.0
-      ]
-     },
-     {
-      "comps": [
-       "mert_mixture",
-       "qwen_zs",
-       "qh_llm_last",
+       "ft12",
        "cnn"
       ],
-      "oof": 1.0376,
-      "val": 1.1029,
-      "diff": -0.0138,
+      "oof": 1.052,
+      "val": 1.1471,
+      "diff": 0.0006,
       "ci95": [
-       -0.0276,
-       0.0
+       -0.0138,
+       0.0157
       ]
      },
      {
       "comps": [
        "mert_mixture",
        "qwen_zs",
-       "qh_llm_last",
+       "ft12",
+       "lang_mixture"
+      ],
+      "oof": 1.052,
+      "val": 1.1225,
+      "diff": 0.0006,
+      "ci95": [
+       -0.0157,
+       0.0169
+      ],
+      "grp": 1.0307,
+      "grp_diff": 0.0113,
+      "grp_ci95": [
+       -0.0044,
+       0.0276
+      ]
+     },
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
+       "ft12",
        "demucs_all"
       ],
-      "oof": 1.037,
-      "val": 1.1127,
-      "diff": -0.0144,
+      "oof": 1.0482,
+      "val": 1.0882,
+      "diff": -0.0031,
       "ci95": [
-       -0.0295,
-       -0.0006
+       -0.0169,
+       0.01
+      ]
+     },
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
+       "ft12",
+       "muq"
+      ],
+      "oof": 1.0464,
+      "val": 1.0882,
+      "diff": -0.005,
+      "ci95": [
+       -0.0188,
+       0.0088
+      ]
+     },
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
+       "ft12",
+       "handcrafted"
+      ],
+      "oof": 1.0426,
+      "val": 1.1078,
+      "diff": -0.0088,
+      "ci95": [
+       -0.0213,
+       0.0038
+      ],
+      "grp": 1.0144,
+      "grp_diff": -0.005,
+      "grp_ci95": [
+       -0.0182,
+       0.0069
       ]
      }
     ]
@@ -1879,6 +2101,39 @@
     "base": [
      "mert_mixture",
      "qwen_zs",
+     "ft12",
+     "qh_llm_last"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
+       "ft12",
+       "qh_llm_last",
+       "lang_mixture"
+      ],
+      "oof": 1.0664,
+      "val": 1.0637,
+      "diff": 0.005,
+      "ci95": [
+       -0.0075,
+       0.0175
+      ],
+      "grp": 1.0414,
+      "grp_diff": 0.0056,
+      "grp_ci95": [
+       -0.0075,
+       0.0194
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "mert_mixture",
+     "qwen_zs",
+     "ft12",
      "qh_llm_last",
      "lang_mixture"
     ],
@@ -1887,16 +2142,23 @@
       "comps": [
        "mert_mixture",
        "qwen_zs",
+       "ft12",
        "qh_llm_last",
        "lang_mixture",
-       "demucs_all"
+       "handcrafted"
       ],
-      "oof": 1.0664,
-      "val": 1.0931,
-      "diff": 0.0075,
+      "oof": 1.0677,
+      "val": 1.0833,
+      "diff": 0.0013,
       "ci95": [
-       -0.0069,
-       0.0226
+       -0.0088,
+       0.0113
+      ],
+      "grp": 1.0376,
+      "grp_diff": -0.0038,
+      "grp_ci95": [
+       -0.0132,
+       0.0056
       ]
      }
     ]
@@ -1905,26 +2167,34 @@
     "base": [
      "mert_mixture",
      "qwen_zs",
+     "ft12",
      "qh_llm_last",
      "lang_mixture",
-     "demucs_all"
+     "handcrafted"
     ],
     "rows": [
      {
       "comps": [
        "mert_mixture",
        "qwen_zs",
+       "ft12",
        "qh_llm_last",
        "lang_mixture",
-       "demucs_all",
+       "handcrafted",
        "clap"
       ],
-      "oof": 1.0583,
-      "val": 1.1127,
-      "diff": -0.0081,
+      "oof": 1.0689,
+      "val": 1.0735,
+      "diff": 0.0013,
       "ci95": [
-       -0.0194,
-       0.0019
+       -0.0069,
+       0.01
+      ],
+      "grp": 1.0357,
+      "grp_diff": -0.0019,
+      "grp_ci95": [
+       -0.0088,
+       0.005
       ]
      }
     ]
@@ -1933,9 +2203,10 @@
     "base": [
      "mert_mixture",
      "qwen_zs",
+     "ft12",
      "qh_llm_last",
      "lang_mixture",
-     "demucs_all",
+     "handcrafted",
      "clap"
     ],
     "rows": [
@@ -1943,18 +2214,25 @@
       "comps": [
        "mert_mixture",
        "qwen_zs",
+       "ft12",
        "qh_llm_last",
        "lang_mixture",
-       "demucs_all",
+       "handcrafted",
        "clap",
        "mixbalance"
       ],
-      "oof": 1.0545,
-      "val": 1.1127,
-      "diff": -0.0038,
+      "oof": 1.0683,
+      "val": 1.1373,
+      "diff": -0.0006,
       "ci95": [
-       -0.0119,
-       0.0038
+       -0.0088,
+       0.0075
+      ],
+      "grp": 1.0395,
+      "grp_diff": 0.0038,
+      "grp_ci95": [
+       -0.005,
+       0.0125
       ]
      }
     ]
@@ -1963,9 +2241,10 @@
     "base": [
      "mert_mixture",
      "qwen_zs",
+     "ft12",
      "qh_llm_last",
      "lang_mixture",
-     "demucs_all",
+     "handcrafted",
      "clap",
      "mixbalance"
     ],
@@ -1974,53 +2253,20 @@
       "comps": [
        "mert_mixture",
        "qwen_zs",
+       "ft12",
        "qh_llm_last",
        "lang_mixture",
-       "demucs_all",
-       "clap",
-       "mixbalance",
-       "handcrafted"
-      ],
-      "oof": 1.0514,
-      "val": 1.1324,
-      "diff": -0.0031,
-      "ci95": [
-       -0.0163,
-       0.01
-      ]
-     }
-    ]
-   },
-   {
-    "base": [
-     "mert_mixture",
-     "qwen_zs",
-     "qh_llm_last",
-     "lang_mixture",
-     "demucs_all",
-     "clap",
-     "mixbalance",
-     "handcrafted"
-    ],
-    "rows": [
-     {
-      "comps": [
-       "mert_mixture",
-       "qwen_zs",
-       "qh_llm_last",
-       "lang_mixture",
-       "demucs_all",
-       "clap",
-       "mixbalance",
        "handcrafted",
-       "cnn"
+       "clap",
+       "mixbalance",
+       "demucs_all"
       ],
-      "oof": 1.0495,
-      "val": 1.1275,
-      "diff": -0.0019,
+      "oof": 1.0583,
+      "val": 1.1471,
+      "diff": -0.01,
       "ci95": [
-       -0.0132,
-       0.01
+       -0.0219,
+       0.0013
       ]
      }
     ]
@@ -2029,34 +2275,72 @@
     "base": [
      "mert_mixture",
      "qwen_zs",
+     "ft12",
      "qh_llm_last",
      "lang_mixture",
-     "demucs_all",
-     "clap",
-     "mixbalance",
      "handcrafted",
-     "cnn"
+     "clap",
+     "mixbalance",
+     "demucs_all"
     ],
     "rows": [
      {
       "comps": [
        "mert_mixture",
        "qwen_zs",
+       "ft12",
        "qh_llm_last",
        "lang_mixture",
-       "demucs_all",
+       "handcrafted",
        "clap",
        "mixbalance",
-       "handcrafted",
-       "cnn",
+       "demucs_all",
        "muq"
       ],
-      "oof": 1.0338,
-      "val": 1.1078,
-      "diff": -0.0157,
+      "oof": 1.057,
+      "val": 1.1373,
+      "diff": -0.0013,
       "ci95": [
-       -0.0282,
-       -0.0038
+       -0.0125,
+       0.01
+      ]
+     }
+    ]
+   },
+   {
+    "base": [
+     "mert_mixture",
+     "qwen_zs",
+     "ft12",
+     "qh_llm_last",
+     "lang_mixture",
+     "handcrafted",
+     "clap",
+     "mixbalance",
+     "demucs_all",
+     "muq"
+    ],
+    "rows": [
+     {
+      "comps": [
+       "mert_mixture",
+       "qwen_zs",
+       "ft12",
+       "qh_llm_last",
+       "lang_mixture",
+       "handcrafted",
+       "clap",
+       "mixbalance",
+       "demucs_all",
+       "muq",
+       "cnn"
+      ],
+      "oof": 1.0457,
+      "val": 1.1569,
+      "diff": -0.0113,
+      "ci95": [
+       -0.0238,
+       0.0019
       ]
      }
     ]
@@ -2077,7 +2361,7 @@
       "val": 1.0294,
       "diff": 0.0213,
       "ci95": [
-       -0.0044,
+       -0.0038,
        0.0464
       ],
       "grp": 1.0326,
@@ -2106,7 +2390,7 @@
       "diff": 0.015,
       "ci95": [
        -0.0088,
-       0.0395
+       0.0376
       ]
      }
     ]
@@ -2130,7 +2414,7 @@
       "diff": -0.005,
       "ci95": [
        -0.0169,
-       0.0063
+       0.0069
       ]
      }
     ]
@@ -2183,7 +2467,7 @@
       "val": 1.0735,
       "diff": 0.005,
       "ci95": [
-       -0.0088,
+       -0.0081,
        0.0188
       ]
      }
@@ -2245,7 +2529,7 @@
       "val": 1.1127,
       "diff": -0.0019,
       "ci95": [
-       -0.01,
+       -0.0094,
        0.0056
       ]
      }
@@ -2289,6 +2573,7 @@
   "all": {
    "comps": [
     "mert_mixture",
+    "ft12",
     "qwen_zs",
     "qh_llm_last",
     "demucs_all",
@@ -2299,8 +2584,37 @@
     "lang_mixture",
     "clap"
    ],
-   "oof": 1.0338,
-   "val": 1.1078
+   "oof": 1.0457,
+   "val": 1.1569
+  },
+  "submitted": {
+   "comps": [
+    "mert_mixture",
+    "lang_mixture",
+    "ft12"
+   ],
+   "oof": 1.0514,
+   "val": 1.0637,
+   "diff": 0.0182,
+   "ci95": [
+    -0.0006,
+    0.0382
+   ],
+   "grp": 1.0138,
+   "grp_diff": 0.0069,
+   "grp_ci95": [
+    -0.0119,
+    0.0257
+   ]
+  },
+  "previous": {
+   "comps": [
+    "mert_mixture",
+    "lang_mixture"
+   ],
+   "oof": 1.0332,
+   "val": 1.0392,
+   "grp": 1.0069
   }
  }
 }

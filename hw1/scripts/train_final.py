@@ -31,17 +31,32 @@ def alm_scores(key: str, ids: np.ndarray) -> np.ndarray:
     return np.stack([rows[s] for s in ids.tolist()])
 
 
+def ft_scores(key: str, ids: np.ndarray) -> np.ndarray:
+    """Fine-tuned top-block log-probs (scripts/finetune_mert.py), mean over final.FT_SEEDS, in the given clip order:
+    out-of-fold for train clips, the full-train fit for validation and test clips."""
+    runs = []
+    for s in final.FT_SEEDS:
+        z = np.load(FEAT / f"ft_{key}_L{final.FT_LAYER}_s{s}.npz")
+        if not all(int(z[f"done_f{i}"]) for i in range(5)):
+            raise ValueError(f"ft_{key}_L{final.FT_LAYER}_s{s}: not all folds done")
+        rows = {}
+        for part in ("oof", "val", "test"):
+            rows.update(zip(z[f"{part}_id"].tolist(), z[part]))
+        missing = [i for i in ids.tolist() if i not in rows]
+        if missing:
+            raise ValueError(f"{len(missing)} clips have no fine-tuned log-probs (seed {s})")
+        runs.append(np.stack([rows[i] for i in ids.tolist()]))
+    return np.mean(runs, axis=0)
+
+
 def cached(key: str) -> tuple[dict[str, np.ndarray], np.ndarray, np.ndarray, np.ndarray]:
     mert = load_features(FEAT / f"{key}_mertv2.npz")
     need = set(final.RECIPES[key] + final.FALLBACK.get(key, []))
     feats = {c: final.mert_means(mert["feats"]) for c in ("mert_layeravg", "mert_ord10") if c in need}
     if "alm_qwen" in need:
         feats["alm_qwen"] = alm_scores(key, mert["sample_id"])
-    if "hc_c10" in final.RECIPES[key]:
-        ch = load_features(FEAT / f"{key}_handcrafted_chunks.npz")
-        if not (ch["sample_id"] == mert["sample_id"]).all():
-            raise ValueError("clip order differs between MERT and hand-crafted features")
-        feats["hc_c10"] = ch[f"c{final.HC_CHUNK_S}"]
+    if "mert_ft12" in need:
+        feats["mert_ft12"] = ft_scores(key, mert["sample_id"])
     if "lang_mixture" in final.RECIPES[key]:
         lid = load_features(FEAT / f"{key}_langid.npz")
         if not (lid["sample_id"] == mert["sample_id"]).all():

@@ -2,27 +2,30 @@
   "A": {
     "recipe": [
       "mert_ord10",
-      "alm_qwen"
+      "alm_qwen",
+      "mert_ft12"
     ],
-    "top1": 0.5227,
+    "top1": 0.5455,
     "top3": 0.9091,
-    "S": 0.9773
+    "S": 1.0
   },
   "A_fallback": {
     "recipe": [
-      "mert_ord10"
+      "mert_ord10",
+      "mert_ft12"
     ],
-    "top1": 0.553,
+    "top1": 0.5379,
     "top3": 0.9167,
-    "S": 1.0114
+    "S": 0.9962
   },
   "B": {
     "recipe": [
       "mert_layeravg",
-      "lang_mixture"
+      "lang_mixture",
+      "mert_ft12"
     ],
-    "top1": 0.6275,
-    "top3": 0.8824,
-    "S": 1.0686
+    "top1": 0.6078,
+    "top3": 0.9118,
+    "S": 1.0637
   }
 }

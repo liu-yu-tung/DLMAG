@@ -6,7 +6,9 @@ Routes, all scored the same way:
   singles  every component and its variants alone
   level 1  the MERT representative + each other component
   level 2+ greedy: the best combination so far (by out-of-fold S) + each remaining component, until all are in
-  no MERT  the same greedy route started from the best non-MERT component
+  no MERT  the same greedy route started from the best non-MERT component (fine-tuned MERT excluded too)
+  submitted  the submitted recipe, with its difference to the previous submitted recipe ("previous")
+Fine-tuned MERT top 12 is the mean of 3 seeds (stratified and grouped out-of-fold, validation from the full fits).
 Greedy picks use the out-of-fold set, so later levels are slightly optimistic. Each fused row has the paired
 bootstrap CI of its difference to the combination it extends. Rows whose components all have grouped out-of-fold
 log-probs (features/cvg_{key}.npz, scripts/grouped_cv.py) also get the grouped 5-fold S ("grp") and its difference.
@@ -40,9 +42,31 @@ LANES = {
           ("lang", "Whisper language ID", "alm", "lang_mixture", [("lang_mixture", "from the mixture"), ("lang_vocals", "from the vocal stem")]),
           ("clap", "CLAP", "enc", "clap", [("clap", "audio embedding")])],
 }
+LANES["A"].insert(1, ("ft", "MERT-v2 fine-tuned", "enc", "ft12", [("ft12", "top 12 blocks, 3 seeds averaged")]))
 LANES["B"] = [(i, n, f, r, [v for v in vs if v[0] not in ("mert_ord10", "cnn_nogain", "cnn_ord10")])
               for i, n, f, r, vs in LANES["A"]]
 LANES["B"][0] = ("mert", "MERT-v2", "enc", "mert_mixture", LANES["B"][0][4])
+FT_SEEDS = [0, 1, 2]
+SUBMITTED = {"A": (["mert_ord10", "qwen_zs", "ft12"], ["mert_ord10", "qwen_zs"]),
+             "B": (["mert_mixture", "lang_mixture", "ft12"], ["mert_mixture", "lang_mixture"])}
+
+
+def ft_logprobs(key: str) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Fine-tuned top 12 (scripts/finetune_mert.py), mean over FT_SEEDS: stratified out-of-fold (same folds), validation
+    from the full-train fits, grouped out-of-fold (scripts/grouped_cv.py folds). Train order of features/{key}_mertv2.npz."""
+    ref = np.load(FEAT / f"{key}_mertv2.npz")
+    tr_ids, va_ids = ref["sample_id"][ref["split"] == "train"], ref["sample_id"][ref["split"] == "validation"]
+
+    def take(x, ids, want):
+        p = {s: i for i, s in enumerate(ids)}
+        return x[[p[s] for s in want]]
+
+    zs = [np.load(FEAT / f"ft_{key}_L12_s{s}.npz") for s in FT_SEEDS]
+    zg = [np.load(FEAT / f"ft_{key}_L12_g_s{s}.npz") for s in FT_SEEDS]
+    assert all(int(z[f"done_f{i}"]) for z in zs + zg for i in range(5))
+    return (np.mean([take(z["oof"], z["oof_id"], tr_ids) for z in zs], 0),
+            np.mean([take(z["val"], z["val_id"], va_ids) for z in zs], 0),
+            np.mean([take(z["oof"], z["oof_id"], tr_ids) for z in zg], 0))
 
 
 def load(key: str):
@@ -81,6 +105,8 @@ def main() -> None:
     out = {}
     for key in ("A", "B"):
         comp, ytr, yva = load(key)
+        ft_oof, ft_val, ft_grp = ft_logprobs(key)
+        comp["ft12"] = (ft_oof, ft_val)
 
         def temp(o):
             return minimize_scalar(lambda t: -norm(o * t)[np.arange(len(ytr)), ytr].mean(), bounds=(0.05, 20), method="bounded").x
@@ -92,6 +118,7 @@ def main() -> None:
         g = np.load(FEAT / f"cvg_{key}.npz")
         assert (g["y_train"] == ytr).all()
         gcal = {k[8:]: norm(norm(g[k]) * temp(norm(g[k]))) for k in g.files if k.startswith("grouped_") and k != "grouped_groups"}
+        gcal["ft12"] = norm(norm(ft_grp) * temp(norm(ft_grp)))
         rng_g = np.random.default_rng(1)
 
         def score(cs):
@@ -130,14 +157,16 @@ def main() -> None:
             return levels
 
         mert = reps[0]
-        non = [c for c in reps if c != mert]
+        non = [c for c in reps if c not in (mert, "ft12")]
         best_non = max(non, key=lambda c: singles[c]["oof"])
         out[key] = {"lanes": [{"id": i, "name": n, "family": f, "rep": r, "variants": [{"id": v, "name": vn} for v, vn in vs]}
                               for i, n, f, r, vs in lanes],
                     "singles": singles,
                     "with_mert": greedy(mert, reps, 3),
                     "no_mert": greedy(best_non, non, 0),
-                    "all": row(reps)}
+                    "all": row(reps),
+                    "submitted": row(*SUBMITTED[key]),
+                    "previous": row(SUBMITTED[key][1])}
         best = max((r for lv in out[key]["with_mert"] for r in lv["rows"]), key=lambda r: r["oof"])
         print(key, "best single", max(singles.items(), key=lambda kv: kv[1]["oof"]), "| best combo", best, "| all", out[key]["all"])
     (HW1 / "results" / "combo_tree.json").write_text(json.dumps(out, indent=1) + "\n")

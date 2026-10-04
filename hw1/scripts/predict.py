@@ -8,17 +8,18 @@
 
 import argparse
 import json
+import sys
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import numpy as np
 import torch
-from joblib import Parallel, delayed
 from tqdm import tqdm
 
+# src/ on the path, so the hw1 package works without installing it
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from hw1 import final
 from hw1.data import load_audio, load_manifest
-from hw1.features.handcrafted import extract_chunks
 from hw1.features.langid import LangID
 from hw1.features.mert import load_mert, pooled_layers
 from hw1.metrics import top3_labels, validate_predictions
@@ -39,11 +40,38 @@ def mert_features(model, paths: list[str], batch: int) -> np.ndarray:
     return final.mert_means(np.concatenate(out))
 
 
-def hc_features(paths: list[str], jobs: int) -> np.ndarray:
-    rows = Parallel(n_jobs=jobs)(
-        delayed(lambda p: extract_chunks(load_audio(p), final.HC_CHUNK_S))(p) for p in tqdm(paths, desc="hand-crafted")
-    )
-    return np.stack(rows)
+def ft_features(model, ft: dict, ckpt_dir: Path, n_cls: int, paths: list[str], batch: int, device: str) -> np.ndarray:
+    """Fine-tuned top blocks, as in scripts/finetune_mert.py: the frozen block-K output of a full MERT-v2 pass, rounded
+    through fp16 as cached for training, then each saved stack (bf16 autocast) gives log-probs; mean over seeds."""
+    from finetune_mert import Top
+
+    k = ft["from_layer"]
+    hidden = []
+    with torch.inference_mode(), ThreadPoolExecutor(4) as pool:
+        batches = [paths[i : i + batch] for i in range(0, len(paths), batch)]
+        for wavs in tqdm(pool.map(lambda b: [load_audio(p) for p in b], batches), total=len(batches), desc="MERT block states"):
+            groups = [wavs] if len({len(w) for w in wavs}) == 1 else [[w] for w in wavs]
+            for g in groups:
+                x = torch.as_tensor(np.stack(g), device=device)
+                hs = model(input_values=x, output_hidden_states=True, return_dict=True).hidden_states
+                hidden += list(hs[k - 1].half().cpu())
+    same = len({h.shape for h in hidden}) == 1
+    chunks = [torch.stack(hidden[i : i + 16]) for i in range(0, len(hidden), 16)] if same else [h[None] for h in hidden]
+    runs = []
+    for name in ft["checkpoints"]:
+        sd = torch.load(ckpt_dir / name, map_location=device)
+        top = Top(model, k, n_cls).to(device)
+        top.blocks.load_state_dict(sd["blocks"])
+        top.head.load_state_dict(sd["head"])
+        top.eval()
+        out = []
+        with torch.inference_mode(), torch.autocast(device.split(":")[0], dtype=torch.bfloat16):
+            for h in tqdm(chunks, desc=name):
+                out.append(torch.log_softmax(top(h.to(device).float()).float(), -1).cpu().numpy())
+        runs.append(np.concatenate(out))
+        del top, sd
+        torch.cuda.empty_cache()
+    return np.mean(runs, axis=0)
 
 
 def lang_features(lid: LangID, paths: list[str], batch: int = 16) -> np.ndarray:
@@ -75,10 +103,10 @@ def main() -> None:
     ap.add_argument("--split", default="test")
     ap.add_argument("--datasets", nargs="+", default=["A", "B"])
     ap.add_argument("--batch", type=int, default=4)
-    ap.add_argument("--jobs", type=int, default=6)
     ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     ap.add_argument("--no-alm", action="store_true",
-                    help="skip Qwen2-Audio (needs about 10 GB GPU memory) and use each checkpoint's fallback recipe")
+                    help="skip Qwen2-Audio (default mode peaks at about 13 GB GPU memory) and use each checkpoint's "
+                         "fallback recipe")
     args = ap.parse_args()
 
     model = load_mert(device=args.device)
@@ -96,10 +124,11 @@ def main() -> None:
             recipe = ckpt["fallback"]
         mert = mert_features(model, paths, args.batch)
         feats = {"mert_layeravg": mert, "mert_ord10": mert}
+        if "mert_ft12" in recipe:
+            feats["mert_ft12"] = ft_features(model, ckpt["ft"], args.ckpt_dir, len(ckpt["labels"]), paths, args.batch,
+                                             args.device)
         if "alm_qwen" in recipe:
             feats["alm_qwen"] = alm_features(key, paths, args.device)
-        if "hc_c10" in recipe:
-            feats["hc_c10"] = hc_features(paths, args.jobs)
         if "lang_mixture" in recipe:
             lid = lid or LangID(device=args.device)
             feats["lang_mixture"] = lang_features(lid, paths)
