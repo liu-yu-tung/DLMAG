@@ -22,4 +22,5 @@ cp submission/README.md "$OUT/README.md"
     echo "# Inference only (scripts/predict.py). Python 3.12: pip install -r requirements.txt"
     grep -E '^[A-Za-z0-9_.-]+==' requirements.txt
 } > "$OUT/requirements.txt"
+(cd "$OUT" && sha256sum checkpoints/*) > "$OUT/checkpoints.sha256"
 du -sh "$OUT"

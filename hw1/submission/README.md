@@ -28,6 +28,18 @@ The first run downloads three models from the Hugging Face Hub into `~/.cache/hu
 - **`openai/whisper-large-v3-turbo`:** about 1.6 GB, task B.
 - **`Qwen/Qwen2-Audio-7B-Instruct`:** about 16 GB, task A only, skipped with `--no-alm`.
 
+## Checkpoints
+
+If `checkpoints/` is empty (the GitHub copy: the files are larger than GitHub's 100 MiB limit), download the 8 files (6.5 GB) from the release `hw1` and check them:
+
+```
+mkdir -p checkpoints
+for f in A.joblib B.joblib ft_A_L12_s0.pt ft_A_L12_s1.pt ft_A_L12_s2.pt ft_B_L12_s0.pt ft_B_L12_s1.pt ft_B_L12_s2.pt; do
+  curl -L --fail -o checkpoints/$f https://github.com/liu-yu-tung/DLMAG/releases/download/hw1/$f
+done
+sha256sum -c checkpoints.sha256
+```
+
 ## Data layout
 
 `--data` points to a folder with one subfolder per task, as distributed:
@@ -74,6 +86,7 @@ Other options: `--datasets A` or `B` for one task, `--batch` (MERT batch size, d
 - **`scripts/alm_qwen.py`:** Qwen2-Audio loading and label scoring, used by `predict.py`.
 - **`scripts/finetune_mert.py`:** fine-tuning; its `Top` module is used by `predict.py`.
 - **`scripts/extract_mert.py`, `scripts/extract_langid.py`, `scripts/train_final.py`:** the rest of the training pipeline below.
+- **`checkpoints.sha256`:** SHA-256 of the 8 checkpoint files.
 - **`results/final_validation.json`:** the validation scores in the table above.
 
 ## Rebuilding the checkpoints
