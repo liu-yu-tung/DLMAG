@@ -1,0 +1,16 @@
+<section id="results-a" style="background:#f6f7f9;color:#2a2f38;font-family:'Source Sans 3', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<h2 style="font-family:'Lora', Georgia, serif;font-size:56px;font-weight:600;color:#22262e;line-height:1.15">Task A: model and results</h2>
+<div style="display:flex;flex-direction:column;gap:4px;background:#ffffff;padding:20px 32px;border:2px solid #2b59c3;border-radius:12px">
+<p style="font-size:28px;line-height:1.4"><b>Submitted:</b> MERT-v2 probe with ordinal soft labels + zero-shot Qwen2-Audio (train-mean corrected) + fine-tuned top 12, calibrated equal weight.</p>
+</div>
+<table style="font-size:26px;color:#2a2f38;background:#ffffff">
+<tr><th style="width:61%">Model (validation, 132 clips)</th><th style="width:13%;text-align:right">Top-1</th><th style="width:13%;text-align:right">Top-3</th><th style="width:13%;text-align:right">S</th></tr>
+<tr style="background:#dbe4f7"><td>submitted</td><td style="text-align:right">0.545</td><td style="text-align:right">0.909</td><td style="text-align:right">1.000</td></tr>
+<tr><td>fallback (--no-alm): probe (ordinal) + fine-tuned top 12</td><td style="text-align:right">0.538</td><td style="text-align:right">0.917</td><td style="text-align:right">0.996</td></tr>
+<tr><td>probe (ordinal) alone</td><td style="text-align:right">0.553</td><td style="text-align:right">0.917</td><td style="text-align:right">1.011</td></tr>
+<tr><td>fine-tuned top 12 alone</td><td style="text-align:right">0.530</td><td style="text-align:right">0.924</td><td style="text-align:right">0.992</td></tr>
+<tr><td>Qwen2-Audio, train-mean corrected, alone</td><td style="text-align:right">0.394</td><td style="text-align:right">0.773</td><td style="text-align:right">0.780</td></tr>
+</table>
+<p style="font-size:24px;color:#4a5562;line-height:1.4"><b>Chance S = 0.417.</b> One clip moves Top-1 by 0.008, so <b>differences under about 0.05 are noise</b>. The recipe was chosen on <b>train 5-fold S</b> (0.969; grouped 0.952).</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6b7480">DLMAG HW1 · Task A · 13 / 23</p>
+</section>

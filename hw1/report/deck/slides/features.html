@@ -1,0 +1,13 @@
+<section id="features" style="background:#e8ecf2;color:#2a2f38;font-family:'Source Sans 3', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<h2 style="font-family:'Lora', Georgia, serif;font-size:56px;font-weight:600;color:#22262e;line-height:1.15">Preprocessing and features, every step</h2>
+<table style="font-size:26px;color:#2a2f38;background:#ffffff">
+<tr><th style="width:22%">Step</th><th style="width:78%">What is done</th></tr>
+<tr><td>Loading</td><td>float32 waveform at the native 24 kHz; no trimming, no loudness normalization (level may carry era cues)</td></tr>
+<tr><td>MERT-v2-30s</td><td>raw waveform in (its extractor only pads, do_normalize = false), fp32; each of 24 layers gives 750 frames × 1024, averaged over time</td></tr>
+<tr><td>Probe</td><td>per layer: StandardScaler + L2 logistic regression (C = 0.1); log-probs averaged over the 24 layers. A: each clip also counts with weight 0.1 for each neighbouring decade (ordinal soft labels)</td></tr>
+<tr><td>Whisper (B)</td><td>resample to 16 kHz; one decoder step after the start token; softmax over the 100 language tokens; StandardScaler + logistic regression</td></tr>
+<tr><td>Qwen2-Audio (A)</td><td>resample to 16 kHz; LLM in 8-bit; label log-likelihoods minus their mean on train</td></tr>
+<tr><td>Fusion</td><td>per component, one temperature fitted on its 5-fold out-of-fold log-probs on train; then the equal-weight mean</td></tr>
+</table>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6b7480">DLMAG HW1 · Common · 6 / 23</p>
+</section>

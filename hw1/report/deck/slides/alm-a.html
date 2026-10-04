@@ -1,0 +1,20 @@
+<section id="alm-a" style="background:#f6f7f9;color:#2a2f38;font-family:'Source Sans 3', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<h2 style="font-family:'Lora', Georgia, serif;font-size:56px;font-weight:600;color:#22262e;line-height:1.15">Task A: Qwen2-Audio zero-shot</h2>
+<div style="display:flex;gap:48px;align-items:start">
+<img src="/_blob/333fc0f095642b7d782b98a92876332c" alt="Task A validation confusion matrix of zero-shot Qwen2-Audio with the plain prompt, counts" style="width:580px;height:580px;object-fit:contain;background:#ffffff;border-radius:12px">
+<div style="flex:1;display:flex;flex-direction:column;gap:24px">
+<p style="font-size:24px;color:#4a5562"><b>Validation</b>, 132 clips · matrix: plain prompt, <b>counts</b></p>
+<table style="font-size:26px;color:#2a2f38;background:#ffffff">
+<tr><th style="width:16%">Prompt</th><th style="width:14%;text-align:right">Top-1</th><th style="width:14%;text-align:right">Top-3</th><th style="width:14%;text-align:right">S</th><th style="width:42%">Most frequent answers</th></tr>
+<tr style="background:#dbe4f7"><td>plain</td><td style="text-align:right">0.356</td><td style="text-align:right">0.750</td><td style="text-align:right">0.731</td><td>1970s 48, 1960s 32, 2010s 31</td></tr>
+<tr><td>cues</td><td style="text-align:right">0.356</td><td style="text-align:right">0.720</td><td style="text-align:right">0.716</td><td>1970s 76, 2010s 26</td></tr>
+</table>
+<ul style="font-size:28px;line-height:1.4">
+<li>Almost never answers 1990s (2 clips) or 2000s (4). The cue prompt makes the skew stronger, so we use the plain one.</li>
+<li>Subtracting each label's mean score on train reduces the skew: S 0.731 to 0.780.</li>
+<li>Why keep it: on clips the MERT probe gets wrong, Qwen's top-1 is right 28% of the time (5-fold), the most of any A component.</li>
+</ul>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6b7480">DLMAG HW1 · Task A · 15 / 23</p>
+</section>

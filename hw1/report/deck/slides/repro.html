@@ -1,0 +1,19 @@
+<section id="repro" style="background:#e8ecf2;color:#2a2f38;font-family:'Source Sans 3', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<h2 style="font-family:'Lora', Georgia, serif;font-size:56px;font-weight:600;color:#22262e;line-height:1.15">Reproducibility</h2>
+<ul style="font-size:28px;line-height:1.4">
+<li><b>Release:</b> code, README and pinned requirements.txt (Python 3.12, torch 2.14.0+cu130, transformers 5.17.0); checkpoints with SHA-256 (links on page 1).</li>
+<li><b>Check:</b> a fresh venv built only from requirements.txt, run from audio, gives the same top-3 lists (order included) as the training-time features on 234/234 test clips, in both modes. A repeated run is byte-identical.</li>
+<li><b>Runtime</b> (RTX 4060 Ti 16 GB, 234 test clips): 7 min 3 s default, 1 min 46 s with --no-alm. Seeds 0, 1, 2; settings fixed before training.</li>
+</ul>
+<div style="display:flex;gap:32px">
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#ffffff;padding:28px 32px;border:1px solid #c8d0dc;border-radius:12px">
+<h3 style="font-size:32px;font-weight:600;color:#2b59c3">Bug 1, found and fixed</h3>
+<p style="font-size:26px;line-height:1.4">MERT-v2's rotary frequencies are a non-persistent buffer. Loaded on the meta device by transformers 5, they were left uninitialized, so features changed between loads (25–55%). Fix: restore the buffer after loading.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#ffffff;padding:28px 32px;border:1px solid #c8d0dc;border-radius:12px">
+<h3 style="font-size:32px;font-weight:600;color:#2b59c3">Bug 2, found and fixed</h3>
+<p style="font-size:26px;line-height:1.4">At inference the fine-tuned blocks reused a rotary table built in fp32; training built it under bf16 autocast. Log-probs moved by up to 0.81. Fix: clear the cache, so inference matches training exactly.</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6b7480">DLMAG HW1 · Closing · 22 / 23</p>
+</section>

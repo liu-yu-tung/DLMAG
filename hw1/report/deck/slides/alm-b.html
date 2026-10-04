@@ -1,0 +1,20 @@
+<section id="alm-b" style="background:#f6f7f9;color:#2a2f38;font-family:'Source Sans 3', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<h2 style="font-family:'Lora', Georgia, serif;font-size:56px;font-weight:600;color:#22262e;line-height:1.15">Task B: Qwen2-Audio zero-shot</h2>
+<div style="display:flex;gap:48px;align-items:start">
+<img src="/_blob/e071a708c42f9aea964c5d0d2a6a5398" alt="Task B validation confusion matrix of zero-shot Qwen2-Audio with the plain prompt, counts" style="width:580px;height:580px;object-fit:contain;background:#ffffff;border-radius:12px">
+<div style="flex:1;display:flex;flex-direction:column;gap:24px">
+<p style="font-size:24px;color:#4a5562"><b>Validation</b>, 102 clips · matrix: plain prompt, <b>counts</b></p>
+<table style="font-size:26px;color:#2a2f38;background:#ffffff">
+<tr><th style="width:16%">Prompt</th><th style="width:14%;text-align:right">Top-1</th><th style="width:14%;text-align:right">Top-3</th><th style="width:14%;text-align:right">S</th><th style="width:42%">Most frequent answers</th></tr>
+<tr style="background:#dbe4f7"><td>plain</td><td style="text-align:right">0.520</td><td style="text-align:right">0.765</td><td style="text-align:right">0.902</td><td>US 50, Brazil 20, Spain 18</td></tr>
+<tr><td>cues</td><td style="text-align:right">0.441</td><td style="text-align:right">0.696</td><td style="text-align:right">0.789</td><td>Spain 58, Brazil 19, US 17</td></tr>
+</table>
+<ul style="font-size:28px;line-height:1.4">
+<li>Strong for zero-shot (0.902): it hears the language. Germany and Italy are answered for only 2 clips each; English singing is mapped to the US.</li>
+<li>The cue prompt is worse and pushes answers to Spain, so we use the plain one.</li>
+<li>Not in the B model: its top-1 matches Whisper on 71% of clips, so it mostly repeats the language cue (slide 18).</li>
+</ul>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6b7480">DLMAG HW1 · Task B · 19 / 23</p>
+</section>

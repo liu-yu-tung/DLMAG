@@ -1,0 +1,20 @@
+<section id="task-b" style="background:#f6f7f9;color:#2a2f38;font-family:'Source Sans 3', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<h2 style="font-family:'Lora', Georgia, serif;font-size:56px;font-weight:600;color:#22262e;line-height:1.15">Task B: errors follow the sung language</h2>
+<div style="display:flex;gap:64px;align-items:start">
+<img src="/_blob/4c19cfd50485225c11ce7455d3c9c9cf" alt="Task B validation confusion matrix of the submitted model, counts" style="width:600px;height:600px;object-fit:contain;background:#ffffff;border-radius:12px">
+<div style="flex:1;display:flex;flex-direction:column;gap:20px">
+<p style="font-size:24px;color:#4a5562"><b>Validation</b> · submitted model · <b>counts</b> · 17 clips per market</p>
+<div style="display:flex;gap:28px;align-items:center">
+<p style="font-family:'Lora', Georgia, serif;font-size:120px;font-weight:600;color:#2b59c3;line-height:1;white-space:nowrap">11 / 40</p>
+<p style="font-size:28px;line-height:1.4">top-1 errors are US and UK mixed up.</p>
+</div>
+<ul style="font-size:28px;line-height:1.4">
+<li>Easiest: Brazil 15/17 and Spain 13/17, with Portuguese and Spanish singing.</li>
+<li>Hardest: Germany 5/17, predicted as UK 4, Italy 4, US 2. UK is the most common wrong answer (15 of 40).</li>
+<li>Errors are not between neighbouring countries but between markets with similar sung language, mostly English.</li>
+<li>Market is not the same as language, but the model leans on it.</li>
+</ul>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6b7480">DLMAG HW1 · Task B · 17 / 23</p>
+</section>

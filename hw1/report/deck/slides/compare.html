@@ -1,0 +1,16 @@
+<section id="compare" style="background:#e8ecf2;color:#2a2f38;font-family:'Source Sans 3', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<h2 style="font-family:'Lora', Georgia, serif;font-size:56px;font-weight:600;color:#22262e;line-height:1.15">Models A and B: what is shared, what differs</h2>
+<div style="display:flex;flex-direction:column;gap:4px;background:#ffffff;padding:20px 32px;border:2px solid #2b59c3;border-radius:12px">
+<p style="font-size:26px;line-height:1.4"><b>Shared:</b> frozen MERT-v2 probe + MERT-v2 fine-tuned top 12 (same settings, 3 seeds), one temperature per component fit on train, equal-weight fusion, same selection protocol.</p>
+</div>
+<table style="font-size:26px;color:#2a2f38;background:#ffffff">
+<tr><th style="width:24%">Aspect</th><th style="width:38%">Task A: decade</th><th style="width:38%">Task B: market</th></tr>
+<tr><td>Classes</td><td>6 decades, ordered</td><td>6 countries, unordered</td></tr>
+<tr><td>Training labels</td><td>ordinal soft labels (0.1 per neighbouring decade)</td><td>plain one-hot labels</td></tr>
+<tr><td>Third component</td><td>Qwen2-Audio zero-shot label scores</td><td>Whisper language ID</td></tr>
+<tr><td>MERT-v2 layer sweep</td><td>flat: era cues in every layer</td><td>market cues in the upper layers</td></tr>
+<tr><td>Main error</td><td>the neighbouring decade</td><td>US and UK; Germany, Spain, Italy into UK</td></tr>
+<tr><td>Validation S</td><td>1.000 (fallback without Qwen: 0.996)</td><td>1.064</td></tr>
+</table>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6b7480">DLMAG HW1 · Common · 5 / 23</p>
+</section>

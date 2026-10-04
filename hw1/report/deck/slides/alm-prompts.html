@@ -1,0 +1,14 @@
+<section id="alm-prompts" style="background:#f6f7f9;color:#2a2f38;font-family:'Source Sans 3', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<h2 style="font-family:'Lora', Georgia, serif;font-size:56px;font-weight:600;color:#22262e;line-height:1.15">Qwen2-Audio zero-shot: prompts and parsing</h2>
+<table style="font-size:26px;color:#2a2f38;background:#ffffff">
+<tr><th style="width:16%">Prompt</th><th style="width:84%">Text (audio first, chat template)</th></tr>
+<tr><td>A plain</td><td>In which decade was this song released? Answer with one of: 1960s, 1970s, 1980s, 1990s, 2000s, 2010s.</td></tr>
+<tr><td>A cues</td><td>adds before it: Listen to the recording and production: audio fidelity, mixing and loudness, drum sound, synthesizers or electric guitars, and vocal style.</td></tr>
+<tr><td>B plain</td><td>This song was released in the 1980s. In which country was it released? Answer with one of: United States, United Kingdom, Brazil, Spain, Germany, Italy.</td></tr>
+<tr><td>B cues</td><td>adds after the first sentence: Listen to the language of the lyrics, the accent and singing style, and the musical genre.</td></tr>
+</table>
+<div style="display:flex;flex-direction:column;gap:8px;background:#ffffff;padding:28px 32px;border:2px solid #2b59c3;border-radius:12px">
+<p style="font-size:28px;line-height:1.4"><b>Parsing: none needed.</b> For each of the 6 labels we score log p(label text + end-of-turn token | audio, prompt) and rank them. Every clip gets a valid, ordered top-3, so there are <b>0 invalid outputs</b> by construction.</p>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6b7480">DLMAG HW1 · Common · 12 / 23</p>
+</section>
