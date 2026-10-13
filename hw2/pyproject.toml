@@ -1,0 +1,27 @@
+[project]
+name = "hw2"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "liuyu", email = "57765519+liu-yu-tung@users.noreply.github.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "matplotlib>=3.11.2",
+    "midi2audio>=0.1.1",
+    "miditoolkit>=1.0.1",
+    "numpy>=2.5.4",
+    "pandas>=3.0.6",
+    "pretty-midi>=0.2.11.post0",
+    "torch>=2.14.1",
+    "tqdm>=4.70.1",
+    "transformers>=5.19.0",
+]
+
+[project.scripts]
+hw2 = "hw2:main"
+
+[build-system]
+requires = ["uv_build>=0.13.0,<0.14.0"]
+build-backend = "uv_build"

@@ -54,3 +54,6 @@ lightning_logs/
 # Course material (not ours to redistribute)
 slides/
 *.pdf
+
+# Third-party clone (MusDr, cloned by hand; see hw2 README)
+hw2/scripts/ta/MusDr/
