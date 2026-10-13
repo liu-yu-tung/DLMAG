@@ -136,14 +136,14 @@ def process_pop909_dataset(dataset_path, POS_PER_BEAT=16, MAX_POSITIONS=128):
             # Extract Notes from tracks
             for inst in midi_data.instruments:  # POP909 has three tracks: MELODY, BRIDGE, PIANO
                 for note in inst.notes:
-                    bar, pos, b_len = time_to_grid(note.start, beat_times, beat_info)
+                    bar, pos, b_len = time_to_grid(note.start, beat_times, beat_info, POS_PER_BEAT)
                     dur = max(1, min(MAX_POSITIONS * 2, int(((note.end - note.start) / b_len) * POS_PER_BEAT)))
                     vel = max(1, note.velocity // 4 * 4 + 1)
                     all_events.append({"bar": bar, "pos": pos, "type": "note", "pitch": note.pitch, "vel": vel, "dur": dur})
 
             # Add tempo to events
             for t in tempo_events:
-                bar, pos, _ = time_to_grid(t["time"], beat_times, beat_info)
+                bar, pos, _ = time_to_grid(t["time"], beat_times, beat_info, POS_PER_BEAT)
                 val = max(30, min(210, int(t["qpm"]) // 5 * 5))
                 all_events.append({"bar": bar, "pos": pos, "type": "tempo", "val": val})
 
