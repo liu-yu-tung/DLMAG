@@ -69,7 +69,7 @@ def main():
     for d in map(Path, args.dirs):
         for piece in load_sequences(d / "sequences.json"):
             for r in curve(split_bars(piece["tokens"])):
-                rows.append({"set": d.name, "piece": piece["song_name"], **r})
+                rows.append({"set": f"{d.parent.name}/{d.name}", "piece": piece["song_name"], **r})
 
     _, val = split_songs(load_sequences(DATA_ROOT.parent / "tokens" / "ppb16" / "sequences.json"), args.n_val)
     rng = random.Random(args.seed)

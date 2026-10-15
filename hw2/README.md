@@ -73,16 +73,15 @@ These need the full uv environment (`uv sync`), POP909 in `data/POP909/`, and Mu
 The `Makefile` has the same steps as named targets (`make help` lists them). Settings at its top (checkpoints, sampling, output folders, the GPU start temperature) can be overridden per run, e.g. `make task-a TEMP=1.2 TOP_P=0.95`. Training targets first wait until the GPU is at or below `GPU_START_C` (75 C) and log GPU temperature and clocks to `runs/<run>_gpu.csv`.
 
 ```
-uv run python scripts/ta/tokenization.py --dataset_path data/POP909/training --tok2idx_output data/tokens/ppb16/tok2idx.json --sequences_output data/tokens/ppb16/sequences.json --pos_per_beat 16
-uv run python scripts/check_roundtrip.py
-uv run python scripts/baselines.py
-uv run python scripts/train.py --run_name gpt2_ppb16
-uv run python scripts/tokenize_bonus.py
-uv run python scripts/train.py --run_name bonus_ppb16 --tokens_dir data/tokens/bonus_ppb16 --max_steps 30000
-uv run python scripts/eval_generated.py <generated folders> --summary_csv results/<name>.csv
-uv run python scripts/exp4_prompt_fade.py <task b folders> --out results/exp4.csv
-uv run python scripts/bonus_baselines.py
+make setup
+make tokens check stats
+make train-main train-bonus train-plan-rep train-fill-rep
+make task-a task-b bonus eval-task-a eval-task-b
+make task-b-plan eval-task-b-plan PLAN_CKPT=checkpoints/plan_rep/best FILL_CKPT=checkpoints/fill_rep/best PLAN_RULES="--min_piano_bin 1 --cadence"
+make analyze
 ```
+
+Not in the Makefile: the sampling grid and checkpoint comparison (`scripts/eval_generated.py <folders> --summary_csv results/<name>.csv`), the prompt fade (`scripts/exp4_prompt_fade.py`), the bonus ablation (`scripts/bonus_ablation.py`, resumes finished runs) and its baselines (`scripts/bonus_baselines.py`).
 
 ## BONUS TASK tokens
 

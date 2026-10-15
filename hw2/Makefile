@@ -27,9 +27,9 @@ PLAN_TASK_B_DIR ?= outputs/task_b_plan
 BONUS_DIR ?= outputs/bonus_final
 
 SILENCE_DIRS ?= outputs/exp2/step_6000 outputs/exp2/loss_0.40 outputs/exp2/last outputs/plan_fill/melody_first outputs/plan_fill/piano_first \
-	$(wildcard outputs/plan_fill_v2/* outputs/plan_fill_rep/*)
-RETURN_DIRS ?= outputs/exp2/loss_0.40 outputs/exp2/last outputs/plan_fill/melody_first $(wildcard outputs/plan_fill_v2/* outputs/plan_fill_rep/*)
-ADHERENCE_DIRS ?= outputs/plan_fill/melody_first outputs/plan_fill/piano_first $(wildcard outputs/plan_fill_v2/* outputs/plan_fill_rep/*)
+	$(wildcard outputs/plan_fill_v2/* outputs/plan_fill_rep/* outputs/task_a_plan*/*)
+RETURN_DIRS ?= outputs/exp2/loss_0.40 outputs/exp2/last outputs/plan_fill/melody_first $(wildcard outputs/plan_fill_v2/* outputs/plan_fill_rep/* outputs/task_a_plan*/*)
+ADHERENCE_DIRS ?= outputs/plan_fill/melody_first outputs/plan_fill/piano_first $(wildcard outputs/plan_fill_v2/* outputs/plan_fill_rep/* outputs/task_a_plan*/*)
 
 GPU_LOG_QUERY := timestamp,temperature.gpu,utilization.gpu,clocks.sm,power.draw,clocks_throttle_reasons.active
 
