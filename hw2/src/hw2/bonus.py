@@ -1,16 +1,5 @@
-"""Bonus task: MELODY -> PIANO accompaniment with a decoder-only model on bar-interleaved tokens.
-
-Sequence: <BOS> then per bar: Bar Mel <melody notes> Acc <piano notes>, each note Pos_ Pitch_ Vel_ Dur_
-(same grid, velocity and duration bins as the TA tokenizer; no tempo tokens: timing comes from beat_midi.txt).
-At inference the Bar/Mel/melody/Acc part of each bar is forced and the piano notes are sampled until the
-model emits Bar.
-
-Variants (ablation), stored in variant.json next to the vocabulary:
-- lookahead: the melody block of bar b holds bar b+1's melody (bar 0's melody comes right after <BOS>),
-  so the piano of bar b is generated after seeing the melody one bar ahead.
-- chords: each bar starts with Chd and (Pos_, Chord_<root>_<quality>) pairs from chord_midi.txt; the chord
-  sounding at the bar start is repeated at Pos_0.
-"""
+"""BONUS TASK tokens (bar-interleaved MELODY/PIANO) and the POP909 readers that hw2.plan reuses. Token layout and
+ablation variants in the README."""
 
 import importlib.util
 import json

@@ -1,26 +1,5 @@
-"""Plan-then-fill pipeline: rule-based labels per bar, plan tokens (whole song) and fill blocks (per bar).
-
-Rules (all from the song's own MIDI, beat_midi.txt and chord_midi.txt):
-- Bars and positions: the TA tokenizer's grid (bar 0 may be a pickup), BRIDGE merged into PIANO.
-- Local key: Viterbi over the 12 major scales (a minor key counts as its relative major) on each bar's
-  duration-weighted pitch classes, with a switch penalty. The song is transposed so its first key is C
-  (shift in -5..6 semitones); KeyShift_<k> marks a bar whose key differs from the previous bar, k = key
-  relative to the first key.
-- Chords: the chord sounding at the bar start and at the half-bar beat, from chord_midi.txt, reduced by
-  bonus.chord_token. Plan tokens hold the degree above the local key; fill tokens hold the pitch class in the
-  transposed song (same Chord_<0-11>_<q> names).
-- Per bar and stream (MELODY, PIANO+BRIDGE): onsets in the bar and their mean duration in beats, as bins
-  0..7 (0 = empty bar, 1..7 = quantile bins of the nonzero training values, edges in bins.json).
-
-- Repeat label (only with repeat=True): how the bar's melody relates to the bar 2, 4, 8 or 16 bars back
-  (repeat_label): Rep_exact_L, Rep_var_L (pitches or timing changed), Rep_rhythm_L (same rhythm, new pitches)
-  or Rep_none.
-
-Plan sequence: <BOS> Tempo_<bpm> Meter_<4|6> Key_<0-11> then per bar [Sec every 8 bars] [KeyShift_k]
-Bar [Rep] Chord Chord PDen PDur MDen MDur, then <EOS>.
-Fill block of a bar: prefix = [Sec] [KeyShift_k] Bar [Rep] Chord Chord PDen PDur MDen MDur, then Mel <melody notes>
-and Acc <piano notes> in either order (chosen per training crop and at generation).
-"""
+"""Plan-fill pipeline: rule labels per bar, plan tokens (whole song) and fill blocks (per bar). Rules and token
+layout in the README."""
 
 from collections import Counter
 
