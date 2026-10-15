@@ -202,6 +202,7 @@ On a melody bar whose plan label is `Rep_<kind>_<L>`, add a logit bonus β to th
 | `free_bias16` | 0.33 | 0.62 | 19.0% / 6.6% / 6.1% | 0.86 | 0.092 / 0.071 / 0.099 |
 
 - The bonus works and scales with β: at β 8 the lag-2 and lag-8 melody repeats reach the real level; lag 4 stays low (0.075 vs 0.13).
+- Lag 4 stays low, and the plan asks for it less often than real songs have it: repeat labels on melody bars by lag, plans of `free` vs real held-out first 32 bars: lag 2 13.5% vs 14.3%, lag 4 9.4% vs 15.7%, lag 8 10.8% vs 11.0%, lag 16 3.7% vs 2.9%, none 62.7% vs 56.2% (437 vs 1002 melody bars).
 - Cost: the copy fights the planned density at large β (MDen within one bin 0.98 to 0.86 at β 16), and the model's own loss on its output rises (sampled NLL 1.32, 1.36, 1.41 for β 4, 8, 16). β 8 is the middle ground.
 - `form_IABAE_var_bias8`: the melody of A now comes back with changes. Melody theme return 42% of pieces (real 32-bar crops 43%, β 0: 0%, exact copy rule: 100%); exact match at lag 16 0.47 (copy rule 0.62); melody bars 24.3% exact, 13.9% varied, 10.1% rhythm repeats.
 - H1/H4/GS do not move (H4 2.59-2.64, GS 0.96-0.97).
@@ -217,3 +218,21 @@ On a melody bar whose plan label is `Rep_<kind>_<L>`, add a logit bonus β to th
 | t1.2 p1.0 | 2.61 | 0.936 | 0.802 | 0.665 |
 
 Real held-out continuations: 0.773. The plan keeps the key and harmony at t1.2, where the main model drifts. 3 pieces per config.
+
+## Candidate sets for the plan-fill system (2026-10-16 night; `task_a_plan.csv`, `task_b_plan.csv`, `task_b_plan_fade.csv`)
+
+Not chosen yet; made so the choice can be made by ear. Models `plan_rep` + `fill_rep`, `--repeat_bias 8`, one plan per piece shared by the three fill configs (the same configs as the main model's `TASK B`).
+
+`TASK A`: `outputs/task_a_plan_form_var_bias8/<config>`, `--form I4A8B8A8E4 --return_as var --min_piano_bin 1 --tempo_range 60,125 --cadence`, 20 pieces each.
+
+| Config | Melody theme return | Exact / varied repeats (melody bars) | Chord match | H4 | GS | Silent share |
+|---|---|---|---|---|---|---|
+| real 32-bar crops / held-out songs | 43% | 21.5% / 16.8% | 0.85 | 2.64 | 0.960 | 1.4% |
+| t0.8 p0.9 | 84% | 39.5% / 11.5% | 0.90 | 2.55 | 0.980 | 5.5% |
+| t1.0 p0.95 | 74% | 30.6% / 14.5% | 0.85 | 2.61 | 0.972 | 5.0% |
+| t1.2 p1.0 | 11% | 10.9% / 11.3% | 0.69 | 2.69 | 0.917 | 1.8% |
+
+- The configs span too repetitive (t0.8), close to real with more returns (t1.0 p0.95) and drifting off the planned chords (t1.2).
+- The extra silence at t0.8 and t1.0 p0.95 is spread over all bars (92-97% sounding per bar vs 98-99% for real songs). Note counts per piece are the same as at t1.2 and mean durations only slightly shorter (11.6-11.7 vs 12.9 sixteenths), so the cause is not found yet.
+
+`TASK B`: `outputs/task_b_plan_bias8/<config>` (rules as `task_b_plan`). Pitch-class similarity to the prompt over bars 9-32: 0.749 / 0.769 / 0.773 for t0.8 / t1.0 / t1.2 (without the bias 0.743 / 0.753 / 0.802; real 0.773). H4 2.49 / 2.51 / 2.60, GS 0.965 / 0.965 / 0.928.
