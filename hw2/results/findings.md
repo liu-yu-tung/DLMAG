@@ -1,6 +1,6 @@
 # Findings for the report
 
-Training-set statistics (896 songs in `data/POP909/training`), from `scripts/data_stats.py` (2026-10-15). Numbers below are copied from the CSVs next to this file.
+Data statistics (896 songs in `data/POP909/training`), analyses of generated pieces, and the decisions they led to. Each heading names the CSV next to this file and the script that writes it; numbers are copied from those CSVs.
 
 ## Notes heard longest give the chord (`chord_from_notes.csv`)
 
@@ -61,7 +61,7 @@ The spec says to use the whole training set (896 songs). `train.py` holds out 45
 
 ## Distributions of the plan features (`figures/data_distributions.png`, `progressions.csv`)
 
-From `scripts/plot_data_stats.py`. Key per song by Krumhansl-Kessler profile match (no key file in this copy of POP909; key changes inside a song not handled yet). Chords are degrees in the relative-major frame (a minor key's tonic is vi).
+From `scripts/plot_data_stats.py`. Key per song by Krumhansl-Kessler profile match (no key file in this copy of POP909; key changes inside a song are in the next section). Chords are degrees in the relative-major frame (a minor key's tonic is vi).
 
 - **Song length:** 77 bars median (p10 57, p90 112.5, range 12 to 193).
 - **Tempo:** 74 BPM median (p10 60, p90 116); 4 songs under 50 and 8 over 140 BPM, possibly beat tracking at half or double speed.
@@ -88,7 +88,7 @@ From `scripts/key_changes.py`. Local key per bar by Viterbi over the 12 major sc
 - At penalty 4, 80% of changes come after 70% of the song; 103 songs change once, 4 twice, none more.
 - Share of chord time whose triad fits the scale: 88.1% with one key per song, 90.9% with the local key.
 - Spot checks match the chord labels: song 010 G to Ab at bar 70 (Eb, Ab, Fm, Db after), 012 Eb to E at bar 53 (B as the pivot, then A, Abm, F#m, E), 025 A to C at bar 78 (G, C, Am, Em, F).
-- For the plan: one key token per song plus an optional key-change token (+1, +2, ...) at the section where it happens covers nearly all songs.
+- The plan uses this: one `Key_k` token per song and `KeyShift_k` (key relative to the first key) on the bar where the key changes (`src/hw2/plan.py`).
 
 ## Silent starts in rendered audio (2026-10-16)
 
@@ -115,7 +115,7 @@ All on the TA tick grid, 16th-note slots. Real reference: 32-bar crops of POP909
 - 8-bar windows, wrapping past bar 32 (offset 4: the last window is bars 29-32 then 1-4), so every offset covers every bar once. Contrast between windows is flat across offsets in real songs (0.029 at every offset for inside crops) and in generated pieces: note density does not mark an 8-bar section grid. The only position effect is the intro: bars 1-8 are thinner in real songs (bar 1: 10-12 notes and 66-75% sounding, a pickup bar) and in generated pieces.
 - Plan-fill sections build up: notes per bar rise from about 19.7 at the first bar of each 8-bar section to 22.2 at the last (bars 9-32); real songs are flat (21.4 to 21.4 inside songs).
 - Start/end return (pitch-class content per bar, cosine, bars aligned): in whole POP909 songs bars 1-8 vs the last 8 bars score 0.50-0.53, below the mean pair of windows (0.59). With any start in the last 16 bars the best match is 0.68 vs 0.82 for the best match in the middle; the end beats the middle in 15% of songs. POP909 songs reuse their opening mid-song more than at the end.
-- Repetition is the larger form gap: the best-matching pair of 8-bar windows in a real 32-bar crop scores 0.79-0.81, in generated pieces 0.64-0.70. Real crops contain a near-repeated section; generated pieces do not.
+- Repetition is the larger form gap: the best-matching pair of 8-bar windows in a real 32-bar crop scores 0.79-0.81, in generated pieces 0.64-0.70. Real crops contain a near-repeated section; generated pieces do not (before the form rule and repeat labels, see the sections below).
 
 ## Theme return and repetition period (`return.csv`, `return_lags.csv`, `figures/return_lags.png`, `scripts/return_stats.py`)
 
@@ -148,3 +148,72 @@ Reference runs for the form rule: the repeated section copies the plan and the m
 - `form_IABCAE` (`I4A8B8C4A6E2`, A returns 20 bars later for 6 bars): melody theme-to-end cosine 0.78; a full 8-bar return (>= 0.85) in 50% of pieces, since the last window also holds the 2 E bars.
 - Short periods stay missing: at lags 4 and 8 the melody exact match is 0.06 / 0.06 (real 0.13 / 0.15) and piano cosine 0.49 / 0.55 (real 0.63 / 0.66). The rule gives one long return, not the 4- and 8-bar repeats inside sections.
 - Silence and density: silent share 0.017 (real song starts 0.016), no empty bars, longest melody gap 1.6-1.9 bars (real starts 1.7, `gaps_intro_cadence` 5.2). Notes per bar 18.3 (real starts 19.9); contrast in notes between 8-bar windows 5.2-6.4 (real starts 9.1, real inside 6.7).
+
+## Plan adherence (`adherence.csv`, `scripts/adherence.py`)
+
+The written notes of each plan-fill piece, labelled again by the training rules and compared with the plan, bar by bar. Chord: the maj/min triad the piano holds longest in each half bar vs the planned chord (real held-out songs vs their `chord_midi.txt` labels give the reference, 0.85). Bins and repeat labels of real songs match by construction (1.0).
+
+| Source | Chord match | PDen exact / within 1 | MDen exact / within 1 | Melody bars with an exact / varied / rhythm repeat |
+|---|---|---|---|---|
+| real held-out | 0.85 | 1 / 1 | 1 / 1 | 21.5% / 16.8% / 14.0% |
+| v1 melody-first | 0.84 | 0.58 / 0.96 | 0.75 / 0.98 | 3.7% / 11.8% / 15.5% |
+| v2 `gaps_intro_cadence` | 0.85 | 0.55 / 0.95 | 0.70 / 0.96 | 2.4% / 11.2% / 11.6% |
+| v2 `form_IABAE` (melody copy) | 0.82 | 0.57 / 0.95 | 0.66 / 0.97 | 32.0% / 8.6% / 7.7% |
+| rep `free` | 0.81 | 0.61 / 0.95 | 0.81 / 0.98 | 1.6% / 6.6% / 14.6% |
+
+- The fill model follows the chords as well as real piano parts follow their labels, and density bins within one step 94-98% of the time.
+- Generated melodies almost never repeat exactly (2-4% of melody bars vs 21.5%); varied and rhythm repeats are closer to real.
+
+## Repeat labels in generation (`outputs/plan_fill_rep/*`, models `plan_rep`, `fill_rep`)
+
+Models trained 2026-10-16 on `data/tokens/{plan,fill}_rep`: `plan_rep` best val 1.187 (step 3600 of 4000), `fill_rep` best val 1.354 (step 6000 of 10000, then overfits; `fill_v1` without labels: 1.325, not directly comparable since the label tokens are in the loss). Runs: `free` (labels from the plan model, same rules as `gaps_intro_cadence`), `free_drop_repeat` (same plans, labels left out of the fill prefix), `form_IABAE_var` (`--form I4A8B8A8E4 --return_as var`).
+
+- The fill model ignores the labels. Bars the plan marks as a repeat (163 in `free`): the asked label is written 4.3% of the time, any repeat at the asked lag 13.5%. Without labels on the same plans: 21.3%. Bars marked `Rep_none` stay non-repeats 85% of the time.
+- `form_IABAE_var`: the plan of A comes back (piano pitch-class cosine 0.80 at lag 16) but the melody does not (melody theme return 0%, exact match at lag 16 0.08 vs 0.62 with the copy rule).
+- Lag profile unchanged: no peaks at 4 and 8 bars in `free` (melody exact 0.05 / 0.07 vs real 0.13 / 0.11-0.15).
+- H1/H4/GS stay at the real level for every plan-fill run (`plan_fill_v2.csv`: H4 2.58-2.63, GS 0.95-0.97; real 32-bar crops 2.64 / 0.960), so these metrics do not see the missing repetition.
+- `free` has more silence than `gaps_intro_cadence` (4.0% vs 1.7%, one 1-bar gap in 20 pieces); `free_drop_repeat` 3.0%.
+
+### Why: the model copies under teacher forcing, sampling loses it (`repeat_probe.csv`, `scripts/repeat_probe.py`)
+
+Teacher-forced loss on the melody tokens of the 45 held-out songs (bars with at least 16 bars of context), by the bar's true repeat kind:
+
+| Model, labels | Exact | Varied | Rhythm | None | Pitch tokens: exact / none |
+|---|---|---|---|---|---|
+| `fill_rep`, true labels | 0.585 | 1.145 | 1.183 | 1.425 | 0.223 / 1.461 |
+| `fill_rep`, all `Rep_none` | 0.715 | 1.156 | 1.183 | 1.428 | 0.482 / 1.465 |
+| `fill_rep`, labels removed | 0.641 | 1.146 | 1.188 | 1.433 | 0.361 / 1.486 |
+| `fill_v1` (no labels) | 0.554 | 1.126 | 1.178 | 1.421 | 0.274 / 1.485 |
+
+- With the real earlier bar in context, both fill models predict exact repeats well (pitch loss 0.22-0.48 vs about 1.47 for new material), with or without labels: they copy from context.
+- The label helps a little for exact repeats (0.22 with the true label vs 0.48 when told `Rep_none`) and not at all for varied and rhythm repeats.
+- In generation the copy is lost: an exact bar is about 24 tokens, and once one early token is sampled differently the bar is no longer a repeat. Inspecting one labelled bar: the model put p = 0.999 on `Pos_0` and p ≈ 0 on the source bar's first onset, so the label did not steer even the first note (why is not checked).
+
+### Fix at sampling time: `--repeat_bias` (`RepeatGuide` in `src/hw2/plan_generate.py`)
+
+On a melody bar whose plan label is `Rep_<kind>_<L>`, add a logit bonus β to the source bar's next note (bar b-L, moved to the bar's key), matched by position so one changed note does not shift the rest: exact = onset, pitch, velocity, duration; var = the same at β/2; rhythm = all but pitch. Same plans as `free` (`--plans_from`), 20 pieces each; `form_IABAE_var` plans with β 8.
+
+| Run | Asked kind written at the lag | Any repeat at the asked lag | Melody bars: exact / var / rhythm | MDen within 1 | Melody exact match, lag 2 / 4 / 8 |
+|---|---|---|---|---|---|
+| real held-out | 1 | 1 | 21.5% / 16.8% / 14.0% | 1 | 0.095 / 0.127 / 0.112 |
+| `free` (β 0) | 0.05 | 0.14 | 1.6% / 6.6% / 14.6% | 0.98 | 0.059 / 0.053 / 0.065 |
+| `free_bias4` | 0.18 | 0.36 | 6.6% / 11.4% / 11.2% | 0.97 | 0.084 / 0.066 / 0.090 |
+| `free_bias8` | 0.26 | 0.44 | 11.9% / 9.6% / 6.4% | 0.94 | 0.084 / 0.075 / 0.101 |
+| `free_bias16` | 0.33 | 0.62 | 19.0% / 6.6% / 6.1% | 0.86 | 0.092 / 0.071 / 0.099 |
+
+- The bonus works and scales with β: at β 8 the lag-2 and lag-8 melody repeats reach the real level; lag 4 stays low (0.075 vs 0.13).
+- Cost: the copy fights the planned density at large β (MDen within one bin 0.98 to 0.86 at β 16), and the model's own loss on its output rises (sampled NLL 1.32, 1.36, 1.41 for β 4, 8, 16). β 8 is the middle ground.
+- `form_IABAE_var_bias8`: the melody of A now comes back with changes. Melody theme return 42% of pieces (real 32-bar crops 43%, β 0: 0%, exact copy rule: 100%); exact match at lag 16 0.47 (copy rule 0.62); melody bars 24.3% exact, 13.9% varied, 10.1% rhythm repeats.
+- H1/H4/GS do not move (H4 2.59-2.64, GS 0.96-0.97).
+
+## TASK B with plan-fill (`task_b_plan.csv`, `task_b_plan_fade.csv`, `outputs/task_b_plan/*`)
+
+`make task-b-plan PLAN_CKPT=checkpoints/plan_rep/best FILL_CKPT=checkpoints/fill_rep/best PLAN_RULES="--min_piano_bin 1 --cadence"`: each prompt folder is labelled by the training rules, the plan model continues the 8-bar plan to 32 bars, the fill model writes bars 9-32 after the forced prompt notes. The prompt bars in the output match the TA prompt tokens note for note. One plan per prompt, filled with the same three configs as the main model's `TASK B`. Prompt 001 has no MELODY track; `--melody_by_bar 9` makes the melody enter in bar 9.
+
+| Config | H4 | GS | Pitch-class similarity to the prompt, bars 9-32 | Main model `step_6000`, same config (`exp4.csv`) |
+|---|---|---|---|---|
+| t0.8 p0.9 | 2.49 | 0.965 | 0.743 | 0.758 |
+| t1.0 p0.95 | 2.50 | 0.966 | 0.753 | 0.747 |
+| t1.2 p1.0 | 2.61 | 0.936 | 0.802 | 0.665 |
+
+Real held-out continuations: 0.773. The plan keeps the key and harmony at t1.2, where the main model drifts. 3 pieces per config.

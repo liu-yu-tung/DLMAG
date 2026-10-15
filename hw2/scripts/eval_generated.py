@@ -1,7 +1,7 @@
 """Evaluate generated sets: H1/H4/GS (TA functions), sampled-token NLL, copy rate vs. training songs.
 
 Each argument is a folder with sequences.json (and gen_info.json) from generate_uncond.py / generate_cont.py.
-Appends one row per folder to --summary_csv and writes <folder>/metrics.csv.
+Writes one row per folder to --summary_csv (replacing that folder's earlier row) and <folder>/metrics.csv.
 
 uv run python scripts/eval_generated.py outputs/exp1/* --summary_csv results/exp1.csv
 """
@@ -55,7 +55,8 @@ def main():
     out.parent.mkdir(parents=True, exist_ok=True)
     new = pd.DataFrame(rows).round(4)
     if out.exists():
-        new = pd.concat([pd.read_csv(out), new], ignore_index=True)
+        old = pd.read_csv(out)
+        new = pd.concat([old[~old["dir"].isin(new["dir"])], new], ignore_index=True)
     new.to_csv(out, index=False)
 
 

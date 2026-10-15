@@ -195,7 +195,7 @@ def plot_lags(prof: pd.DataFrame, path: Path):
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     sources = list(prof.index.get_level_values("source").unique())
-    colors = dict(zip(sources, plt.cm.tab10.colors))
+    colors = dict(zip(sources, plt.cm.tab20.colors))
     fig, axes = plt.subplots(2, len(PARTS), figsize=(13, 7), sharex=True)
     for col, part in enumerate(PARTS):
         for row, metric in enumerate(("cosine", "exact")):
