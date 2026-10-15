@@ -164,6 +164,11 @@ def process_pop909_dataset(dataset_path, POS_PER_BEAT=16, MAX_POSITIONS=128):
             if first_note_bar is None:
                 continue
 
+            # Carry the last tempo set before first_note_bar into it, so songs whose only tempo event sits in a silent intro keep a Tempo token
+            intro_tempos = [e for b in range(first_note_bar) for e in sorted(bars.get(b, []), key=lambda e: e["pos"]) if e["type"] == "tempo"]
+            if intro_tempos and not any(e["type"] == "tempo" and e["pos"] == 0 for e in bars.get(first_note_bar, [])):
+                bars.setdefault(first_note_bar, []).append({**intro_tempos[-1], "bar": first_note_bar, "pos": 0})
+
             seq_rep2 = ["<BOS>"]
             for bar_idx in range(first_note_bar, max_bar + 1):
                 seq_rep2.append("Bar")

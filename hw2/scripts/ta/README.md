@@ -4,6 +4,7 @@ These files come from `HW2_scripts.zip`, provided by the HW2 TA (Bo-Rui Chen) fo
 
 Changes from the original:
 - `tokenization.py` lines 139 and 146: pass `POS_PER_BEAT` to `time_to_grid`. The original always used 16 positions per beat on the grid, so `--pos_per_beat` other than 16 produced `Pos_` tokens outside the vocabulary.
+- `tokenization.py` after `first_note_bar` is found: carry the last tempo set before the first note bar into that bar at `Pos_0`. The original dropped every event before the first note bar, so 237 of the 896 training songs (those whose only tempo event sits in a silent intro) had no `Tempo` token.
 
 `eval_basic.py` imports MusDr from `./MusDr` (not committed). Clone it next to the scripts:
 
