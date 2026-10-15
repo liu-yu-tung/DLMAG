@@ -1,0 +1,695 @@
+<title>HW2 Blind Listening</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+:root {
+  --bg: #eef1f5;
+  --sheet: #ffffff;
+  --ink: #18202c;
+  --muted: #5d6878;
+  --line: #d5dbe4;
+  --accent: #2c55c9;
+  --accent-ink: #ffffff;
+  --accent-soft: #e2e9fb;
+  --ok: #1d7a4c;
+  --warn: #a35a00;
+  --font-ui: "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-num: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  /* The roll is a dark stage in both themes, like a live-coding visualizer. */
+  --roll-bg: #0b0e14;
+  --roll-grid: #1f2633;
+  --roll-text: #6f7b8f;
+  --roll-head: #f2f4f8;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12161d; --sheet: #1b212b; --ink: #e6eaf1; --muted: #9aa5b5; --line: #2e3744;
+    --accent: #7c9cf0; --accent-ink: #0f1420; --accent-soft: #232f4a; --ok: #5cc48e; --warn: #f0a94a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12161d; --sheet: #1b212b; --ink: #e6eaf1; --muted: #9aa5b5; --line: #2e3744;
+  --accent: #7c9cf0; --accent-ink: #0f1420; --accent-soft: #232f4a; --ok: #5cc48e; --warn: #f0a94a;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-ui); font-size: 16px; line-height: 1.45; }
+.wrap { max-width: 640px; margin: 0 auto; padding-inline: 16px; padding-block: 0 48px; }
+
+.bar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: var(--bg); border-bottom: 1px solid var(--line);
+  padding-block: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;
+}
+.bar h1 { font-size: 1.05rem; font-weight: 700; margin: 0; flex: 1 1 auto; text-wrap: balance; }
+.bar select {
+  font: inherit; font-size: 0.95rem; color: var(--ink); background: var(--sheet);
+  border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; max-width: 100%;
+}
+.progress { font-family: var(--font-num); font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.progress b { color: var(--ink); font-weight: 600; }
+.meter { flex-basis: 100%; height: 4px; background: var(--line); border-radius: 2px; overflow: hidden; }
+.meter i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s; }
+
+.intro { color: var(--muted); font-size: 0.92rem; margin-block: 16px 8px; max-width: 62ch; }
+.intro p { margin: 0 0 6px; }
+.banner { border: 1px solid var(--warn); color: var(--warn); border-radius: 8px; padding: 10px 12px; font-size: 0.9rem; margin-block: 12px; }
+
+.rules { background: var(--sheet); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; margin-block: 8px 4px; font-size: 0.9rem; }
+.rules summary { cursor: pointer; font-weight: 500; }
+.rules p { margin: 8px 0 0; color: var(--muted); }
+.rules dl { margin: 8px 0 0; display: grid; grid-template-columns: max-content 1fr; gap: 4px 10px; color: var(--muted); }
+.rules dt { color: var(--ink); font-weight: 500; }
+.rules dd { margin: 0; }
+
+.clips { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+.clip { background: var(--sheet); border: 1px solid var(--line); border-radius: 10px; scroll-margin-top: 96px; }
+.clip.open { border-color: var(--accent); }
+.clip-head {
+  width: 100%; display: flex; align-items: center; gap: 10px; padding: 14px; min-height: 52px;
+  font: inherit; color: var(--ink); background: transparent; border: 0; border-radius: 10px; cursor: pointer; text-align: left;
+}
+.clip-head:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.chev { width: 10px; height: 10px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(-45deg); transition: transform .15s; flex: none; }
+.clip.open .chev { transform: rotate(45deg); }
+.clip-name { font-family: var(--font-num); font-weight: 600; font-size: 1.1rem; letter-spacing: 0.02em; white-space: nowrap; flex: none; }
+.clip-head .status { flex: 1 1 auto; min-width: 0; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.count { font-family: var(--font-num); font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.count.done { color: var(--ok); font-weight: 600; }
+.clip-body { padding: 0 14px 14px; display: flex; flex-direction: column; gap: 14px; }
+.clip-body[hidden] { display: none; }
+.status { font-size: 0.8rem; color: var(--muted); font-family: var(--font-num); }
+.status.ok { color: var(--ok); }
+.status.err { color: var(--warn); }
+audio { width: 100%; height: 40px; }
+
+.scale { display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid var(--line); }
+.scale-top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.scale-label { font-weight: 600; font-size: 0.95rem; }
+.scale-label small { display: block; color: var(--muted); font-weight: 400; font-size: 0.85rem; line-height: 1.35; }
+.scale details { font-size: 0.85rem; color: var(--muted); }
+.scale details summary { cursor: pointer; color: var(--accent); width: max-content; }
+.scale details p { margin: 6px 0 0; }
+.scale details b { color: var(--ink); font-weight: 500; }
+.scale details ol { margin: 6px 0 0; padding-left: 0; list-style: none; display: grid; grid-template-columns: max-content 1fr; gap: 3px 8px; }
+.scale details li { display: contents; }
+.scale details li span { font-family: var(--font-num); color: var(--ink); }
+.pips { display: grid; grid-template-columns: repeat(4, 1fr .72fr) 1fr; gap: 4px; }
+.pip {
+  font-family: var(--font-num); font-size: 1rem; font-variant-numeric: tabular-nums; padding: 0;
+  min-height: 42px; border-radius: 6px; border: 1px solid var(--line);
+  background: transparent; color: var(--ink); cursor: pointer;
+}
+.pip.half { font-size: 0.72rem; color: var(--muted); border-style: dashed; }
+.pip:hover { border-color: var(--accent); }
+.pip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); border-style: solid; color: var(--accent-ink); font-weight: 600; }
+.pip:focus-visible, select:focus-visible, textarea:focus-visible, .chip:focus-visible, .next:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.anchor { font-size: 0.85rem; min-height: 1.35em; color: var(--ink); }
+.anchor:empty::before { content: "Not scored yet"; color: var(--muted); }
+.anchor b { font-family: var(--font-num); }
+
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  font: inherit; font-size: 0.85rem; padding: 6px 10px; min-height: 36px; border-radius: 18px;
+  border: 1px solid var(--line); background: transparent; color: var(--muted); cursor: pointer;
+}
+.chip[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--ink); font-weight: 500; }
+.next {
+  align-self: flex-end; font: inherit; font-size: 0.95rem; font-weight: 500; padding: 10px 16px; min-height: 44px;
+  border-radius: 8px; border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink); cursor: pointer;
+}
+
+textarea {
+  width: 100%; min-height: 64px; resize: vertical; font: inherit; font-size: 0.95rem;
+  color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+}
+.note-label { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+.session-note { margin-top: 20px; display: flex; flex-direction: column; gap: 6px; }
+.session-note h2 { font-size: 0.95rem; margin: 0; }
+
+.roll { display: flex; flex-direction: column; gap: 6px; }
+.roll-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.seg button {
+  font: inherit; font-size: 0.8rem; padding: 5px 12px; border: 0; background: transparent; color: var(--muted); cursor: pointer;
+}
+.seg button[aria-pressed="true"] { background: var(--accent-soft); color: var(--ink); font-weight: 500; }
+.seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.where { font-family: var(--font-num); font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+canvas.pr { width: 100%; height: 168px; display: block; border-radius: 8px; background: var(--roll-bg); touch-action: manipulation; cursor: pointer; }
+
+@media (prefers-reduced-motion: reduce) { .meter i, .chev { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header class="bar">
+    <h1>Blind listening</h1>
+    <select id="session" aria-label="Session"></select>
+    <span class="progress" id="progress"></span>
+    <div class="meter" aria-hidden="true"><i id="meter"></i></div>
+  </header>
+
+  <section class="intro">
+    <p>Tap a clip to open it; it closes when you open the next one with "Next clip". Clip names are shuffled; which model made which clip stays hidden until you are done.</p>
+    <p>The piano roll follows the audio: Follow scrolls with the playhead, Whole shows the full clip. Tap the roll to jump; numbers on top are bars.</p>
+    <p>Tap a selected score again to clear it. Every tap and note saves to this page.</p>
+  </section>
+  <details class="rules" id="rules" open>
+    <summary>How to score</summary>
+    <div id="rules-body"></div>
+  </details>
+
+  <div class="banner" id="banner" hidden></div>
+  <div class="clips" id="clips"><p class="intro">Loading clips...</p></div>
+
+  <section class="session-note">
+    <h2>Notes on the whole session</h2>
+    <label class="note-label" for="session-note">Anything that held across clips</label>
+    <textarea id="session-note" placeholder="e.g. most clips lose the beat after bar 20"></textarea>
+    <span class="status" id="session-note-status"></span>
+  </section>
+</div>
+
+<script type="application/json" id="manifest">[]</script>
+<!--AUDIO-->
+<script>
+const DRAFT_KEY = "hw2-listening-drafts";
+const OPEN_KEY = "hw2-listening-open";
+const HALVES = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
+
+let sessions = [];
+let current = null;
+let criteria = [];
+let tagList = [];
+const ratings = {};
+const writers = {};
+const noteTimers = {};
+const cards = new Map();
+let db = null;
+
+function docId(session, clip) { return `${session}__${clip}`; }
+function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+function loadDrafts() {
+  try { return JSON.parse(localStorage.getItem(DRAFT_KEY) || "{}"); } catch (e) { return {}; }
+}
+function saveDraft(id, body) {
+  try { const d = loadDrafts(); d[id] = body; localStorage.setItem(DRAFT_KEY, JSON.stringify(d)); } catch (e) {}
+}
+function loadOpen() {
+  try { return new Set(JSON.parse(localStorage.getItem(OPEN_KEY) || "[]")); } catch (e) { return new Set(); }
+}
+function saveOpen() {
+  const ids = [...cards].filter(([, c]) => c.classList.contains("open")).map(([id]) => id);
+  try { localStorage.setItem(OPEN_KEY, JSON.stringify(ids)); } catch (e) {}
+}
+
+function nScored(body) { return body ? criteria.filter(c => Number.isFinite(body[c.key])).length : 0; }
+function isRated(body) { return criteria.length > 0 && nScored(body) === criteria.length; }
+
+function anchorText(c, v) {
+  if (!Number.isFinite(v)) return "";
+  if (Number.isInteger(v)) return c.anchors[String(v)] || "";
+  return `between ${Math.floor(v)} and ${Math.ceil(v)}`;
+}
+
+function renderProgress() {
+  if (!current) return;
+  const n = current.clips.length;
+  const done = current.clips.filter(c => isRated(ratings[docId(current.id, c.id)])).length;
+  document.getElementById("progress").innerHTML = `<b>${done}</b> / ${n} rated`;
+  document.getElementById("meter").style.width = `${n ? (100 * done / n) : 0}%`;
+}
+
+function renderCount(id) {
+  const c = document.getElementById(`count-${id}`);
+  if (!c) return;
+  const k = nScored(ratings[id]);
+  c.textContent = `${k}/${criteria.length}`;
+  c.classList.toggle("done", k === criteria.length);
+}
+
+function setStatus(id, text, cls) {
+  const s = document.getElementById(`status-${id}`);
+  if (!s) return;
+  s.textContent = text;
+  s.className = "status" + (cls ? " " + cls : "");
+}
+
+async function write(id, path) {
+  const w = writers[id] || (writers[id] = { busy: false, next: null });
+  w.next = ratings[id];
+  if (w.busy) return;
+  w.busy = true;
+  while (w.next) {
+    const body = { ...w.next, updatedAt: new Date().toISOString() };
+    w.next = null;
+    setStatus(id, "Saving...", "");
+    try {
+      await db.doc(path).set(body);
+      if (!w.next) setStatus(id, "Saved", "ok");
+    } catch (e) {
+      if (e && e.code === "unavailable") { w.next = w.next || body; await new Promise(r => setTimeout(r, 800 + Math.random() * 800)); continue; }
+      setStatus(id, "Not saved: " + (e && e.code ? e.code : "error") + ". Kept on this phone.", "err");
+    }
+  }
+  w.busy = false;
+}
+
+function persist(session, clip) {
+  const id = docId(session, clip);
+  ratings[id].updatedAt = new Date().toISOString();
+  saveDraft(id, ratings[id]);
+  if (db) write(id, `ratings/${id}`);
+  else setStatus(id, "Kept on this phone only", "err");
+  renderCount(id);
+  renderProgress();
+}
+
+function renderRules(rubric) {
+  const box = document.getElementById("rules-body");
+  box.innerHTML = "";
+  for (const r of rubric.rules) box.appendChild(el("p", null, r));
+  if (rubric.tags.length) {
+    box.appendChild(el("p", null, "Issue tags (tick any that apply):"));
+    const dl = el("dl");
+    for (const t of rubric.tags) dl.append(el("dt", null, t.label), el("dd", null, t.desc));
+    box.appendChild(dl);
+  }
+}
+
+function setOpen(card, open) {
+  card.classList.toggle("open", open);
+  card.querySelector(".clip-head").setAttribute("aria-expanded", open ? "true" : "false");
+  card.querySelector(".clip-body").hidden = !open;
+  if (open) requestAnimationFrame(() => card._roll.draw());
+  else card.querySelector("audio").pause();
+}
+
+function scaleRow(c, id, cur, persistClip) {
+  const row = el("div", "scale");
+  row.setAttribute("role", "group");
+  row.setAttribute("aria-label", c.label);
+  const top = el("div", "scale-top");
+  const label = el("div", "scale-label", c.label);
+  label.appendChild(el("small", null, c.question));
+  top.appendChild(label);
+  row.appendChild(top);
+
+  const pips = el("div", "pips");
+  const anchor = el("div", "anchor");
+  anchor.id = `anchor-${id}-${c.key}`;
+  const show = v => {
+    pips.querySelectorAll(".pip").forEach(p => p.setAttribute("aria-pressed", Number(p.dataset.v) === v ? "true" : "false"));
+    anchor.textContent = "";
+    if (Number.isFinite(v)) { anchor.append(el("b", null, String(v)), " " + anchorText(c, v)); }
+  };
+  for (const v of HALVES) {
+    const b = el("button", Number.isInteger(v) ? "pip" : "pip half", String(v));
+    b.type = "button";
+    b.dataset.v = v;
+    b.id = `pip-${id}-${c.key}-${v}`;
+    b.setAttribute("aria-label", `${c.label} ${v}`);
+    b.addEventListener("click", () => {
+      const r = cur();
+      r[c.key] = r[c.key] === v ? null : v;
+      show(r[c.key]);
+      persistClip();
+    });
+    pips.appendChild(b);
+  }
+  row.append(pips, anchor);
+  row._show = show;
+
+  const more = el("details");
+  more.appendChild(el("summary", null, "What to listen for"));
+  for (const [name, field] of [["Scope", "scope"], ["Listen for", "listen"], ["Not here", "not"]]) {
+    if (!c[field]) continue;
+    const p = el("p");
+    p.append(el("b", null, name + ": "), c[field]);
+    more.appendChild(p);
+  }
+  const ol = el("ol");
+  for (const k of ["5", "4", "3", "2", "1"]) {
+    if (!c.anchors[k]) continue;
+    const li = el("li");
+    li.append(el("span", null, k), el("div", null, c.anchors[k]));
+    ol.appendChild(li);
+  }
+  more.appendChild(ol);
+  row.appendChild(more);
+  show(cur()[c.key]);
+  return row;
+}
+
+function clipCard(session, clip, index, openSet) {
+  const id = docId(session.id, clip.id);
+  const cur = () => ratings[id] || (ratings[id] = { session: session.id, clip: clip.id });
+  const persistClip = () => persist(session.id, clip.id);
+  const card = el("article", "clip");
+  card.id = `clip-${id}`;
+
+  const head = el("button", "clip-head");
+  head.type = "button";
+  head.setAttribute("aria-controls", `body-${id}`);
+  head.append(el("span", "chev"), el("span", "clip-name", clip.id.replace("_", " ")));
+  const count = el("span", "count");
+  count.id = `count-${id}`;
+  const status = el("span", "status", isRated(cur()) ? "Saved" : "");
+  status.id = `status-${id}`;
+  if (isRated(cur())) status.classList.add("ok");
+  head.append(status, count);
+  head.addEventListener("click", () => { setOpen(card, !card.classList.contains("open")); saveOpen(); });
+
+  const body = el("div", "clip-body");
+  body.id = `body-${id}`;
+  body.innerHTML = `
+    <audio controls preload="none"></audio>
+    <div class="roll">
+      <div class="roll-bar">
+        <div class="seg" role="group" aria-label="Piano roll view">
+          <button type="button" data-mode="follow">Follow</button>
+          <button type="button" data-mode="whole">Whole</button>
+        </div>
+        <span class="where" aria-live="off"></span>
+      </div>
+      <canvas class="pr" aria-label="Piano roll; tap to jump"></canvas>
+    </div>`;
+  card.append(head, body);
+  const audio = body.querySelector("audio");
+  const blob = document.getElementById(`audio-${session.id}-${clip.id}`);
+  if (blob) {
+    const bin = atob(blob.textContent.trim());
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    audio.src = URL.createObjectURL(new Blob([bytes], { type: clip.mime }));
+  }
+  audio.addEventListener("error", e => {
+    const a = e.target;
+    setStatus(id, `Audio failed to load (code ${a.error ? a.error.code : "?"})`, "err");
+  });
+  card._roll = attachRoll(card, clip);
+
+  card._rows = criteria.map(c => {
+    const row = scaleRow(c, id, cur, persistClip);
+    body.appendChild(row);
+    return [c.key, row];
+  });
+
+  if (tagList.length) {
+    const tl = el("div", "note-label", "Issues");
+    const tags = el("div", "tags");
+    tags.setAttribute("role", "group");
+    tags.setAttribute("aria-label", "Issue tags");
+    for (const t of tagList) {
+      const chip = el("button", "chip", t.label);
+      chip.type = "button";
+      chip.title = t.desc;
+      chip.dataset.tag = t.key;
+      chip.addEventListener("click", () => {
+        const r = cur();
+        const set = new Set(r.tags || []);
+        set.has(t.key) ? set.delete(t.key) : set.add(t.key);
+        r.tags = tagList.map(x => x.key).filter(k => set.has(k));
+        chip.setAttribute("aria-pressed", set.has(t.key) ? "true" : "false");
+        persistClip();
+      });
+      tags.appendChild(chip);
+    }
+    card._tags = tags;
+    body.append(tl, tags);
+  }
+
+  const noteLabel = el("label", "note-label", "Comment");
+  noteLabel.htmlFor = `note-${id}`;
+  const note = el("textarea");
+  note.id = `note-${id}`;
+  note.placeholder = "What you heard and where (bar number from the roll)";
+  note.value = cur().note || "";
+  const flush = () => { clearTimeout(noteTimers[id]); const r = cur(); if ((r.note || "") !== note.value) { r.note = note.value; persistClip(); } };
+  note.addEventListener("input", () => { clearTimeout(noteTimers[id]); noteTimers[id] = setTimeout(flush, 900); });
+  note.addEventListener("blur", flush);
+  body.append(noteLabel, note);
+
+  const last = index === session.clips.length - 1;
+  const next = el("button", "next", last ? "Close clip" : "Next clip");
+  next.type = "button";
+  next.addEventListener("click", () => {
+    flush();
+    setOpen(card, false);
+    const nextCard = last ? null : cards.get(docId(session.id, session.clips[index + 1].id));
+    if (nextCard) setOpen(nextCard, true);
+    saveOpen();
+    (nextCard || card).scrollIntoView({ block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  });
+  body.appendChild(next);
+
+  cards.set(id, card);
+  setOpen(card, openSet.has(id));
+  return card;
+}
+
+function renderSession() {
+  const box = document.getElementById("clips");
+  box.innerHTML = "";
+  rolls.clear();
+  cards.clear();
+  if (!current) { box.innerHTML = '<p class="intro">No sessions published yet.</p>'; return; }
+  const rubric = current.rubric || { rules: [], criteria: [], tags: [] };
+  criteria = rubric.criteria;
+  tagList = rubric.tags;
+  renderRules(rubric);
+  const openSet = loadOpen();
+  current.clips.forEach((c, i) => box.appendChild(clipCard(current, c, i, openSet)));
+  const sn = document.getElementById("session-note");
+  sn.value = (ratings[`session__${current.id}`] || {}).note || "";
+  const st = document.querySelector(".session-note .status");
+  st.id = `status-session__${current.id}`;
+  st.textContent = "";
+  renderSessionValues();
+}
+
+function applyRemote(id, data) {
+  const w = writers[id];
+  if (w && (w.busy || w.next)) return;
+  if (document.activeElement && document.activeElement.id === `note-${id}`) return;
+  const local = ratings[id];
+  if (local && local.updatedAt && data.updatedAt && local.updatedAt > data.updatedAt) return;
+  ratings[id] = { ...data };
+}
+
+(function () {
+  const sn = document.getElementById("session-note");
+  let t = null;
+  const flush = () => {
+    clearTimeout(t);
+    if (!current) return;
+    const id = `session__${current.id}`;
+    const body = ratings[id] || (ratings[id] = { session: current.id, kind: "session-note" });
+    if ((body.note || "") === sn.value) return;
+    body.note = sn.value;
+    body.updatedAt = new Date().toISOString();
+    saveDraft(id, body);
+    if (!db) { setStatus(id, "Kept on this phone only", "err"); return; }
+    write(id, `notes/${current.id}`);
+  };
+  sn.addEventListener("input", () => { clearTimeout(t); t = setTimeout(flush, 900); });
+  sn.addEventListener("blur", flush);
+})();
+
+document.addEventListener("play", e => {
+  document.querySelectorAll("audio").forEach(a => { if (a !== e.target) a.pause(); });
+}, true);
+
+document.getElementById("session").addEventListener("change", e => {
+  current = sessions.find(s => s.id === e.target.value) || null;
+  try { localStorage.setItem("hw2-listening-session", current ? current.id : ""); } catch (err) {}
+  renderSession();
+});
+
+const FOLLOW_SECONDS = 6, HEAD_AT = 0.3;
+const rolls = new Set();
+let rollMode = "follow";
+try { rollMode = localStorage.getItem("hw2-roll-mode") || "follow"; } catch (e) {}
+
+function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+function fmt(t) { const m = Math.floor(t / 60), s = Math.floor(t % 60); return `${m}:${String(s).padStart(2, "0")}`; }
+
+function attachRoll(card, clip) {
+  const audio = card.querySelector("audio");
+  const canvas = card.querySelector("canvas.pr");
+  const where = card.querySelector(".where");
+  const buttons = card.querySelectorAll(".seg button");
+  const notes = clip.notes || [];
+  const bars = clip.bars || [];
+  const end = clip.end || (notes.length ? Math.max(...notes.map(n => n[0] + n[1])) : 1);
+  let lo = 127, hi = 0;
+  for (const n of notes) { lo = Math.min(lo, n[2]); hi = Math.max(hi, n[2]); }
+  if (lo > hi) { lo = 48; hi = 84; }
+  lo -= 2; hi += 2;
+  let raf = 0;
+
+  const roll = { draw, setMode };
+  rolls.add(roll);
+
+  function setMode(m) {
+    buttons.forEach(b => b.setAttribute("aria-pressed", b.dataset.mode === m ? "true" : "false"));
+    draw();
+  }
+  buttons.forEach(b => b.addEventListener("click", () => {
+    rollMode = b.dataset.mode;
+    try { localStorage.setItem("hw2-roll-mode", rollMode); } catch (e) {}
+    rolls.forEach(r => r.setMode(rollMode));
+  }));
+
+  function barAt(t) {
+    let i = 0;
+    while (i + 1 < bars.length && bars[i + 1] <= t) i++;
+    return i + 1;
+  }
+
+  function draw() {
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    if (!w || !h) return;
+    const dpr = window.devicePixelRatio || 1;
+    if (canvas.width !== Math.round(w * dpr) || canvas.height !== Math.round(h * dpr)) {
+      canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+    }
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = cssVar("--roll-bg");
+    ctx.fillRect(0, 0, w, h);
+
+    const t = audio.currentTime || 0;
+    const follow = rollMode === "follow";
+    const top = 14, rowH = (h - top - 4) / (hi - lo + 1);
+    const x = follow ? (s => (s - t) / FOLLOW_SECONDS * w + HEAD_AT * w) : (s => s / end * w);
+    const y = p => top + (hi - p) * rowH;
+    const t0 = follow ? t - HEAD_AT * FOLLOW_SECONDS : 0;
+    const t1 = follow ? t + (1 - HEAD_AT) * FOLLOW_SECONDS : end;
+
+    ctx.fillStyle = cssVar("--roll-grid");
+    for (let p = Math.ceil(lo / 12) * 12; p <= hi; p += 12) ctx.fillRect(0, y(p) + rowH - 0.5, w, 1);
+    ctx.font = `10px ${cssVar("--font-num")}`;
+    ctx.textBaseline = "top";
+    const every = follow ? 1 : (w < 500 ? 8 : 4);
+    bars.forEach((b, i) => {
+      if (b < t0 - 0.01 || b > t1) return;
+      const bx = Math.round(x(b)) + 0.5;
+      ctx.fillStyle = cssVar("--roll-grid");
+      ctx.fillRect(bx, top, 1, h - top);
+      if (i % every === 0) { ctx.fillStyle = cssVar("--roll-text"); ctx.fillText(String(i + 1), bx + 3, 2); }
+    });
+
+    for (const [s, d, p, v, tr] of notes) {
+      if (s + d < t0 || s > t1) continue;
+      const nx = x(s), nw = Math.max(1.5, x(s + d) - nx - (follow ? 1 : 0));
+      const on = s <= t && t < s + d;
+      const hue = (p % 12) * 30;
+      const light = 50 + v / 127 * 18;
+      const past = follow && s + d < t;
+      ctx.globalAlpha = on ? 1 : past ? 0.35 : 0.8;
+      ctx.fillStyle = tr ? (on ? "#ffffff" : "#d9dee8") : `hsl(${hue} 85% ${on ? 75 : light}%)`;
+      if (on) { ctx.shadowColor = ctx.fillStyle; ctx.shadowBlur = 12; }
+      ctx.fillRect(nx, y(p) + 0.5, nw, Math.max(1.5, rowH - 1));
+      ctx.shadowBlur = 0;
+    }
+    ctx.globalAlpha = 1;
+
+    const hx = Math.round(follow ? HEAD_AT * w : t / end * w) + 0.5;
+    ctx.fillStyle = cssVar("--roll-head");
+    ctx.fillRect(hx - 0.5, top, 1.5, h - top);
+    where.textContent = `bar ${barAt(t)} of ${Math.max(1, bars.length)} · ${fmt(t)} / ${fmt(end)}`;
+  }
+
+  function loop() { draw(); raf = audio.paused ? 0 : requestAnimationFrame(loop); }
+  audio.addEventListener("play", () => { if (!raf) raf = requestAnimationFrame(loop); });
+  ["pause", "ended", "seeked", "loadedmetadata"].forEach(ev => audio.addEventListener(ev, draw));
+
+  canvas.addEventListener("click", e => {
+    const r = canvas.getBoundingClientRect();
+    const fx = (e.clientX - r.left) / r.width;
+    const target = rollMode === "follow" ? audio.currentTime + (fx - HEAD_AT) * FOLLOW_SECONDS : fx * end;
+    audio.currentTime = Math.max(0, Math.min(end, target));
+    draw();
+  });
+
+  setMode(rollMode);
+  requestAnimationFrame(draw);
+  return roll;
+}
+
+window.addEventListener("resize", () => rolls.forEach(r => r.draw()));
+matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", () => rolls.forEach(r => r.draw()));
+
+async function start() {
+  Object.assign(ratings, loadDrafts());
+  try {
+    sessions = JSON.parse(document.getElementById("manifest").textContent);
+  } catch (e) {
+    document.getElementById("clips").innerHTML = '<p class="intro">The clip list in this page is broken (' + e.message + '). Ask Claude to republish it.</p>';
+    return;
+  }
+  const sel = document.getElementById("session");
+  sel.innerHTML = sessions.map(s => `<option value="${s.id}">${s.title}</option>`).join("");
+  let pick = null;
+  try { pick = localStorage.getItem("hw2-listening-session"); } catch (e) {}
+  current = sessions.find(s => s.id === pick) || sessions[sessions.length - 1] || null;
+  if (current) sel.value = current.id;
+  renderSession();
+
+  db = window.claude && window.claude.use ? await window.claude.use("db") : null;
+  if (!db) {
+    const b = document.getElementById("banner");
+    b.hidden = false;
+    b.textContent = "Ratings can't sync in this view, so they stay on this device only. Open the page in the Claude app or on claude.ai while signed in.";
+    return;
+  }
+  for (const [id, body] of Object.entries(loadDrafts())) {
+    if (!id.startsWith("session__")) {
+      const remote = await db.doc(`ratings/${id}`).get().catch(() => null);
+      if (remote && (!remote.exists || (remote.data().updatedAt || "") < (body.updatedAt || "~"))) write(id, `ratings/${id}`);
+    }
+  }
+  db.collection("ratings").onSnapshot(snap => {
+    snap.docs.forEach(d => applyRemote(d.id, d.data()));
+    renderSessionValues();
+  }, () => {});
+  db.collection("notes").onSnapshot(snap => {
+    snap.docs.forEach(d => {
+      const id = `session__${d.id}`;
+      if (document.activeElement && document.activeElement.id === "session-note") return;
+      ratings[id] = { ...d.data() };
+    });
+    if (current && document.activeElement?.id !== "session-note") {
+      document.getElementById("session-note").value = (ratings[`session__${current.id}`] || {}).note || "";
+    }
+  }, () => {});
+}
+
+function renderSessionValues() {
+  if (!current) return;
+  for (const c of current.clips) {
+    const id = docId(current.id, c.id);
+    const card = cards.get(id);
+    if (!card) continue;
+    const body = ratings[id] || {};
+    for (const [key, row] of card._rows) row._show(body[key]);
+    if (card._tags) {
+      const set = new Set(body.tags || []);
+      card._tags.querySelectorAll(".chip").forEach(ch => ch.setAttribute("aria-pressed", set.has(ch.dataset.tag) ? "true" : "false"));
+    }
+    const note = document.getElementById(`note-${id}`);
+    if (note && document.activeElement !== note) note.value = body.note || "";
+    if (isRated(body) && !(writers[id] && writers[id].busy)) setStatus(id, "Saved", "ok");
+    renderCount(id);
+  }
+  renderProgress();
+}
+
+start();
+</script>
