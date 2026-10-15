@@ -1,0 +1,3 @@
+dir,config,ckpt,n,H1_mean,H1_std,H4_mean,H4_std,GS_mean,GS_std,nll_mean,n_tokens_mean,bar_copy_mean,bar_copy_any_key_mean,ngram_copy_mean,note8_copy_mean
+outputs/plan_fill/melody_first,melody_first_t1_k0_p1,,20,2.071,0.149,2.5621,0.0899,0.9529,0.0271,1.2864,2530.0,0.0,0.0,0.0,0.0105
+outputs/plan_fill/piano_first,piano_first_t1_k0_p1,,20,2.0624,0.1613,2.5504,0.1018,0.9529,0.0158,1.3309,2488.0,0.0,0.0,0.0,0.0089
