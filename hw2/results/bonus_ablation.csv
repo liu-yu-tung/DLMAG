@@ -1,0 +1,7 @@
+variant,config,ckpt,best_val_loss,CA mean,CA std,CA-ceiling mean,CA-ceiling std,DP (Pitch-class OA) mean,DP (Pitch-class OA) std,DV (Velocity OA) mean,DV (Velocity OA) std,DD (Duration OA) mean,DD (Duration OA) std,DIOI (Inter-Onset OA) mean,DIOI (Inter-Onset OA) std
+chords,t1_p0.95_free,step_7000,1.2145,0.2292,0.0629,0.7625,0.0,0.8616,0.0029,0.5114,0.0762,0.6457,0.0301,0.4885,0.012
+chords,t1_p0.95_grammar,step_7000,1.2145,0.2292,0.052,0.7625,0.0,0.8649,0.0053,0.5194,0.0477,0.6557,0.0483,0.5241,0.0462
+lookahead,t1_p0.95_free,step_7000,1.1857,0.15,0.0325,0.7625,0.0,0.8381,0.0173,0.5155,0.0675,0.6307,0.0299,0.4953,0.0656
+lookahead,t1_p0.95_grammar,step_7000,1.1857,0.1625,0.0125,0.7625,0.0,0.8511,0.0009,0.5822,0.0068,0.6423,0.0349,0.5067,0.09
+melody,t1_p0.95_free,step_7000,1.1712,0.175,0.038,0.7625,0.0,0.862,0.0025,0.5209,0.0652,0.6671,0.0423,0.5442,0.037
+melody,t1_p0.95_grammar,step_7000,1.1712,0.1625,0.0125,0.7625,0.0,0.8606,0.0037,0.553,0.0302,0.6838,0.0262,0.5474,0.014
