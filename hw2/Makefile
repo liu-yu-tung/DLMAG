@@ -16,12 +16,20 @@ TOP_P ?= 1.0
 N ?= 20
 BARS ?= 32
 TASK_B_CONFIGS ?= 0.8,0,0.9 1.0,0,0.95 1.2,0,1.0
+PLAN_RULES ?=
+PROMPT_DIR ?= data/POP909/prompts/basic-b
 WAV ?= --wav
 
 TASK_A_DIR ?= outputs/task_a
 PLAN_FILL_DIR ?= outputs/plan_fill
 TASK_B_DIR ?= outputs/task_b
+PLAN_TASK_B_DIR ?= outputs/task_b_plan
 BONUS_DIR ?= outputs/bonus_final
+
+SILENCE_DIRS ?= outputs/exp2/step_6000 outputs/exp2/loss_0.40 outputs/exp2/last outputs/plan_fill/melody_first outputs/plan_fill/piano_first \
+	$(wildcard outputs/plan_fill_v2/* outputs/plan_fill_rep/*)
+RETURN_DIRS ?= outputs/exp2/loss_0.40 outputs/exp2/last outputs/plan_fill/melody_first $(wildcard outputs/plan_fill_v2/* outputs/plan_fill_rep/*)
+ADHERENCE_DIRS ?= outputs/plan_fill/melody_first outputs/plan_fill/piano_first $(wildcard outputs/plan_fill_v2/* outputs/plan_fill_rep/*)
 
 GPU_LOG_QUERY := timestamp,temperature.gpu,utilization.gpu,clocks.sm,power.draw,clocks_throttle_reasons.active
 
@@ -34,8 +42,8 @@ endef
 
 .PHONY: help setup tokens check stats gpu-cool health \
 	train-main train-bonus train-plan train-fill train-plan-rep train-fill-rep \
-	task-a task-a-plan task-b bonus \
-	eval-task-a eval-task-a-plan eval-task-b eval-bonus
+	task-a task-a-plan task-b task-b-plan bonus \
+	eval-task-a eval-task-a-plan eval-task-b eval-task-b-plan eval-bonus analyze
 
 help: ## list targets; override settings like make task-a TEMP=1.2 TOP_P=0.95
 	@grep -hE '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | sed -E 's/^([a-z-]+):.*## (.*)/  \1|\2/' | column -t -s '|'
@@ -87,11 +95,14 @@ task-a: gpu-cool ## TASK A with the main model
 	$(PY) scripts/generate_uncond.py --ckpt $(MAIN_CKPT) --output_dir $(TASK_A_DIR) --n $(N) --bars $(BARS) --temperature $(TEMP) --top_p $(TOP_P) $(WAV)
 
 task-a-plan: gpu-cool ## TASK A with plan-fill, melody-first then piano-first on the same plans
-	$(PY) scripts/generate_plan_fill.py --plan_ckpt $(PLAN_CKPT) --fill_ckpt $(FILL_CKPT) --output_dir $(PLAN_FILL_DIR)/melody_first --order melody_first --n $(N) --bars $(BARS) --temperature $(TEMP) --top_p $(TOP_P) $(WAV)
-	$(PY) scripts/generate_plan_fill.py --plan_ckpt $(PLAN_CKPT) --fill_ckpt $(FILL_CKPT) --output_dir $(PLAN_FILL_DIR)/piano_first --order piano_first --plans_from $(PLAN_FILL_DIR)/melody_first/plans.json --n $(N) --bars $(BARS) --temperature $(TEMP) --top_p $(TOP_P) $(WAV)
+	$(PY) scripts/generate_plan_fill.py --plan_ckpt $(PLAN_CKPT) --fill_ckpt $(FILL_CKPT) --output_dir $(PLAN_FILL_DIR)/melody_first --order melody_first --n $(N) --bars $(BARS) --temperature $(TEMP) --top_p $(TOP_P) $(PLAN_RULES) $(WAV)
+	$(PY) scripts/generate_plan_fill.py --plan_ckpt $(PLAN_CKPT) --fill_ckpt $(FILL_CKPT) --output_dir $(PLAN_FILL_DIR)/piano_first --order piano_first --plans_from $(PLAN_FILL_DIR)/melody_first/plans.json --n $(N) --bars $(BARS) --temperature $(TEMP) --top_p $(TOP_P) $(PLAN_RULES) $(WAV)
 
 task-b: gpu-cool ## TASK B continuations of the 3 prompts, one folder per config
 	$(PY) scripts/generate_cont.py --ckpt $(MAIN_CKPT) --output_dir $(TASK_B_DIR) $(foreach c,$(TASK_B_CONFIGS),--config $(c)) $(WAV)
+
+task-b-plan: gpu-cool ## TASK B with plan-fill: one plan per prompt, filled once per config (melody enters by bar 9)
+	$(PY) scripts/generate_plan_fill.py --plan_ckpt $(PLAN_CKPT) --fill_ckpt $(FILL_CKPT) --prompt_dir $(PROMPT_DIR) --output_dir $(PLAN_TASK_B_DIR) --melody_by_bar 9 $(foreach c,$(TASK_B_CONFIGS),--config $(c)) $(PLAN_RULES) $(WAV)
 
 bonus: gpu-cool ## BONUS TASK accompaniment for the 10 prompts, then the TA eval
 	$(PY) scripts/generate_bonus.py --ckpt $(BONUS_CKPT) --tok2idx $(BONUS_TOKENS)/tok2idx.json --output_dir $(BONUS_DIR) --top_p 0.95 $(WAV)
@@ -106,6 +117,15 @@ eval-task-a-plan: ## same metrics for both plan-fill orders
 eval-task-b: ## metrics and prompt fade for TASK B (copy rate skips the 8 prompt bars)
 	$(PY) scripts/eval_generated.py $(TASK_B_DIR)/* --skip_bars 8 --summary_csv results/task_b.csv
 	$(PY) scripts/exp4_prompt_fade.py $(TASK_B_DIR)/* --out results/task_b_fade.csv
+
+eval-task-b-plan: ## same metrics for TASK B with plan-fill
+	$(PY) scripts/eval_generated.py $(PLAN_TASK_B_DIR)/* --skip_bars 8 --summary_csv results/task_b_plan.csv
+	$(PY) scripts/exp4_prompt_fade.py $(PLAN_TASK_B_DIR)/* --out results/task_b_plan_fade.csv
+
+analyze: ## silence, theme return and plan adherence tables for the folders in SILENCE_DIRS, RETURN_DIRS, ADHERENCE_DIRS
+	$(PY) scripts/silence_stats.py $(SILENCE_DIRS)
+	$(PY) scripts/return_stats.py $(RETURN_DIRS)
+	$(PY) scripts/adherence.py $(ADHERENCE_DIRS)
 
 eval-bonus: ## TA eval_bonus.py (runs from scripts/ta, which it needs)
 	cd scripts/ta && $(PY) eval_bonus.py --prompt_dir ../../data/POP909/prompts/bonus --gen_midi_dir ../../$(BONUS_DIR) --output_csv ../../$(BONUS_DIR)/metrics.csv

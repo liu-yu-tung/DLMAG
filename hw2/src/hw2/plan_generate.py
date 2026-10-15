@@ -1,10 +1,5 @@
-"""Sampling for the plan-then-fill pipeline (hw2.plan): a plan model writes the song's skeleton, a fill model writes
-the notes bar by bar with the bar's plan forced.
-
-Both samplers follow a token grammar, so every output parses: plan bars are [Sec] [KeyShift] Bar Chord Chord PDen
-PDur MDen MDur; fill note blocks are (Pos Pitch Vel Dur)* with positions that never go back inside a block and
-stay inside the bar.
-"""
+"""Sampling for the plan-fill pipeline: the plan model writes the bar labels, the fill model the notes bar by bar.
+Both samplers mask tokens by the token grammar, so every output parses."""
 
 import re
 from dataclasses import dataclass, field
@@ -43,11 +38,50 @@ class Stepper:
         self.past, self.n_seen = out.past_key_values, self.n_seen + len(ids)
         self.logits = out.logits[0, -1].float()
 
-    def sample(self, allowed: torch.Tensor, cfg: SampleConfig) -> int:
-        masked = self.logits.masked_fill(~allowed, float("-inf"))[None]
+    def sample(self, allowed: torch.Tensor, cfg: SampleConfig, bonus: dict[int, float] | None = None) -> int:
+        logits = self.logits
+        if bonus:
+            logits = logits.clone()
+            for i, v in bonus.items():
+                logits[i] += v
+        masked = logits.masked_fill(~allowed, float("-inf"))[None]
         t = torch.multinomial(torch.softmax(filter_logits(masked, cfg), -1), 1, generator=self.gen).item()
         self.nll.append(-torch.log_softmax(self.logits, -1)[t].item())
         return t
+
+
+class RepeatGuide:
+    """Logit bonus toward the notes of the bar a Rep label points to, matched by position so one changed note does not
+    shift the rest. The teacher-forced fill model copies repeats well (results/findings.md), but sampling loses them."""
+
+    PARTS = {"exact": {"pos": 1.0, "pitch": 1.0, "vel": 1.0, "dur": 1.0}, "var": {"pos": 0.5, "pitch": 0.5, "vel": 0.5, "dur": 0.5},
+             "rhythm": {"pos": 1.0, "pitch": 0.0, "vel": 1.0, "dur": 1.0}}
+
+    def __init__(self, notes, shift: int, kind: str, bias: float, tok2idx, end: torch.Tensor):
+        self.left = sorted((pos, pitch + shift, vel, dur) for pos, pitch, vel, dur in notes)
+        self.weight = {k: v * bias for k, v in self.PARTS[kind].items()}
+        self.tok2idx, self.end_ids = tok2idx, end.nonzero()[:, 0].tolist()
+        self.pos, self.match = None, None
+
+    def bonus(self, state: str) -> dict[int, float]:
+        w = self.weight[state]
+        if state == "pos":
+            return {self.tok2idx[f"Pos_{self.left[0][0]}"]: w} if self.left else {i: w for i in self.end_ids}
+        if state == "pitch":
+            return {self.tok2idx[f"Pitch_{n[1]}"]: w for n in self.left if n[0] == self.pos and f"Pitch_{n[1]}" in self.tok2idx}
+        if self.match is None:
+            return {}
+        return {self.tok2idx[f"Vel_{self.match[2]}" if state == "vel" else f"Dur_{self.match[3]}"]: w}
+
+    def chose(self, state: str, tok: str):
+        if state == "pos":
+            self.pos = int(tok[4:])
+            self.left = [n for n in self.left if n[0] >= self.pos]
+        elif state == "pitch":
+            self.match = next((n for n in self.left if n[:2] == (self.pos, int(tok[6:]))), None)
+        elif state == "dur" and self.match is not None:
+            self.left.remove(self.match)
+            self.match = None
 
 
 class Masks:
@@ -273,9 +307,10 @@ def note_events(tokens):
 
 @torch.no_grad()
 def sample_fill(model, tok2idx, idx2tok, plan: Plan, cfg, gen, melody_first=True, drop=(), given=None, max_notes=(32, 64),
-                copy_melody: dict[int, int] | None = None):
+                copy_melody: dict[int, int] | None = None, repeat_bias: float = 0.0):
     """Notes for every plan bar, in the C-based song (add signed(plan.key) to play), and the NLL of each sampled token.
-    given[b] forces streams of bar b (prompts); copy_melody[b] = an earlier bar whose melody bar b repeats, moved to b's key."""
+    given[b] forces streams of bar b (prompts); copy_melody[b] = an earlier bar whose melody bar b repeats, moved to b's key;
+    repeat_bias > 0 guides melody bars with a Rep label toward their source bar (RepeatGuide)."""
     st, mk = Stepper(model, tok2idx, gen, keep=0.8), Masks(tok2idx, next(model.parameters()).device)
     st.feed([tok2idx["<BOS>"], tok2idx[f"Meter_{plan.meter}"]])
     ends = mk.of("KeyShift_", exact=["Bar", "Sec", "<EOS>"])
@@ -301,15 +336,23 @@ def sample_fill(model, tok2idx, idx2tok, plan: Plan, cfg, gen, melody_first=True
             end = mk.of(exact=["Acc" if stream == "melody" else "Mel"]) if i == 0 else ends
             toks, state, last = [], "pos", 0
             cap = max_notes[0] if stream == "melody" else max_notes[1]
+            guide = None
+            if repeat_bias and stream == "melody" and bar.rep not in ("", "Rep_none"):
+                _, kind, lag = bar.rep.split("_")
+                if b >= int(lag):
+                    a = b - int(lag)
+                    guide = RepeatGuide(out[a]["melody"], signed(bar.key - plan.bars[a].key), kind, repeat_bias, tok2idx, end)
             while True:
                 if state == "pos":
                     allowed = mk.pos_range(last, max_pos) | end if len(toks) < 4 * cap else end
                 else:
                     allowed = mk.of({"pitch": "Pitch_", "vel": "Vel_", "dur": "Dur_"}[state])
-                t = st.sample(allowed, cfg)
+                t = st.sample(allowed, cfg, guide.bonus(state) if guide else None)
                 if end[t]:
                     break
                 tok = idx2tok[t]
+                if guide:
+                    guide.chose(state, tok)
                 toks.append(tok)
                 st.feed([t])
                 if state == "pos":

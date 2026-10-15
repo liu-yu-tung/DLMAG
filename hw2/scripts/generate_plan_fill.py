@@ -1,13 +1,5 @@
-"""Task a with the plan-then-fill pipeline (hw2.plan): the plan model writes n bars of plan, the fill model writes the
-notes bar by bar, melody or accompaniment first.
-
-Writes to --output_dir: sequences.json (TA eval format), plans.json (plan tokens, reusable with --plans_from),
-<name>.mid (MELODY and PIANO tracks), <name>.wav (with --wav), gen_info.json.
-
-uv run python scripts/generate_plan_fill.py --output_dir outputs/plan_fill/melody_first --order melody_first --wav
-uv run python scripts/generate_plan_fill.py --output_dir outputs/plan_fill/piano_first --order piano_first \
-    --plans_from outputs/plan_fill/melody_first/plans.json --wav
-"""
+"""TASK A, or TASK B with --prompt_dir, with the plan-then-fill pipeline (hw2.plan): the plan model writes the bar
+labels, the fill model writes the notes bar by bar. Usage in the README."""
 
 import argparse
 import json
@@ -18,22 +10,26 @@ import numpy as np
 import torch
 
 from hw2.generate import SampleConfig, load_model
+from hw2.plan import song_raw, song_tokens
 from hw2.plan_generate import PlanRules, parse_form, parse_plan, sample_fill, sample_plan, to_outputs
 from hw2.remi import DATA_ROOT, HW2_ROOT, load_vocab
 from hw2.render import midi_to_wav
 
 
 def parse_args():
-    p = argparse.ArgumentParser()
+    p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     p.add_argument("--plan_ckpt", type=str, default="checkpoints/plan_v1/best")
     p.add_argument("--fill_ckpt", type=str, default="checkpoints/fill_v1/best")
     p.add_argument("--output_dir", type=str, required=True)
     p.add_argument("--tok2idx", type=str, default=None, help="default: the token folder in runs/<fill run>/args.json")
-    p.add_argument("--n", type=int, default=20)
-    p.add_argument("--bars", type=int, default=32)
+    p.add_argument("--n", type=int, default=20, help="pieces (TASK A)")
+    p.add_argument("--bars", type=int, default=32, help="bars per piece, prompt included")
+    p.add_argument("--prompt_dir", type=str, default=None, help="TASK B: continue each folder in POP909 layout "
+                   "(<name>/<name>.mid, beat_midi.txt, chord_midi.txt), e.g. data/POP909/prompts/basic-b")
+    p.add_argument("--prompt_bars", type=int, default=8)
     p.add_argument("--order", choices=("melody_first", "piano_first"), default="melody_first")
-    p.add_argument("--drop", type=str, default="", help="attribute groups left out of the fill prefix: chords,piano_stats,melody_stats")
-    p.add_argument("--plans_from", type=str, default=None, help="plans.json of an earlier run: fill the same plans")
+    p.add_argument("--drop", type=str, default="", help="label groups left out of the fill prefix: repeat,chords,piano_stats,melody_stats")
+    p.add_argument("--plans_from", type=str, default=None, help="plans.json of an earlier TASK A run: fill the same plans")
     p.add_argument("--min_piano_bin", type=int, default=0, help="1 = no bar without piano notes (POP909: 0.4%% of bars)")
     p.add_argument("--tempo_range", type=str, default="", help="e.g. 60,125 (POP909 5th-95th percentile)")
     p.add_argument("--melody_by_bar", type=int, default=0, help="melody enters by this bar (0 = model decides; POP909 median entry is bar 8)")
@@ -42,71 +38,97 @@ def parse_args():
                    "ending, a repeated letter copies that section's plan and melody (piano is new); use with melody_first")
     p.add_argument("--return_as", choices=("copy", "exact", "var", "rhythm"), default="copy",
                    help="repeated form sections: copy the melody notes (rule), or ask a repeat-label model for that kind of repeat")
+    p.add_argument("--repeat_bias", type=float, default=0.0, help="logit bonus toward the source bar of melody bars with a "
+                   "Rep label (repeat-label models; exact: all note parts, var: half, rhythm: onsets, velocities, durations)")
     p.add_argument("--plan_temperature", type=float, default=1.0)
     p.add_argument("--plan_top_p", type=float, default=1.0)
     p.add_argument("--temperature", type=float, default=1.0)
     p.add_argument("--top_k", type=int, default=0)
     p.add_argument("--top_p", type=float, default=1.0)
+    p.add_argument("--config", action="append", default=None, help="fill temperature,top_k,top_p (repeatable): one subfolder "
+                   "per config, all filling the same plans; replaces --temperature/--top_k/--top_p")
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--device", type=str, default="cuda")
     p.add_argument("--wav", action="store_true", help="also render WAV with FluidSynth")
     return p.parse_args()
 
 
+def prompt_plans(prompt_dir: Path, prompt_bars: int, tok2idx_path: Path, tok2idx: dict) -> list[tuple]:
+    """(name, plan of the prompt bars, prompt notes per bar) for each prompt folder, labelled by the training rules."""
+    edges = json.loads((tok2idx_path.parent / "bins.json").read_text())
+    out = []
+    for d in sorted(p for p in prompt_dir.iterdir() if p.is_dir()):
+        plan_tokens, fill = song_tokens(song_raw(d), edges, repeat="Rep_none" in tok2idx)
+        plan = parse_plan(plan_tokens)
+        assert len(plan.bars) >= prompt_bars, f"{d.name} has {len(plan.bars)} bars, fewer than --prompt_bars {prompt_bars}"
+        plan.bars = plan.bars[:prompt_bars]
+        given = {b: {s: fill["blocks"][b][s] for s in ("melody", "piano")} for b in range(prompt_bars)}
+        out.append((d.name, plan, given))
+    return out
+
+
 def main():
     args = parse_args()
+    assert not (args.prompt_dir and args.plans_from), "--plans_from holds TASK A plans only"
     out = Path(args.output_dir)
-    out.mkdir(parents=True, exist_ok=True)
     if args.tok2idx is None:
         run_args = HW2_ROOT / "runs" / Path(args.fill_ckpt).parent.name / "args.json"
         tokens_dir = json.loads(run_args.read_text())["tokens_dir"] if run_args.exists() else None
         args.tok2idx = str(Path(tokens_dir or DATA_ROOT.parent / "tokens" / "fill") / "tok2idx.json")
     tok2idx, idx2tok = load_vocab(args.tok2idx)
     assert args.return_as == "copy" or "Rep_none" in tok2idx, "--return_as other than copy needs a repeat-label model"
-    fill_model = load_model(args.fill_ckpt, args.device)
+    assert not args.repeat_bias or "Rep_none" in tok2idx, "--repeat_bias needs a repeat-label model"
     plan_cfg = SampleConfig(args.plan_temperature, 0, args.plan_top_p)
-    cfg = SampleConfig(args.temperature, args.top_k, args.top_p)
+    configs = ([SampleConfig(float(t), int(k), float(p)) for t, k, p in (c.split(",") for c in args.config)] if args.config
+               else [SampleConfig(args.temperature, args.top_k, args.top_p)])
     drop = tuple(g for g in args.drop.split(",") if g)
     rules = PlanRules(args.min_piano_bin, tuple(int(x) for x in args.tempo_range.split(",")) if args.tempo_range else None,
                       args.melody_by_bar, args.cadence, args.form, args.return_as)
     copy_melody = parse_form(args.form, args.bars).copy_from if args.form and args.return_as == "copy" else None
 
     if args.plans_from:
-        given = json.loads(Path(args.plans_from).read_text())[: args.n]
-        plans = [parse_plan(p["tokens"]) for p in given]
+        jobs = [(p["song_name"], parse_plan(p["tokens"]), None) for p in json.loads(Path(args.plans_from).read_text())[: args.n]]
     else:
+        prompts = (prompt_plans(Path(args.prompt_dir), args.prompt_bars, Path(args.tok2idx), tok2idx) if args.prompt_dir
+                   else [(f"{i:02d}", None, None) for i in range(args.n)])
         plan_model = load_model(args.plan_ckpt, args.device)
-        plans = []
-        for i in range(args.n):
+        jobs = []
+        for i, (name, prompt, given) in enumerate(prompts):
             gen = torch.Generator(device=args.device).manual_seed(args.seed + i)
-            plans.append(sample_plan(plan_model, tok2idx, idx2tok, args.bars, plan_cfg, gen, rules=rules))
+            jobs.append((name, sample_plan(plan_model, tok2idx, idx2tok, args.bars, plan_cfg, gen, prompt=prompt, rules=rules), given))
         del plan_model
 
-    pieces, plan_rows, info = [], [], []
-    t0 = time.time()
-    for i, plan in enumerate(plans):
-        name = f"{i:02d}"
-        t1 = time.time()
-        gen = torch.Generator(device=args.device).manual_seed(args.seed + 1000 + i)
-        notes, nll = sample_fill(fill_model, tok2idx, idx2tok, plan, cfg, gen, melody_first=args.order == "melody_first", drop=drop,
-                                 copy_melody=copy_melody)
-        tokens, _ = to_outputs(plan, notes, out / f"{name}.mid")
-        if args.wav:
-            midi_to_wav(out / f"{name}.mid", out / f"{name}.wav")
-        pieces.append({"song_name": name, "tokens": tokens})
-        plan_rows.append({"song_name": name, "tokens": plan.tokens()})
-        info.append({"song_name": name, "n_tokens": len(tokens), "n_bars": tokens.count("Bar"), "nll": float(np.mean(nll)),
-                     "plan_nll": float(np.mean(plan.nll)) if plan.nll else None, "tempo": plan.tempo, "key": plan.key,
-                     "n_melody": sum(len(b["melody"]) for b in notes), "n_piano": sum(len(b["piano"]) for b in notes),
-                     "seconds": round(time.time() - t1, 1)})
-        print(f"{name}: {info[-1]['n_melody']} melody / {info[-1]['n_piano']} piano notes, nll {info[-1]['nll']:.3f}, {info[-1]['seconds']}s", flush=True)
+    fill_model = load_model(args.fill_ckpt, args.device)
+    for cfg in configs:
+        folder = out / cfg.name if args.config else out
+        folder.mkdir(parents=True, exist_ok=True)
+        pieces, plan_rows, info = [], [], []
+        t0 = time.time()
+        for i, (name, plan, given) in enumerate(jobs):
+            t1 = time.time()
+            gen = torch.Generator(device=args.device).manual_seed(args.seed + 1000 + i)
+            notes, nll = sample_fill(fill_model, tok2idx, idx2tok, plan, cfg, gen, melody_first=args.order == "melody_first",
+                                     drop=drop, given=given, copy_melody=copy_melody, repeat_bias=args.repeat_bias)
+            tokens, _ = to_outputs(plan, notes, folder / f"{name}.mid")
+            if args.wav:
+                midi_to_wav(folder / f"{name}.mid", folder / f"{name}.wav")
+            piece = {"song_name": name, "tokens": tokens}
+            if given:
+                piece["prompt_len"] = [j for j, t in enumerate(tokens) if t == "Bar"][args.prompt_bars]
+            pieces.append(piece)
+            plan_rows.append({"song_name": name, "tokens": plan.tokens()})
+            info.append({"song_name": name, "n_tokens": len(tokens), "n_bars": tokens.count("Bar"), "nll": float(np.mean(nll)),
+                         "plan_nll": float(np.mean(plan.nll)) if plan.nll else None, "tempo": plan.tempo, "key": plan.key,
+                         "n_melody": sum(len(b["melody"]) for b in notes), "n_piano": sum(len(b["piano"]) for b in notes),
+                         "seconds": round(time.time() - t1, 1)})
+            print(f"{name}: {info[-1]['n_melody']} melody / {info[-1]['n_piano']} piano notes, nll {info[-1]['nll']:.3f}, {info[-1]['seconds']}s", flush=True)
 
-    (out / "sequences.json").write_text(json.dumps(pieces))
-    (out / "plans.json").write_text(json.dumps(plan_rows))
-    config = f"{args.order}_{cfg.name}" + (f"_drop-{'-'.join(drop)}" if drop else "")
-    meta = {"args": vars(args), "config": config, "seconds": round(time.time() - t0, 1), "pieces": info}
-    (out / "gen_info.json").write_text(json.dumps(meta, indent=1))
-    print(f"{len(pieces)} pieces in {meta['seconds']}s -> {out}")
+        (folder / "sequences.json").write_text(json.dumps(pieces))
+        (folder / "plans.json").write_text(json.dumps(plan_rows))
+        config = f"{args.order}_{cfg.name}" + (f"_drop-{'-'.join(drop)}" if drop else "")
+        meta = {"args": vars(args), "config": config, "seconds": round(time.time() - t0, 1), "pieces": info}
+        (folder / "gen_info.json").write_text(json.dumps(meta, indent=1))
+        print(f"{len(pieces)} pieces in {meta['seconds']}s -> {folder}")
 
 
 if __name__ == "__main__":
