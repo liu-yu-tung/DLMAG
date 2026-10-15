@@ -142,6 +142,12 @@ class PlanRules:
     cadence: bool = False
     form: str = ""
     return_as: str = "copy"
+    repeat_bias: float = 0.0
+
+
+# Plan slots (Chord, Chord, PDen, PDur, MDen, MDur) a repeat label pulls toward its source bar. POP909 first 32 bars:
+# exact repeats keep the source chords 68% and melody bins 80% of the time, piano bins only 27%.
+PLAN_REPEAT_SLOTS = {"exact": {0: 1.0, 1: 1.0, 4: 1.0, 5: 1.0}, "var": {0: 0.5, 1: 0.5, 4: 0.5, 5: 0.5}, "rhythm": {4: 1.0, 5: 1.0}}
 
 
 @dataclass
@@ -240,6 +246,7 @@ def sample_plan(model, tok2idx, idx2tok, n_bars, cfg, gen, prompt: Plan | None =
             st.feed([tok2idx[t]])
         st.feed([tok2idx["Bar"]])
         bar = PlanBar(marks, [], [], key)
+        rep_src, rep_slots = None, {}
         if has_rep:
             if src is not None:
                 lag = n - form.copy_from[n]
@@ -252,6 +259,9 @@ def sample_plan(model, tok2idx, idx2tok, n_bars, cfg, gen, prompt: Plan | None =
                 allowed = mk.of(exact=["Rep_none"] + [t for t in tok2idx if t.startswith("Rep_") and t != "Rep_none" and int(t.rsplit("_", 1)[1]) <= n])
             t = st.sample(allowed, cfg)
             bar.rep = idx2tok[t]
+            if rules.repeat_bias and bar.rep != "Rep_none":
+                _, kind, lag = bar.rep.split("_")
+                rep_src, rep_slots = plan.bars[n - int(lag)], PLAN_REPEAT_SLOTS[kind]
             st.feed([t])
         dominant, tonic = tonic_frame(plan)
         cadence = {(n_bars - 2, 1): dominant, (n_bars - 1, 0): tonic, (n_bars - 1, 1): tonic} if rules.cadence else {}
@@ -268,7 +278,8 @@ def sample_plan(model, tok2idx, idx2tok, n_bars, cfg, gen, prompt: Plan | None =
                 allowed = mk.of(exact=["MDen_0"])
             elif pre == "MDen_" and (melody_due or n == form.melody_start):
                 allowed = mk.of(exact=[f"MDen_{b}" for b in range(1, N_BINS)])
-            t = st.sample(allowed, cfg)
+            bonus = {tok2idx[(rep_src.chords + rep_src.stats)[slot]]: rules.repeat_bias * rep_slots[slot]} if slot in rep_slots else None
+            t = st.sample(allowed, cfg, bonus)
             (bar.chords if pre == "Chord_" else bar.stats).append(idx2tok[t])
             st.feed([t])
         plan.bars.append(bar)

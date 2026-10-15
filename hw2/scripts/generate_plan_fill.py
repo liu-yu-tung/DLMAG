@@ -40,6 +40,8 @@ def parse_args():
                    help="repeated form sections: copy the melody notes (rule), or ask a repeat-label model for that kind of repeat")
     p.add_argument("--repeat_bias", type=float, default=0.0, help="logit bonus toward the source bar of melody bars with a "
                    "Rep label (repeat-label models; exact: all note parts, var: half, rhythm: onsets, velocities, durations)")
+    p.add_argument("--plan_repeat_bias", type=float, default=0.0, help="logit bonus toward the source bar's chords and melody "
+                   "bins when the plan model writes a Rep label (POP909 repeats keep them; exact: chords + melody bins, var: half, rhythm: melody bins)")
     p.add_argument("--plan_temperature", type=float, default=1.0)
     p.add_argument("--plan_top_p", type=float, default=1.0)
     p.add_argument("--temperature", type=float, default=1.0)
@@ -83,7 +85,7 @@ def main():
                else [SampleConfig(args.temperature, args.top_k, args.top_p)])
     drop = tuple(g for g in args.drop.split(",") if g)
     rules = PlanRules(args.min_piano_bin, tuple(int(x) for x in args.tempo_range.split(",")) if args.tempo_range else None,
-                      args.melody_by_bar, args.cadence, args.form, args.return_as)
+                      args.melody_by_bar, args.cadence, args.form, args.return_as, args.plan_repeat_bias)
     copy_melody = parse_form(args.form, args.bars).copy_from if args.form and args.return_as == "copy" else None
 
     if args.plans_from:

@@ -115,7 +115,7 @@ Token layout:
 - **Plan (whole song):** `<BOS> Tempo Meter Key`, then per bar `[Sec] [KeyShift_k] Bar [Rep] Chord Chord PDen PDur MDen MDur` (`Sec` every 8 bars), then `<EOS>`.
 - **Fill block (one bar):** the same bar prefix with fill chords, then `Mel` (melody block) and `Acc` (piano block), each followed by `Pos Pitch Vel Dur` notes, in either order (random per training crop, fixed at generation).
 
-Sampling rules, all off by default (`--help`): `--min_piano_bin` (no bar without piano), `--tempo_range`, `--melody_by_bar`, `--cadence` (the plan ends on V-I), `--form I4A8B8A8E4` (sections; a repeated letter repeats that section) with `--return_as copy|exact|var|rhythm`. `--plans_from` fills the plans of an earlier run for paired comparisons; `--drop` leaves label groups out of the fill prefix.
+Sampling rules, all off by default (`--help`): `--min_piano_bin` (no bar without piano), `--tempo_range`, `--melody_by_bar`, `--cadence` (the plan ends on V-I), `--form I4A8B8A8E4` (sections; a repeated letter repeats that section) with `--return_as copy|exact|var|rhythm`. With the repeat-label models, `--repeat_bias` pulls a labelled melody bar toward the bar it repeats (the fill model copies well when teacher-forced but loses the copy when sampling), and `--plan_repeat_bias` makes the plan give such a bar its source bar's chords and melody bins, as POP909 repeats do. `--plans_from` fills the plans of an earlier run for paired comparisons; `--drop` leaves label groups out of the fill prefix.
 
 ## Analysis
 
