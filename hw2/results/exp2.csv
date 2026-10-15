@@ -1,0 +1,15 @@
+dir,config,ckpt,n,H1_mean,H1_std,H4_mean,H4_std,GS_mean,GS_std,bar_copy_mean,bar_copy_any_key_mean,ngram_copy_mean,note8_copy_mean,nll_mean,n_tokens_mean
+outputs/ref/heldout_crop32,,,45,2.1827,0.145,2.6438,0.0991,0.9571,0.0255,0.0,0.0,0.0,0.0179,,
+outputs/exp2/step_2000,t1_k0_p1,/home/liuyu/Developments/DLMAG/hw2/checkpoints/gpt2_ppb16/step_2000,20,2.0857,0.2648,2.6401,0.1126,0.9567,0.0245,0.0,0.0033,0.0,0.0016,2.0542,2429.75
+outputs/exp2/step_6000,t1_k0_p1,/home/liuyu/Developments/DLMAG/hw2/checkpoints/gpt2_ppb16/step_6000,20,2.1113,0.2144,2.5094,0.2976,0.9509,0.0342,0.0,0.0062,0.0,0.0048,1.6089,2781.4
+outputs/exp2/step_10000,t1_k0_p1,/home/liuyu/Developments/DLMAG/hw2/checkpoints/gpt2_ppb16/step_10000,20,2.1694,0.1437,2.6663,0.083,0.9649,0.0238,0.0,0.0,0.0,0.0139,1.2428,2979.7
+outputs/exp2/loss_1.00,t1_k0_p1,/home/liuyu/Developments/DLMAG/hw2/checkpoints/gpt2_ppb16/loss_1.00,20,2.1564,0.156,2.6459,0.1122,0.9354,0.0485,0.0,0.0016,0.0,0.0093,1.2322,2878.7
+outputs/exp2/step_20000,t1_k0_p1,/home/liuyu/Developments/DLMAG/hw2/checkpoints/gpt2_ppb16/step_20000,20,2.1845,0.1271,2.6722,0.1365,0.9622,0.0154,0.0,0.0,0.0,0.0194,0.8778,3247.75
+outputs/exp2/loss_0.60,t1_k0_p1,/home/liuyu/Developments/DLMAG/hw2/checkpoints/gpt2_ppb16/loss_0.60,20,2.1817,0.1643,2.6288,0.1036,0.9514,0.0348,0.0,0.0,0.0,0.0156,1.0207,2873.45
+outputs/exp2/loss_0.40,t1_k0_p1,/home/liuyu/Developments/DLMAG/hw2/checkpoints/gpt2_ppb16/loss_0.40,20,2.1428,0.0999,2.6162,0.0778,0.962,0.0273,0.0,0.0016,0.0,0.0207,0.7417,2913.95
+outputs/exp2/step_30000,t1_k0_p1,/home/liuyu/Developments/DLMAG/hw2/checkpoints/gpt2_ppb16/step_30000,20,2.1703,0.147,2.6346,0.0933,0.9699,0.0209,0.0,0.0,0.0,0.0093,0.7216,2894.0
+outputs/exp2/loss_0.30,t1_k0_p1,/home/liuyu/Developments/DLMAG/hw2/checkpoints/gpt2_ppb16/loss_0.30,20,2.1319,0.1567,2.6196,0.1627,0.9478,0.0405,0.0,0.0016,0.0,0.0202,0.7782,2605.8
+outputs/exp2/step_40000,t1_k0_p1,/home/liuyu/Developments/DLMAG/hw2/checkpoints/gpt2_ppb16/step_40000,20,2.0901,0.1258,2.5911,0.0883,0.9627,0.0305,0.0,0.0,0.0,0.0147,0.5998,2681.4
+outputs/exp2/step_50000,t1_k0_p1,/home/liuyu/Developments/DLMAG/hw2/checkpoints/gpt2_ppb16/step_50000,20,2.1639,0.1882,2.6511,0.0824,0.9694,0.0206,0.0,0.0016,0.0,0.0257,0.555,2768.0
+outputs/exp2/loss_0.20,t1_k0_p1,/home/liuyu/Developments/DLMAG/hw2/checkpoints/gpt2_ppb16/loss_0.20,20,2.1725,0.1836,2.6125,0.1095,0.964,0.0272,0.0,0.0,0.0,0.0261,0.5351,3119.3
+outputs/exp2/last,t1_k0_p1,/home/liuyu/Developments/DLMAG/hw2/checkpoints/gpt2_ppb16/last,20,2.1038,0.1191,2.5922,0.0979,0.9692,0.0188,0.0,0.0,0.0,0.0233,0.4945,2830.35
