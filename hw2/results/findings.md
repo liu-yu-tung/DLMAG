@@ -250,6 +250,9 @@ Not chosen yet; made so the choice can be made by ear. Models `plan_rep` + `fill
 | t1.2 p1.0 | 11% | 10.9% / 11.3% | 0.69 | 2.69 | 0.917 | 1.8% |
 
 - The configs span too repetitive (t0.8), close to real with more returns (t1.0 p0.95) and drifting off the planned chords (t1.2).
-- The extra silence at t0.8 and t1.0 p0.95 is spread over all bars (92-97% sounding per bar vs 98-99% for real songs). Note counts per piece are the same as at t1.2 and mean durations only slightly shorter (11.6-11.7 vs 12.9 sixteenths), so the cause is not found yet.
+- The extra silence at t0.8 and t1.0 p0.95 is spread over all bars (92-97% sounding per bar vs 98-99% for real songs). Note counts per piece are the same as at t1.2 and mean durations only slightly shorter (11.6-11.7 vs 12.9 sixteenths), so the cause is not found yet. It sits at the end of the bar: silent share on beat 4 of bars 5-32 is 17% at t1.0 p0.95 vs 7.6% at t1.2 and 8% in `gaps_intro_cadence` (beats 1-3: 3-7% vs 1-2%); the last sixteenth of the bar is silent 50% vs 19% / 38% of the time (`pbias4_bias8` set, grid assumes 4 beats). Notes stop before the barline more often under truncated sampling; why is not checked.
+
+Same with `--plan_repeat_bias 4` added (`outputs/task_a_plan_form_var_pbias4_bias8/<config>`, new plans): melody theme return 89% / 78% / 11%, exact repeats 37.9% / 30.6% / 16.5%, melody density within one bin 0.977 / 0.961 / 0.955 (vs 0.959 / 0.955 / 0.947), silent share 4.7% / 4.5% / 1.8%, H4 2.54 / 2.61 / 2.69, GS 0.981 / 0.970 / 0.918. With the form on, the plan bias changes little. In both sets at t1.0 p0.95 the melody exact match at lags 4 and 8 is at the real level (0.115-0.134 vs 0.127 / 0.112).
 
 `TASK B`: `outputs/task_b_plan_bias8/<config>` (rules as `task_b_plan`). Pitch-class similarity to the prompt over bars 9-32: 0.749 / 0.769 / 0.773 for t0.8 / t1.0 / t1.2 (without the bias 0.743 / 0.753 / 0.802; real 0.773). H4 2.49 / 2.51 / 2.60, GS 0.965 / 0.965 / 0.928.
+With `--plan_repeat_bias 4` as well (`outputs/task_b_plan_pbias4_bias8`): 0.743 / 0.758 / 0.778, H4 2.55 / 2.54 / 2.65, GS 0.968 / 0.966 / 0.915.
