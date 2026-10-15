@@ -1,0 +1,8 @@
+source,pieces,bars,chord_match,PDen_exact,PDen_within1,PDur_exact,PDur_within1,MDen_exact,MDen_within1,MDur_exact,MDur_within1,written_none,written_exact,written_var,written_rhythm,asked_repeat_bars,asked_label_written,asked_kind_at_lag,asked_any_at_lag,asked_none_written_none
+real_heldout,45,3745,0.852,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.477,0.215,0.168,0.14,1463.0,1.0,1.0,1.0,1.0
+outputs/plan_fill/melody_first,20,640,0.844,0.584,0.958,0.581,0.928,0.748,0.983,0.758,0.972,0.691,0.037,0.118,0.155,,,,,
+outputs/plan_fill/piano_first,20,640,0.787,0.65,0.969,0.584,0.925,0.725,0.98,0.744,0.966,0.71,0.037,0.12,0.133,,,,,
+outputs/plan_fill_v2/gaps,20,640,0.806,0.577,0.95,0.578,0.931,0.759,0.981,0.741,0.967,0.703,0.028,0.125,0.144,,,,,
+outputs/plan_fill_v2/gaps_intro_cadence,20,640,0.851,0.547,0.95,0.569,0.917,0.698,0.964,0.728,0.966,0.748,0.024,0.112,0.116,,,,,
+outputs/plan_fill_v2/form_IABAE,20,640,0.822,0.567,0.952,0.588,0.911,0.659,0.97,0.677,0.952,0.517,0.32,0.086,0.077,,,,,
+outputs/plan_fill_v2/form_IABCAE,20,640,0.83,0.562,0.952,0.552,0.92,0.659,0.964,0.681,0.955,0.727,0.038,0.131,0.104,,,,,

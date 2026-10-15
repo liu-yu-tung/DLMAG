@@ -1,0 +1,4 @@
+track,bars,empty_share,notes_p10,notes_p50,notes_p90,mean_dur_beats_p10,mean_dur_beats_p50,mean_dur_beats_p90
+PIANO,72748,0.0157,7.0,13.0,20.0,0.4772,0.8043,1.5037
+BRIDGE,72748,0.3505,0.0,2.0,8.0,0.3333,0.8366,2.2917
+MELODY,72748,0.2449,0.0,4.0,8.0,0.2905,0.5514,1.5
