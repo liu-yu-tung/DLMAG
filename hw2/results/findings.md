@@ -207,6 +207,23 @@ On a melody bar whose plan label is `Rep_<kind>_<L>`, add a logit bonus β to th
 - `form_IABAE_var_bias8`: the melody of A now comes back with changes. Melody theme return 42% of pieces (real 32-bar crops 43%, β 0: 0%, exact copy rule: 100%); exact match at lag 16 0.47 (copy rule 0.62); melody bars 24.3% exact, 13.9% varied, 10.1% rhythm repeats.
 - H1/H4/GS do not move (H4 2.59-2.64, GS 0.96-0.97).
 
+### Plan side: `--plan_repeat_bias` (`PLAN_REPEAT_SLOTS` in `src/hw2/plan_generate.py`)
+
+In POP909 a melody repeat usually keeps its source bar's chords and melody bins; the plan model does not couple them, so the fill bias fights the plan. Share of labelled melody bars whose chords / melody bins equal the source bar's (real: held-out first 32 bars; plans: 20 each, seed 0-19):
+
+| | Real | Plan β 0 | Plan β 4 | Plan β 8 |
+|---|---|---|---|---|
+| exact: chords / melody bins | 0.68 / 0.80 | 0.20 / 0.14 | 0.70 / 0.75 | 0.88 / 0.98 |
+| var | 0.36 / 0.27 | 0.19 / 0.14 | 0.37 / 0.50 | 0.79 / 0.87 |
+| rhythm | 0.15 / 0.40 | 0.18 / 0.19 | 0.10 / 0.85 | 0.18 / 0.93 |
+
+Plan β 4 (bonus on chords + melody bins for exact, half for var, melody bins only for rhythm) brings exact and varied repeats to the real coupling. With fill β 8 (`free_pbias4_bias8`, new plans, same rules as `free`) vs fill β 8 alone (`free_bias8`):
+
+- Asked kind written at the lag 0.34 vs 0.26, any repeat at the lag 0.54 vs 0.44; melody density within one bin 0.96 vs 0.94.
+- Melody exact match at lags 2 / 4 / 8: 0.098 / 0.084 / 0.122 (real 0.095 / 0.127 / 0.112). Lags 2 and 8 are at the real level, lag 4 still low.
+- Piano periodicity stays below real (pitch-class cosine at lag 4 0.51 vs 0.64): the plan's chord pairs repeat at lag 4 in 11-15% of bars vs 22% in POP909. Not addressed.
+- H4 2.59, GS 0.959, sampled NLL 1.32.
+
 ## TASK B with plan-fill (`task_b_plan.csv`, `task_b_plan_fade.csv`, `outputs/task_b_plan/*`)
 
 `make task-b-plan PLAN_CKPT=checkpoints/plan_rep/best FILL_CKPT=checkpoints/fill_rep/best PLAN_RULES="--min_piano_bin 1 --cadence"`: each prompt folder is labelled by the training rules, the plan model continues the 8-bar plan to 32 bars, the fill model writes bars 9-32 after the forced prompt notes. The prompt bars in the output match the TA prompt tokens note for note. One plan per prompt, filled with the same three configs as the main model's `TASK B`. Prompt 001 has no MELODY track; `--melody_by_bar 9` makes the melody enter in bar 9.

@@ -10,3 +10,4 @@ outputs/plan_fill_rep/free_bias16,melody_first_t1_k0_p1,,20,2.0509,0.161,2.5945,
 outputs/plan_fill_rep/free_bias4,melody_first_t1_k0_p1,,20,2.0464,0.1548,2.5958,0.1203,0.9631,0.019,1.3216,2463.2,0.0,0.0,0.0,0.0126
 outputs/plan_fill_rep/free_bias8,melody_first_t1_k0_p1,,20,2.0485,0.1644,2.5912,0.1144,0.961,0.0204,1.3633,2591.6,0.0,0.0016,0.0,0.0133
 outputs/plan_fill_rep/free_drop_repeat,melody_first_t1_k0_p1_drop-repeat,,20,2.0854,0.1512,2.5995,0.1198,0.9636,0.022,1.2791,2446.6,0.0,0.0,0.0,0.013
+outputs/plan_fill_rep/free_pbias4_bias8,melody_first_t1_k0_p1,,20,2.0242,0.1059,2.5924,0.0909,0.9589,0.0283,1.319,2491.6,0.0,0.0,0.0,0.0135
