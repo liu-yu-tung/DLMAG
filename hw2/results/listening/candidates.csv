@@ -1,0 +1,30 @@
+session,clip,overall,harmony,melody,flow,phrasing,form,accompaniment,tags,note,source,file
+candidates,clip_01,3.5,4.0,2.0,2.0,4.0,3.5,5.0,abrupt_start;odd_tempo;melody_missing;timing_off,terrible first 8 bar,outputs/plan_fill_v2/form_IABAE,09.wav
+candidates,clip_02,3.5,3.0,3.0,3.0,4.5,4.5,2.5,,too much on off between notes which sound rigid and not smooth ,outputs/task_a_plan_form_var_pbias4_bias8/t1_k0_p0.95,16.wav
+candidates,clip_03,4.0,5.0,3.5,3.5,2.5,2.5,3.0,silent_gap;melody_missing,this has surprisingly good sounding experience bcuz the melody and piano are seperated on frequencies scale ,outputs/plan_fill_rep/free_pbias4_bias8,19.wav
+candidates,clip_04,4.5,5.0,5.0,4.0,5.0,5.0,4.5,odd_tempo;timing_off,very fun but slightly nerfed due to too many notes(still very delightful ,outputs/ref/heldout_crop32,822.wav
+candidates,clip_05,3.0,3.0,4.0,3.0,3.5,4.0,2.5,silent_gap;abrupt_start,weak first 16 bar ,outputs/plan_fill_rep/free_pbias4_bias8,08.wav
+candidates,clip_06,3.5,4.5,3.5,2.5,4.5,2.5,5.0,cut_off_ending,some very bad transition from bar 12 to bar 13 and after bar 28 sounds like it's giving up which drag the impression very drastically ,outputs/exp2/loss_0.40,14.wav
+candidates,clip_07,2.0,2.0,4.0,4.0,4.0,2.0,2.5,wrong_notes,so many wrong note in melody at first 8,outputs/plan_fill_v2/form_IABAE,19.wav
+candidates,clip_08,3.5,2.5,5.0,3.5,4.0,4.0,4.5,silent_gap;abrupt_start;cut_off_ending;odd_tempo,"too rush in the beginning so it's not very pleasant and too messy 
+the latter is a bit better",outputs/exp2/loss_0.40,07.wav
+candidates,clip_09,2.0,2.5,2.0,1.5,3.5,2.0,1.0,silent_gap;abrupt_start;cut_off_ending;wrong_notes;odd_tempo;melody_missing;timing_off,bad consistently ,outputs/plan_fill_rep/free_pbias4_bias8,17.wav
+candidates,clip_10,1.5,1.0,2.0,1.0,2.0,1.0,1.0,silent_gap;abrupt_start;cut_off_ending;wrong_notes;too_repetitive;odd_tempo;melody_missing;timing_off,it's crashing out and giving up ,outputs/plan_fill_rep/free_pbias4_bias8,04.wav
+candidates,clip_11,3.5,4.0,4.0,4.0,5.0,4.5,4.0,silent_gap;abrupt_start;wrong_notes;timing_off,"first 4 bar is not a song at all very strange 
+gradually getting much better after 16 bar
+but then it's just 2 segments left very hard to judge 
+",outputs/plan_fill_v2/form_IABAE,04.wav
+candidates,clip_12,5.0,4.5,4.5,5.0,5.0,5.0,4.5,,"no obvious drawbacks 
+pleasant listening ",outputs/exp2/loss_0.40,12.wav
+candidates,clip_13,2.5,3.0,3.5,4.5,3.5,3.0,3.0,abrupt_start;wrong_notes;too_repetitive;timing_off,,outputs/exp2/loss_0.40,13.wav
+candidates,clip_14,4.5,5.0,5.0,4.5,4.0,5.0,5.0,silent_gap;cut_off_ending,,outputs/ref/heldout_crop32,207.wav
+candidates,clip_15,2.0,5.0,4.0,3.5,4.0,3.0,2.5,silent_gap;too_repetitive;melody_missing;timing_off,"some note too long there no sound in the audio(happened to a lot of audio)
+also other song have some notes abruptly loud but this one is especially annoying need to fix in code",outputs/task_a_plan_form_var_pbias4_bias8/t1_k0_p0.95,15.wav
+candidates,clip_16,1.5,1.0,3.0,2.0,3.0,2.0,1.5,wrong_notes,the key change  is very weird in this song pls check what happened ,outputs/plan_fill_v2/form_IABAE,03.wav
+candidates,clip_17,4.0,4.5,4.5,4.0,3.0,3.5,4.0,too_repetitive,"the sheet doesn't meet the audio AT ALL
+and this one has very good volume seperation between piano and melody
+nothing very bad just boring and not much going on",outputs/task_a_plan_form_var_pbias4_bias8/t1_k0_p0.95,06.wav
+candidates,clip_18,5.0,5.0,5.0,5.0,5.0,5.0,5.0,cut_off_ending,,outputs/ref/heldout_crop32,087.wav
+candidates,clip_19,4.5,4.5,5.0,4.5,5.0,5.0,4.0,silent_gap;timing_off,"weird silent in bar 12 to bar 13
+and misaligned beat at first few bar",outputs/ref/heldout_crop32,648.wav
+candidates,clip_20,5.0,5.0,5.0,5.0,5.0,5.0,5.0,,the audio and sheet has different start offset/lag,outputs/task_a_plan_form_var_pbias4_bias8/t1_k0_p0.95,11.wav

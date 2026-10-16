@@ -142,6 +142,22 @@ textarea {
 .where { font-family: var(--font-num); font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 canvas.pr { width: 100%; height: 168px; display: block; border-radius: 8px; background: var(--roll-bg); touch-action: manipulation; cursor: pointer; }
 
+.side { display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid var(--line); }
+.side:first-child { padding-top: 0; border-top: 0; }
+.side-label { font-family: var(--font-num); font-weight: 600; font-size: 1.25rem; }
+.prefs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+.pref {
+  font: inherit; padding: 6px 2px; min-height: 52px; border-radius: 6px; border: 1px solid var(--line);
+  background: transparent; color: var(--ink); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+}
+.pref b { font-family: var(--font-num); font-size: 1rem; }
+.pref small { font-size: 0.72rem; color: var(--muted); }
+.pref:hover { border-color: var(--accent); }
+.pref[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.pref[aria-pressed="true"] small { color: var(--accent-ink); }
+.pref:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ab-block { display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid var(--line); }
+
 @media (prefers-reduced-motion: reduce) { .meter i, .chev { transition: none; } }
 </style>
 
@@ -208,8 +224,13 @@ function saveOpen() {
   try { localStorage.setItem(OPEN_KEY, JSON.stringify(ids)); } catch (e) {}
 }
 
-function nScored(body) { return body ? criteria.filter(c => Number.isFinite(body[c.key])).length : 0; }
-function isRated(body) { return criteria.length > 0 && nScored(body) === criteria.length; }
+function isAb() { return current && current.kind === "ab"; }
+function nNeeded() { return isAb() ? 1 : criteria.length; }
+function nScored(body) {
+  if (!body) return 0;
+  return isAb() ? (Number.isFinite(body.pref) ? 1 : 0) : criteria.filter(c => Number.isFinite(body[c.key])).length;
+}
+function isRated(body) { return nNeeded() > 0 && nScored(body) === nNeeded(); }
 
 function anchorText(c, v) {
   if (!Number.isFinite(v)) return "";
@@ -229,8 +250,8 @@ function renderCount(id) {
   const c = document.getElementById(`count-${id}`);
   if (!c) return;
   const k = nScored(ratings[id]);
-  c.textContent = `${k}/${criteria.length}`;
-  c.classList.toggle("done", k === criteria.length);
+  c.textContent = isAb() ? (k ? "picked" : "") : `${k}/${criteria.length}`;
+  c.classList.toggle("done", k === nNeeded());
 }
 
 function setStatus(id, text, cls) {
@@ -255,6 +276,7 @@ async function write(id, path) {
     } catch (e) {
       if (e && e.code === "unavailable") { w.next = w.next || body; await new Promise(r => setTimeout(r, 800 + Math.random() * 800)); continue; }
       setStatus(id, "Not saved: " + (e && e.code ? e.code : "error") + ". Kept on this phone.", "err");
+      if (e && e.code === "login") showLoginBanner();
     }
   }
   w.busy = false;
@@ -286,8 +308,8 @@ function setOpen(card, open) {
   card.classList.toggle("open", open);
   card.querySelector(".clip-head").setAttribute("aria-expanded", open ? "true" : "false");
   card.querySelector(".clip-body").hidden = !open;
-  if (open) requestAnimationFrame(() => card._roll.draw());
-  else card.querySelector("audio").pause();
+  card.querySelectorAll("audio").forEach(a => { if (open) a.preload = "metadata"; else a.pause(); });
+  if (open) requestAnimationFrame(() => card._rolls.forEach(r => r.draw()));
 }
 
 function scaleRow(c, id, cur, persistClip) {
@@ -346,6 +368,160 @@ function scaleRow(c, id, cur, persistClip) {
   return row;
 }
 
+function sideBlock(session, clip, id, label) {
+  const side = el("div", "side");
+  side.innerHTML = `
+    <audio controls preload="none"></audio>
+    <div class="roll">
+      <div class="roll-bar">
+        <div class="seg" role="group" aria-label="Piano roll view">
+          <button type="button" data-mode="follow">Follow</button>
+          <button type="button" data-mode="whole">Whole</button>
+        </div>
+        <span class="where" aria-live="off"></span>
+      </div>
+      <canvas class="pr" aria-label="Piano roll; tap to jump"></canvas>
+    </div>`;
+  if (label) side.prepend(el("div", "side-label", label));
+  const audio = side.querySelector("audio");
+  const blob = document.getElementById(`audio-${session.id}-${clip.id}`);
+  if (clip.src) {
+    audio.src = clip.src;
+  } else if (blob) {
+    const bin = atob(blob.textContent.trim());
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    audio.src = URL.createObjectURL(new Blob([bytes], { type: clip.mime }));
+  }
+  audio.addEventListener("error", e => {
+    const a = e.target;
+    setStatus(id, `Audio ${label || ""} failed to load (code ${a.error ? a.error.code : "?"})`, "err");
+  });
+  side._roll = attachRoll(side, clip);
+  return side;
+}
+
+function chipRow(label, items, cur, field, persistClip) {
+  const box = el("div", "ab-block");
+  box.appendChild(el("div", "note-label", label));
+  const row = el("div", "tags");
+  row.setAttribute("role", "group");
+  row.setAttribute("aria-label", label);
+  for (const t of items) {
+    const chip = el("button", "chip", t.label);
+    chip.type = "button";
+    if (t.desc) chip.title = t.desc;
+    chip.dataset.tag = t.key;
+    chip.addEventListener("click", () => {
+      const r = cur();
+      const set = new Set(r[field] || []);
+      set.has(t.key) ? set.delete(t.key) : set.add(t.key);
+      r[field] = items.map(x => x.key).filter(k => set.has(k));
+      chip.setAttribute("aria-pressed", set.has(t.key) ? "true" : "false");
+      persistClip();
+    });
+    row.appendChild(chip);
+  }
+  box.appendChild(row);
+  box._show = values => {
+    const set = new Set(values || []);
+    row.querySelectorAll(".chip").forEach(ch => ch.setAttribute("aria-pressed", set.has(ch.dataset.tag) ? "true" : "false"));
+  };
+  return box;
+}
+
+const PREFS = [[-2, "A", "clearly"], [-1, "A", "a bit"], [0, "=", "same"], [1, "B", "a bit"], [2, "B", "clearly"]];
+
+function pairCard(session, pair, index, openSet) {
+  const id = docId(session.id, pair.id);
+  const cur = () => ratings[id] || (ratings[id] = { session: session.id, clip: pair.id });
+  const persistClip = () => persist(session.id, pair.id);
+  const card = el("article", "clip");
+  card.id = `clip-${id}`;
+
+  const head = el("button", "clip-head");
+  head.type = "button";
+  head.setAttribute("aria-controls", `body-${id}`);
+  head.append(el("span", "chev"), el("span", "clip-name", pair.id.replace("_", " ")));
+  const count = el("span", "count");
+  count.id = `count-${id}`;
+  const status = el("span", "status", isRated(cur()) ? "Saved" : "");
+  status.id = `status-${id}`;
+  if (isRated(cur())) status.classList.add("ok");
+  head.append(status, count);
+  head.addEventListener("click", () => { setOpen(card, !card.classList.contains("open")); saveOpen(); });
+
+  const body = el("div", "clip-body");
+  body.id = `body-${id}`;
+  card.append(head, body);
+  const sides = [sideBlock(session, pair.a, id, "A"), sideBlock(session, pair.b, id, "B")];
+  body.append(...sides);
+  card._rolls = sides.map(s => s._roll);
+
+  const pick = el("div", "ab-block");
+  pick.appendChild(el("div", "note-label", "Which is the better piece?"));
+  const prefs = el("div", "prefs");
+  prefs.setAttribute("role", "group");
+  prefs.setAttribute("aria-label", "Preference");
+  for (const [v, side, word] of PREFS) {
+    const b = el("button", "pref");
+    b.type = "button";
+    b.dataset.v = v;
+    b.setAttribute("aria-label", v === 0 ? "Same" : `${side} ${word} better`);
+    b.append(el("b", null, side), el("small", null, word));
+    b.addEventListener("click", () => {
+      const r = cur();
+      r.pref = r.pref === v ? null : v;
+      showPref(r.pref);
+      persistClip();
+    });
+    prefs.appendChild(b);
+  }
+  const showPref = v => prefs.querySelectorAll(".pref").forEach(b => b.setAttribute("aria-pressed", Number(b.dataset.v) === v ? "true" : "false"));
+  pick.appendChild(prefs);
+  body.appendChild(pick);
+
+  const reasons = chipRow("What decided it", criteria.filter(c => c.key !== "overall"), cur, "reasons", persistClip);
+  const tagsA = chipRow("Issues in A", tagList, cur, "tags_a", persistClip);
+  const tagsB = chipRow("Issues in B", tagList, cur, "tags_b", persistClip);
+  body.append(reasons, tagsA, tagsB);
+
+  const noteLabel = el("label", "note-label", "Comment");
+  noteLabel.htmlFor = `note-${id}`;
+  const note = el("textarea");
+  note.id = `note-${id}`;
+  note.placeholder = "Why, and where (A or B, bar number from the roll)";
+  note.value = cur().note || "";
+  const flush = () => { clearTimeout(noteTimers[id]); const r = cur(); if ((r.note || "") !== note.value) { r.note = note.value; persistClip(); } };
+  note.addEventListener("input", () => { clearTimeout(noteTimers[id]); noteTimers[id] = setTimeout(flush, 900); });
+  note.addEventListener("blur", flush);
+  body.append(noteLabel, note);
+
+  const last = index === session.clips.length - 1;
+  const next = el("button", "next", last ? "Close pair" : "Next pair");
+  next.type = "button";
+  next.addEventListener("click", () => {
+    flush();
+    setOpen(card, false);
+    const nextCard = last ? null : cards.get(docId(session.id, session.clips[index + 1].id));
+    if (nextCard) setOpen(nextCard, true);
+    saveOpen();
+    (nextCard || card).scrollIntoView({ block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  });
+  body.appendChild(next);
+
+  card._sync = b => {
+    showPref(b.pref);
+    reasons._show(b.reasons);
+    tagsA._show(b.tags_a);
+    tagsB._show(b.tags_b);
+  };
+  card._sync(cur());
+  cards.set(id, card);
+  setOpen(card, openSet.has(id));
+  return card;
+}
+
 function clipCard(session, clip, index, openSet) {
   const id = docId(session.id, clip.id);
   const cur = () => ratings[id] || (ratings[id] = { session: session.id, clip: clip.id });
@@ -367,32 +543,10 @@ function clipCard(session, clip, index, openSet) {
 
   const body = el("div", "clip-body");
   body.id = `body-${id}`;
-  body.innerHTML = `
-    <audio controls preload="none"></audio>
-    <div class="roll">
-      <div class="roll-bar">
-        <div class="seg" role="group" aria-label="Piano roll view">
-          <button type="button" data-mode="follow">Follow</button>
-          <button type="button" data-mode="whole">Whole</button>
-        </div>
-        <span class="where" aria-live="off"></span>
-      </div>
-      <canvas class="pr" aria-label="Piano roll; tap to jump"></canvas>
-    </div>`;
   card.append(head, body);
-  const audio = body.querySelector("audio");
-  const blob = document.getElementById(`audio-${session.id}-${clip.id}`);
-  if (blob) {
-    const bin = atob(blob.textContent.trim());
-    const bytes = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-    audio.src = URL.createObjectURL(new Blob([bytes], { type: clip.mime }));
-  }
-  audio.addEventListener("error", e => {
-    const a = e.target;
-    setStatus(id, `Audio failed to load (code ${a.error ? a.error.code : "?"})`, "err");
-  });
-  card._roll = attachRoll(card, clip);
+  const side = sideBlock(session, clip, id, null);
+  body.appendChild(side);
+  card._rolls = [side._roll];
 
   card._rows = criteria.map(c => {
     const row = scaleRow(c, id, cur, persistClip);
@@ -462,9 +616,16 @@ function renderSession() {
   const rubric = current.rubric || { rules: [], criteria: [], tags: [] };
   criteria = rubric.criteria;
   tagList = rubric.tags;
-  renderRules(rubric);
+  renderRules(isAb() ? { ...rubric, rules: current.rules || rubric.rules } : rubric);
+  if (current.intro) {
+    const intro = document.querySelector("section.intro");
+    intro.innerHTML = "";
+    for (const t of current.intro) intro.appendChild(el("p", null, t));
+    document.querySelector(".bar h1").textContent = "Blind A/B listening";
+    document.querySelector("#rules summary").textContent = "How to judge";
+  }
   const openSet = loadOpen();
-  current.clips.forEach((c, i) => box.appendChild(clipCard(current, c, i, openSet)));
+  current.clips.forEach((c, i) => box.appendChild((isAb() ? pairCard : clipCard)(current, c, i, openSet)));
   const sn = document.getElementById("session-note");
   sn.value = (ratings[`session__${current.id}`] || {}).note || "";
   const st = document.querySelector(".session-note .status");
@@ -626,6 +787,52 @@ function attachRoll(card, clip) {
 window.addEventListener("resize", () => rolls.forEach(r => r.draw()));
 matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", () => rolls.forEach(r => r.draw()));
 
+const POLL_MS = 5000;
+
+function showLoginBanner() {
+  const b = document.getElementById("banner");
+  b.hidden = false;
+  b.textContent = "Lost the connection to the site (the login may have expired). Reload the page and log in again. Ratings made since are kept on this phone and sent after the reload.";
+}
+
+// Same calls as the claude.ai db, backed by the self-hosted /api (stack/README.md in the self-hosting folder).
+function siteDb() {
+  async function request(path, init) {
+    let r;
+    try { r = await fetch(path, { credentials: "same-origin", redirect: "manual", cache: "no-store", ...init }); }
+    catch (e) { throw { code: "login" }; }
+    // An expired Access session answers with a redirect to the login page on another origin.
+    if (r.type === "opaqueredirect" || r.status === 0) throw { code: "login" };
+    if (!(r.headers.get("content-type") || "").includes("json")) throw { code: "login" };
+    const body = await r.json();
+    if (r.status === 404 && init?.method !== "PUT") return null;
+    if (!r.ok) throw { code: `http_${r.status}` };
+    document.getElementById("banner").hidden = true;
+    return body;
+  }
+  return {
+    doc: path => ({
+      set: body => request(`/api/${path}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }),
+      get: async () => { const d = await request(`/api/${path}`); return { exists: d !== null, data: () => d }; },
+    }),
+    collection: name => ({
+      onSnapshot(cb, onError) {
+        const tick = async () => {
+          try {
+            const j = await request(`/api/${name}`);
+            cb({ docs: (j?.documents || []).map(d => ({ id: d.id, data: () => d.data })) });
+          } catch (e) {
+            if (e.code === "login") showLoginBanner();
+            onError && onError(e);
+          }
+          setTimeout(tick, document.hidden ? 6 * POLL_MS : POLL_MS);
+        };
+        tick();
+      },
+    }),
+  };
+}
+
 async function start() {
   Object.assign(ratings, loadDrafts());
   try {
@@ -642,7 +849,8 @@ async function start() {
   if (current) sel.value = current.id;
   renderSession();
 
-  db = window.claude && window.claude.use ? await window.claude.use("db") : null;
+  const site = document.querySelector('meta[name="hw2-backend"]')?.content === "site";
+  db = site ? siteDb() : window.claude && window.claude.use ? await window.claude.use("db") : null;
   if (!db) {
     const b = document.getElementById("banner");
     b.hidden = false;
@@ -678,7 +886,8 @@ function renderSessionValues() {
     const card = cards.get(id);
     if (!card) continue;
     const body = ratings[id] || {};
-    for (const [key, row] of card._rows) row._show(body[key]);
+    if (card._sync) card._sync(body);
+    for (const [key, row] of card._rows || []) row._show(body[key]);
     if (card._tags) {
       const set = new Set(body.tags || []);
       card._tags.querySelectorAll(".chip").forEach(ch => ch.setAttribute("aria-pressed", set.has(ch.dataset.tag) ? "true" : "false"));
