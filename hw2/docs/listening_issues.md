@@ -42,7 +42,7 @@ Song `NN` is `NN.mid` / `NN.wav` in the source folder: `ref` = `outputs/ref/held
 ## 5. Beat and tempo (open)
 
 - **Said:** "the beat is kinda misaligned between melody and piano in first half" (`planfill clip_05`, `ref` song `237`); "misaligned beat at first few bar" (`candidates clip_19`, `ref` song `648`); "sudden speed change" (`planfill clip_01`, `melody_first` song `13`); "strange pace" (`ckpt2 clip_11`, `ref` song `559`). Tags `timing_off` on 9 clips, `odd_tempo` on 6.
-- **Note:** most are real songs, so likely POP909 timing (tempo changes, pickups). Not checked: tempo tokens in the middle of pieces.
+- **Note:** most are real songs, so likely POP909 timing (tempo changes, pickups). Tempo tokens in the middle of generated pieces: see section 11 (fixed 2026-10-17).
 
 ## 6. Repetition and boredom (open)
 
@@ -67,3 +67,15 @@ Song `NN` is `NN.mid` / `NN.wav` in the source folder: `ref` = `outputs/ref/held
 - **Fixed:** piano roll ahead of the audio by up to 2.6 s on 6 `candidates` clips (`candidates clip_17`, `task_a_plan` song `06` "the sheet doesn't meet the audio AT ALL", `candidates clip_20`, `task_a_plan` song `11` "different start offset/lag"); `midi_to_wav` trims leading silence, the roll now shifts by the same amount.
 - **Open:** "only heard in left channel" on the iPhone. All served clips are stereo with both channels within 4 dB; the cause is not in the files.
 - **Done:** "really hard to identify whether each metrics stands for" (`ckpt` session note) led to the v2 rubric.
+
+## 11. Session `t1_checkpoint` (2026-10-17; 7 A/B pairs, `results/listening/t1_checkpoint.csv`)
+
+Result: `loss_0.40` 3 wins, `step_10000` 1, same 1 (5 pairs). Decision by the fixed rule: single-stage checkpoint = `loss_0.40`. Both lost to their real anchors (`pair_04`, `pair_06`). Sources: `loss040` = `outputs/exp2/loss_0.40` or `loss_0.40_seed1000`, `step10000` = `outputs/exp2/step_10000`.
+
+- **"why A has 37 bar?"** (`pair_02` A, `step_10000` song `04`): **fixed.** The piece has 32 `Bar` tokens, but 10 bars hold `Pos_` 64-95 (beats 5-6), and the decoder stretches each such bar to hold its notes, so the piece lasts 36.75 four-beat bars. POP909's beat labels give 465 of 896 songs at least one 5- or 6-beat bar (17,756 of 1.5M `Pos_` tokens), and the model learned them: 3-14 of 20 single-stage pieces per checkpoint have such a bar; plan-fill has none. Fix: single-stage sampling bans `Pos_` at or past the piece meter (`--max_beats`, default 4; TASK B: the prompts' meter). Test: 8 of 8 pieces are exactly 32 four-beat bars.
+- **"very large variations in tempo"** (`pair_05` A, `step_10000` song `02`): **fixed.** Its tokens set tempo 75, 110, 90 and 120 bpm (bars 1, 2, 3, 13). POP909: 33 of 896 songs (3.7%) jump 20+ bpm; generated: 3-4 of 20 pieces (15-20%). Also 8 of 20 `step_10000` pieces had no `Tempo_` at the start and played at the 120 bpm default (every real song opens `Bar Pos_0 Tempo_`). Fix: sampling requires one opening `Tempo_` and bans later ones (`--tempo_changes` turns it off).
+- **"B is SO LOUD"** (`pair_07` B, `step_10000` song `14`): **open.** Both clips measure -18.1 LUFS on the page; B peaks at -0.9 dBFS (A -2.0), max momentary -11.5 vs -13.1 LUFS. B is sparse (5.3 notes/s vs 11.0) and high (90th percentile pitch 85 vs 71), so it gets about 5 dB more gain to reach the target. Not changed yet.
+- **"full empty bar 2"** (`pair_06` A, `loss_0.40_seed1000` song `03`): **open.** Bars 1-2 hold 2 and 1 notes (sparse intro); see section 1 and 3.
+- **"piano is broken with dropping frequencies ... notes too close side by side"** (`pair_02` A, `step_10000` song `04`): **open, not checked.** This is the stretched piece above; re-listen after the fix.
+- **"A has very strange latter half"** (`pair_01` A, `loss_0.40_seed1000` song `11`), **"A kinda loose it in the later part"** (`pair_03` A, `loss_0.40` song `03`): drift in the second half, both `loss_0.40`; see section 9.
+- **"B has well touching melodies ... melody and piano echoing each other"** (`pair_04` B, real song `889`, preferred over `step_10000` song `03`).

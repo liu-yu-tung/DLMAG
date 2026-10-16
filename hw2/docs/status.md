@@ -34,12 +34,12 @@ As of 2026-10-17 01:00. Deadline Mon 2026-10-26 23:59; the report (PPT-style PDF
 - **Doubled notes across tracks:** fixed in rendering. To redo: existing WAVs (rendered before 2026-10-16 23:00).
 - **Piano roll ahead of the audio on the listening page:** fixed and published.
 
-## Decisions waiting for the user
+## Decisions (hands-off mode 10-16 to 10-20, fixed rules in the approved plan)
 
-- TASK A system (single-stage or plan-fill) and the single-stage checkpoint (`loss_0.40` or `step_10000`).
-- Checkpoint defaults in the Makefile (`MAIN_CKPT` is still `step_6000`, `PLAN_CKPT`/`FILL_CKPT` still v1) and `generate_plan_fill.py` (v1 defaults, `--tok2idx` from `runs/`).
-- Whether to train plan and fill longer (review the loss analysis first).
-- The `/ab/` listening page is halted (0 ratings) and still online.
+- Single-stage checkpoint: `loss_0.40` (T1 2026-10-17: 3 wins vs 1 for `step_10000`, 1 same).
+- TASK A system (single-stage or plan-fill): T2, after `plan_rep_long` / `fill_rep_long`.
+- Sampling fixes 2026-10-17: no `Pos_` past the meter, one opening tempo (`docs/listening_issues.md` section 11).
+- Checkpoint defaults in the Makefile and `generate_plan_fill.py`: set after T2.
 
 ## Plan (proposed; the user has midterms on 10-17/18)
 
