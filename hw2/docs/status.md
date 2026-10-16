@@ -39,7 +39,6 @@ As of 2026-10-17 01:00. Deadline Mon 2026-10-26 23:59; the report (PPT-style PDF
 - TASK A system (single-stage or plan-fill) and the single-stage checkpoint (`loss_0.40` or `step_10000`).
 - Checkpoint defaults in the Makefile (`MAIN_CKPT` is still `step_6000`, `PLAN_CKPT`/`FILL_CKPT` still v1) and `generate_plan_fill.py` (v1 defaults, `--tok2idx` from `runs/`).
 - Whether to train plan and fill longer (review the loss analysis first).
-- Commit the current work (42 changed files; 15 local commits not pushed; HW2 stays local until after 10-26).
 - The `/ab/` listening page is halted (0 ratings) and still online.
 
 ## Plan (proposed; the user has midterms on 10-17/18)
