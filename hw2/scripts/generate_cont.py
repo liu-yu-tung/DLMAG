@@ -12,6 +12,7 @@ import json
 import time
 from pathlib import Path
 
+from hw2 import code_version
 from hw2.generate import SampleConfig, generate, load_model
 from hw2.remi import DATA_ROOT, load_sequences, load_vocab, tokens_to_midi
 from hw2.render import midi_to_wav
@@ -56,7 +57,7 @@ def main():
             if args.wav:
                 midi_to_wav(out / f"{fname}.mid", out / f"{fname}.wav")
         (out / "sequences.json").write_text(json.dumps(pieces))
-        meta = {"args": vars(args), "config": cfg.name, "seconds": round(time.time() - t0, 1), "pieces": info}
+        meta = {"code_version": code_version(), "args": vars(args), "config": cfg.name, "seconds": round(time.time() - t0, 1), "pieces": info}
         (out / "gen_info.json").write_text(json.dumps(meta, indent=1))
         print(f"{cfg.name}: {len(pieces)} pieces in {meta['seconds']}s -> {out}")
 

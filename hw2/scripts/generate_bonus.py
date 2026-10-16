@@ -17,6 +17,7 @@ from pathlib import Path
 import pretty_midi
 import torch
 
+from hw2 import code_version
 from hw2.bonus import bar_prefix, piano_notes_to_seconds, prelude, tokenize_prompt
 from hw2.generate import SampleConfig, filter_logits, load_model
 from hw2.remi import DATA_ROOT, load_vocab
@@ -156,7 +157,7 @@ def main():
             midi_to_wav(out / f"{d.name}.mid", out / f"{d.name}.wav")
         info.append({"song_name": d.name, "n_tokens": len(seq), "piano_notes": sum(map(len, piano)), "notes_per_bar": [len(x) for x in piano]})
         print(d.name, info[-1]["piano_notes"], "piano notes", flush=True)
-    meta = {"args": vars(args), "variant": variant, "config": cfg.name + ("_grammar" if args.grammar else ""), "seconds": round(time.time() - t0, 1), "pieces": info}
+    meta = {"code_version": code_version(), "args": vars(args), "variant": variant, "config": cfg.name + ("_grammar" if args.grammar else ""), "seconds": round(time.time() - t0, 1), "pieces": info}
     (out / "gen_info.json").write_text(json.dumps(meta, indent=1))
 
 

@@ -9,6 +9,7 @@ from pathlib import Path
 import numpy as np
 import torch
 
+from hw2 import code_version
 from hw2.generate import SampleConfig, load_model
 from hw2.plan import song_raw, song_tokens
 from hw2.plan_generate import PlanRules, parse_form, parse_plan, sample_fill, sample_plan, to_outputs
@@ -128,7 +129,7 @@ def main():
         (folder / "sequences.json").write_text(json.dumps(pieces))
         (folder / "plans.json").write_text(json.dumps(plan_rows))
         config = f"{args.order}_{cfg.name}" + (f"_drop-{'-'.join(drop)}" if drop else "")
-        meta = {"args": vars(args), "config": config, "seconds": round(time.time() - t0, 1), "pieces": info}
+        meta = {"code_version": code_version(), "args": vars(args), "config": config, "seconds": round(time.time() - t0, 1), "pieces": info}
         (folder / "gen_info.json").write_text(json.dumps(meta, indent=1))
         print(f"{len(pieces)} pieces in {meta['seconds']}s -> {folder}")
 

@@ -16,6 +16,7 @@ import torch
 from torch.utils.data import DataLoader
 from transformers import GPT2Config, GPT2LMHeadModel
 
+from hw2 import code_version
 from hw2.data import CropDataset, FillDataset, split_songs
 from hw2.remi import DATA_ROOT, HW2_ROOT, load_sequences, load_vocab
 
@@ -80,7 +81,7 @@ def main():
     ckpt_dir = HW2_ROOT / "checkpoints" / args.run_name
     run_dir.mkdir(parents=True, exist_ok=True)
     ckpt_dir.mkdir(parents=True, exist_ok=True)
-    (run_dir / "args.json").write_text(json.dumps(vars(args), indent=2))
+    (run_dir / "args.json").write_text(json.dumps(vars(args) | {"code_version": code_version()}, indent=2))
     (run_dir / "val_songs.json").write_text(json.dumps(sorted(s["song_name"] for s in val_songs)))
 
     if args.fill:
