@@ -1,4 +1,4 @@
-"""How much of a generated piece is copied from the training songs (Exp 2).
+"""How much of a generated piece is copied from the training songs.
 
 - bar_copy: share of non-empty generated bars that equal some training bar note-for-note
   (Pos/Pitch/Dur; velocity and tempo ignored). bar_copy_any_key also allows any transposition.

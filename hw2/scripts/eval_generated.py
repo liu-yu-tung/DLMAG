@@ -3,7 +3,7 @@
 Each argument is a folder with sequences.json (and gen_info.json) from generate_uncond.py / generate_cont.py.
 Writes one row per folder to --summary_csv (replacing that folder's earlier row) and <folder>/metrics.csv.
 
-uv run python scripts/eval_generated.py outputs/exp1/* --summary_csv results/exp1.csv
+uv run python scripts/eval_generated.py outputs/exp1/* --summary_csv results/task_a_sampling.csv
 """
 
 import argparse

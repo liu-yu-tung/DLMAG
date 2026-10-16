@@ -1,7 +1,7 @@
 """Train a GPT-2 decoder from scratch on TA-REMI POP909 tokens.
 
 Saves a checkpoint each time the smoothed training loss first drops below a level in --save_at
-(for the checkpoint comparison, Exp 2), plus `last` every --save_every steps.
+(compared in results/task_a_checkpoints.csv), plus `last` every --save_every steps.
 
 uv run python scripts/train.py --run_name gpt2_ppb16
 """

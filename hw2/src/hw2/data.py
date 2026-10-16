@@ -6,7 +6,6 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset
 
-from hw2.remi import split_bars
 
 PITCH_MIN, PITCH_MAX = 21, 108
 
@@ -75,10 +74,6 @@ class CropDataset(Dataset):
         out = np.full(self.ctx, self.pad, dtype=np.int64)
         out[: len(window)] = window
         return torch.from_numpy(out)
-
-
-def bars_of(tokens: list[str]) -> int:
-    return len(split_bars(tokens))
 
 
 STAT_GROUPS = {"chords": ("Chord_",), "piano_stats": ("PDen_", "PDur_"), "melody_stats": ("MDen_", "MDur_"), "repeat": ("Rep_",)}

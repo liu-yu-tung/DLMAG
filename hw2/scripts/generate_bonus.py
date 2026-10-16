@@ -6,7 +6,7 @@ With --grammar, sampling follows Pos -> Pitch -> Vel -> Dur, positions never go 
 the bar length given by the prompt's beat_midi.txt.
 Output: <output_dir>/<song>.mid with tracks MELODY (the prompt, unchanged) and PIANO, plus .wav with --wav.
 
-uv run python scripts/generate_bonus.py --ckpt checkpoints/bonus_ppb16/last --output_dir outputs/bonus --wav
+uv run python scripts/generate_bonus.py --ckpt checkpoints/abl_melody/step_7000 --output_dir outputs/bonus --wav
 """
 
 import argparse

@@ -3,7 +3,7 @@
 Writes to --output_dir/<config>/: <prompt>.mid, <prompt>.wav (with --wav), sequences.json, gen_info.json.
 Several configs: repeat --config "temperature,top_k,top_p".
 
-uv run python scripts/generate_cont.py --ckpt checkpoints/gpt2_ppb16/loss_0.30 --output_dir outputs/task_b \
+uv run python scripts/generate_cont.py --ckpt checkpoints/gpt2_ppb16/<checkpoint> --output_dir outputs/task_b \
     --config 1.0,0,0.95 --config 1.2,0,0.9 --wav
 """
 

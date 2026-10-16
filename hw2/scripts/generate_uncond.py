@@ -2,7 +2,7 @@
 
 Writes to --output_dir: sequences.json (TA eval format), <name>.mid, <name>.wav (with --wav), gen_info.json.
 
-uv run python scripts/generate_uncond.py --ckpt checkpoints/gpt2_ppb16/loss_0.30 --output_dir outputs/task_a --wav
+uv run python scripts/generate_uncond.py --ckpt checkpoints/gpt2_ppb16/<checkpoint> --output_dir outputs/task_a --wav
 """
 
 import argparse

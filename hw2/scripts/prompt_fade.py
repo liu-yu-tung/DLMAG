@@ -1,10 +1,10 @@
-"""Exp 4: how fast a continuation drifts away from its 8-bar prompt.
+"""TASK B: how fast a continuation drifts away from its 8-bar prompt.
 
 For each bar after the prompt: cosine similarity of its pitch-class histogram to the prompt's, and
 groove similarity (1 - onset XOR distance, as in GS) to the closest prompt bar.
 Reference: held-out real songs, 8 bars from a random point followed by their real next 24 bars.
 
-uv run python scripts/exp4_prompt_fade.py outputs/task_b/* --out results/exp4.csv
+uv run python scripts/prompt_fade.py outputs/task_b/* --out results/task_b_fade.csv
 """
 
 import argparse

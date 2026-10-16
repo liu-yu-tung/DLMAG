@@ -52,7 +52,7 @@ def generate(
     A sample stops when it emits the (n_bars+1)-th new Bar (not kept) or hits max_tokens.
     <PAD>/<BOS> are never sampled; <EOS> is blocked until n_bars bars exist.
     Returns the token ids (prompt + continuation) and the mean NLL of the sampled tokens under the
-    untempered model (for the perplexity comparison in Exp 1).
+    untempered model (the nll column of eval_generated.py).
     """
     device = next(model.parameters()).device
     ctx = model.config.n_positions

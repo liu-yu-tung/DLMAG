@@ -385,31 +385,38 @@ wheels = [
 name = "hw2"
 version = "0.1.0"
 source = { editable = "." }
+default-groups = ["analysis"]
 dependencies = [
-    { name = "matplotlib" },
-    { name = "midi2audio" },
     { name = "miditoolkit" },
     { name = "numpy" },
-    { name = "pandas" },
     { name = "pretty-midi" },
     { name = "scipy" },
     { name = "torch" },
-    { name = "tqdm" },
     { name = "transformers" },
+]
+
+[package.dev-dependencies]
+analysis = [
+    { name = "matplotlib" },
+    { name = "pandas" },
+    { name = "tqdm" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "matplotlib", specifier = ">=3.11.2" },
-    { name = "midi2audio", specifier = ">=0.1.1" },
     { name = "miditoolkit", specifier = ">=1.0.1" },
     { name = "numpy", specifier = ">=2.5.4" },
-    { name = "pandas", specifier = ">=3.0.6" },
     { name = "pretty-midi", specifier = ">=0.2.11.post0" },
     { name = "scipy", specifier = ">=1.18.1" },
     { name = "torch", specifier = ">=2.14.1" },
-    { name = "tqdm", specifier = ">=4.70.1" },
     { name = "transformers", specifier = ">=5.19.0" },
+]
+
+[package.metadata.requires-dev]
+analysis = [
+    { name = "matplotlib", specifier = ">=3.11.2" },
+    { name = "pandas", specifier = ">=3.0.6" },
+    { name = "tqdm", specifier = ">=4.70.1" },
 ]
 
 [[package]]
@@ -745,15 +752,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/d6/54/cfe61301667036ec958cb99bd3efefba235e65cdeb9c84d24a8293ba1d90/mdurl-0.1.2.tar.gz", hash = "sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba", size = 8729, upload-time = "2022-08-14T12:40:10.846Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl", hash = "sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8", size = 9979, upload-time = "2022-08-14T12:40:09.779Z" },
-]
-
-[[package]]
-name = "midi2audio"
-version = "0.1.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/a8/1c/b96b5d797cb622753fef9dd5ac2116ee9f3585727d60212f892fb4bd175e/midi2audio-0.1.1.tar.gz", hash = "sha256:b26590388e1f62753096b075b877e2529ff62faad00c07811ac8111a73e4a78a", size = 4978, upload-time = "2016-11-20T19:48:34.649Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/55/75/23618a687fc2391192c9d9ec8906a198a3f318f146388d3b96f779826d43/midi2audio-0.1.1-py2.py3-none-any.whl", hash = "sha256:762a2df3806d373f7f89962f22ecc6d3cb49f82ae4212fab560a479cbb6c9c08", size = 8742, upload-time = "2016-11-20T19:48:31.42Z" },
 ]
 
 [[package]]

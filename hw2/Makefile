@@ -116,11 +116,11 @@ eval-task-a-plan: ## same metrics for both plan-fill orders
 
 eval-task-b: ## metrics and prompt fade for TASK B (copy rate skips the 8 prompt bars)
 	$(PY) scripts/eval_generated.py $(TASK_B_DIR)/* --skip_bars 8 --summary_csv results/task_b.csv
-	$(PY) scripts/exp4_prompt_fade.py $(TASK_B_DIR)/* --out results/task_b_fade.csv
+	$(PY) scripts/prompt_fade.py $(TASK_B_DIR)/* --out results/task_b_fade.csv
 
 eval-task-b-plan: ## same metrics for TASK B with plan-fill
 	$(PY) scripts/eval_generated.py $(PLAN_TASK_B_DIR)/* --skip_bars 8 --summary_csv results/task_b_plan.csv
-	$(PY) scripts/exp4_prompt_fade.py $(PLAN_TASK_B_DIR)/* --out results/task_b_plan_fade.csv
+	$(PY) scripts/prompt_fade.py $(PLAN_TASK_B_DIR)/* --out results/task_b_plan_fade.csv
 
 analyze: ## silence, theme return and plan adherence tables for the folders in SILENCE_DIRS, RETURN_DIRS, ADHERENCE_DIRS
 	$(PY) scripts/silence_stats.py $(SILENCE_DIRS)

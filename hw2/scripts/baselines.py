@@ -1,4 +1,4 @@
-"""Real-data metrics and sanity baselines (Exp 3).
+"""Real-data metrics and sanity baselines.
 
 Sets, each one piece per training song:
 - real_full: whole songs, as in the TA example.
