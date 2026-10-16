@@ -47,6 +47,7 @@ def generate(
     seed: int = 0,
     max_tokens: int = 8192,
     max_pos: int | None = None,
+    one_tempo: bool = False,
 ) -> tuple[list[list[int]], list[float]]:
     """Continue each prompt until it has n_bars new Bar-started bars.
 
@@ -62,6 +63,11 @@ def generate(
     # POP909 beat labels give some 5- and 6-beat bars; sampled into a 4-beat piece they stretch it (32 Bar tokens, 37 bars long)
     if max_pos is not None:
         banned += [i for t, i in tok2idx.items() if t.startswith("Pos_") and int(t[4:]) >= max_pos]
+    # 3.7% of POP909 songs jump 20+ bpm; sampled pieces did in 15-20%
+    tempo_ids = torch.tensor([i for t, i in tok2idx.items() if t.startswith("Tempo_")], device=device)
+    not_tempo = torch.ones(len(tok2idx), dtype=torch.bool, device=device)
+    not_tempo[tempo_ids] = False
+    pos0 = tok2idx["Pos_0"]
     gen = torch.Generator(device=device).manual_seed(seed)
 
     B = len(prompts)
@@ -92,10 +98,16 @@ def generate(
 
     logits, mask = encode(full=False)
     eos_ok = torch.tensor([n_bars <= 0] * B, device=device)
+    has_tempo = torch.tensor([bool(set(h) & set(tempo_ids.tolist())) for h in hist], device=device)
     while not all(done):
         raw = torch.log_softmax(logits, dim=-1)
         logits[:, banned] = float("-inf")
         logits[:, eos] = logits[:, eos].masked_fill(~eos_ok, float("-inf"))
+        if one_tempo:
+            # every POP909 song opens Bar Pos_0 Tempo_; without it the piece falls back to DEFAULT_TEMPO
+            need = ~has_tempo & torch.tensor([h[-1] == pos0 and n == 0 for h, n in zip(hist, new_bars)], device=device)
+            logits = logits.masked_fill(need[:, None] & not_tempo, float("-inf"))
+            logits[:, tempo_ids] = logits[:, tempo_ids].masked_fill(has_tempo[:, None], float("-inf"))
         probs = torch.softmax(filter_logits(logits, cfg), dim=-1)
         nxt = torch.multinomial(probs, 1, generator=gen).squeeze(1)
         step_nll = (-raw.gather(1, nxt[:, None]).squeeze(1)).tolist()
@@ -112,6 +124,7 @@ def generate(
         if all(done):
             break
         eos_ok = torch.tensor([n >= n_bars for n in new_bars], device=device)
+        has_tempo |= torch.isin(nxt, tempo_ids)
         if int(next_pos.max()) >= ctx:
             logits, mask = encode(full=True)
             continue

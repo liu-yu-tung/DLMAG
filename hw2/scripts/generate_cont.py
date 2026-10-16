@@ -26,6 +26,7 @@ def parse_args():
     p.add_argument("--tok2idx", type=str, default=str(DATA_ROOT.parent / "tokens" / "ppb16" / "tok2idx.json"))
     p.add_argument("--pos_per_beat", type=int, default=16)
     p.add_argument("--bars", type=int, default=24)
+    p.add_argument("--tempo_changes", action="store_true", help="allow Tempo_ tokens after the first one")
     p.add_argument("--max_beats", type=int, default=None, help="ban Pos_ at or past this beat; default: the prompts' meter, 0 = off")
     p.add_argument("--config", action="append", default=None, help="temperature,top_k,top_p (repeatable)")
     p.add_argument("--samples", type=int, default=1, help="continuations per prompt and config")
@@ -50,7 +51,7 @@ def main():
         prompt_ids = {s["song_name"]: [tok2idx[t] for t in s["tokens"] if t != "<EOS>"] for s in prompts}
         t0 = time.time()
         ids, nll = generate(model, [prompt_ids[name] for name, _ in jobs], args.bars, cfg, tok2idx, seed=args.seed,
-                           max_pos=args.max_beats * args.pos_per_beat or None)
+                           max_pos=args.max_beats * args.pos_per_beat or None, one_tempo=not args.tempo_changes)
         pieces, info = [], []
         for (name, j), seq, loss in zip(jobs, ids, nll):
             fname = name if args.samples == 1 else f"{name}_{j}"
