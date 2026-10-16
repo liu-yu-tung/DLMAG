@@ -191,7 +191,7 @@ Teacher-forced loss on the melody tokens of the 45 held-out songs (bars with at 
 
 ### Fix at sampling time: `--repeat_bias` (`RepeatGuide` in `src/hw2/plan_generate.py`)
 
-**Bug found 2026-10-17, results below need a re-run:** `RepeatGuide` never uses up a source note whose pitch the model changed, so `Rep_rhythm` and changed `Rep_var` bars stack melody notes on one onset (up to 32). Every run with β 8 or more has such clusters (4-17 of 20 pieces); β 4 has none. See `docs/listening_issues.md` section 0. Fixed in code the same day (plus a rule that a part cannot strike the same position and pitch twice in a bar); a CPU test with a random-weight model on a real plan gives at most 6 melody notes on one onset vs 32 with the old guide. Runs not regenerated yet.
+**Bug found 2026-10-17; the table below is from the old guide:** `RepeatGuide` never uses up a source note whose pitch the model changed, so `Rep_rhythm` and changed `Rep_var` bars stack melody notes on one onset (up to 32). Every run with β 8 or more has such clusters (4-17 of 20 pieces); β 4 has none. See `docs/listening_issues.md` section 0. Fixed in code the same day (plus a rule that a part cannot strike the same position and pitch twice in a bar); a CPU test with a random-weight model on a real plan gives at most 6 melody notes on one onset vs 32 with the old guide. Re-run 2026-10-17 into `outputs/plan_fill_rep_fix/*` (same plans and seeds); results in the next section.
 
 On a melody bar whose plan label is `Rep_<kind>_<L>`, add a logit bonus β to the source bar's next note (bar b-L, moved to the bar's key), matched by position so one changed note does not shift the rest: exact = onset, pitch, velocity, duration; var = the same at β/2; rhythm = all but pitch. Same plans as `free` (`--plans_from`), 20 pieces each; `form_IABAE_var` plans with β 8.
 
@@ -208,6 +208,21 @@ On a melody bar whose plan label is `Rep_<kind>_<L>`, add a logit bonus β to th
 - Cost: the copy fights the planned density at large β (MDen within one bin 0.98 to 0.86 at β 16), and the model's own loss on its output rises (sampled NLL 1.32, 1.36, 1.41 for β 4, 8, 16). β 8 is the middle ground.
 - `form_IABAE_var_bias8`: the melody of A now comes back with changes. Melody theme return 42% of pieces (real 32-bar crops 43%, β 0: 0%, exact copy rule: 100%); exact match at lag 16 0.47 (copy rule 0.62); melody bars 24.3% exact, 13.9% varied, 10.1% rhythm repeats.
 - H1/H4/GS do not move (H4 2.59-2.64, GS 0.96-0.97).
+
+### Re-run with the fixed guide (`outputs/plan_fill_rep_fix/*`; `adherence_fix.csv`, `return_stats_fix.csv`, `silence_stats_fix.csv`)
+
+Same plans and seeds as the old runs; only `RepeatGuide` differs. Old -> fixed.
+
+| Run | Max melody notes on one onset | Pieces with 4+ | Asked kind written at the lag | Any repeat at the asked lag | Melody bars exact / var / rhythm (fixed) | MDen within 1 (fixed) | Melody returns |
+|---|---|---|---|---|---|---|---|
+| `free_bias8` | 32 -> 2 | 4 -> 0 | 0.25 -> 0.39 | 0.44 -> 0.60 | 13.3% / 8.9% / 11.7% | 0.96 | 0.08 -> 0.08 |
+| `free_bias16` | 32 -> 2 | 17 -> 0 | 0.31 -> 0.47 | 0.62 -> 0.82 | 18.5% / 5.0% / 14.2% | 0.88 | 0.15 -> 0.23 |
+| `free_pbias4_bias8` | 32 -> 5 | 7 -> 1 | 0.33 -> 0.51 | 0.54 -> 0.76 | 14.5% / 8.0% / 16.3% | 0.98 | 0.07 -> 0.20 |
+| `form_IABAE_var_bias8` | 32 -> 2 | 6 -> 0 | 0.17 -> 0.22 | 0.57 -> 0.73 | 27.8% / 12.7% / 14.7% | 0.96 | 0.42 -> 0.63 |
+
+- The note clusters are gone, and more asked repeats are written at the asked lag in all four runs. Why adherence rose is not checked.
+- Silent share does not change (2.6-3.9%).
+- Real held-out: melody bars 21.5% / 16.8% / 14.0%, MDen within 1 = 1 by definition.
 
 ### Plan side: `--plan_repeat_bias` (`PLAN_REPEAT_SLOTS` in `src/hw2/plan_generate.py`)
 
@@ -258,3 +273,23 @@ Same with `--plan_repeat_bias 4` added (`outputs/task_a_plan_form_var_pbias4_bia
 
 `TASK B`: `outputs/task_b_plan_bias8/<config>` (rules as `task_b_plan`). Pitch-class similarity to the prompt over bars 9-32: 0.749 / 0.769 / 0.773 for t0.8 / t1.0 / t1.2 (without the bias 0.743 / 0.753 / 0.802; real 0.773). H4 2.49 / 2.51 / 2.60, GS 0.965 / 0.965 / 0.928.
 With `--plan_repeat_bias 4` as well (`outputs/task_b_plan_pbias4_bias8`): 0.743 / 0.758 / 0.778, H4 2.55 / 2.54 / 2.65, GS 0.968 / 0.966 / 0.915.
+
+## Loss review (`loss_review.csv`, `scripts/loss_review.py`; 45 held-out songs, teacher forced)
+
+Mean NLL per token on the held-out songs. Windows of whole bars; after the first window only bars with 16 bars of context count.
+
+| Checkpoint | All / melody | Piano | Pitch | Pos | Dur | Vel |
+|---|---|---|---|---|---|---|
+| `gpt2_ppb16/step_6000` | 1.44 | | 1.32 | 0.57 | 2.17 | 1.70 |
+| `gpt2_ppb16/step_10000` | 1.47 | | 1.16 | 0.59 | 2.43 | 1.71 |
+| `gpt2_ppb16/loss_0.40` | 2.70 | | 1.33 | 1.00 | 4.99 | 3.55 |
+| `fill_rep/step_2000` | 1.57 | 1.72 | 1.78 / 1.55 | 0.65 / 0.75 | 2.08 / 2.58 | 1.77 / 2.00 |
+| `fill_rep/step_6000` | 1.16 | 1.39 | 1.10 / 1.07 | 0.38 / 0.53 | 1.67 / 2.23 | 1.48 / 1.73 |
+| `fill_rep/step_10000` | 1.22 | 1.46 | 1.19 / 1.14 | 0.39 / 0.54 | 1.79 / 2.39 | 1.51 / 1.76 |
+
+Fill columns with two values are melody / piano. Plan model (`plan_rep/best`, `last`): 1.19 on plan tokens either way.
+
+- The main model's held-out loss at `loss_0.40` is almost twice that of `step_6000`. Most of the rise is in duration and velocity; pitch stays at 1.33.
+- The fill model reads the plan. At `step_6000` the melody loss is 1.16 with the true labels, 1.28 with the labels removed and 1.72 with each song's labels shuffled between its bars (piano 1.39 / 1.45 / 1.67). Wrong labels cost more than no labels.
+- Fill held-out loss is lowest near `step_6000` and rises by `step_10000`, the same pattern as the main model.
+- No setting change for the longer runs: the fill model already uses its labels, so label dropout stays as it is.
