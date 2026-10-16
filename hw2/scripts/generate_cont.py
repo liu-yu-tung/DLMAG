@@ -14,7 +14,7 @@ from pathlib import Path
 
 from hw2 import code_version
 from hw2.generate import SampleConfig, generate, load_model
-from hw2.remi import DATA_ROOT, load_sequences, load_vocab, tokens_to_midi
+from hw2.remi import DATA_ROOT, infer_beats_per_bar, load_sequences, load_vocab, tokens_to_midi
 from hw2.render import midi_to_wav
 
 
@@ -26,6 +26,7 @@ def parse_args():
     p.add_argument("--tok2idx", type=str, default=str(DATA_ROOT.parent / "tokens" / "ppb16" / "tok2idx.json"))
     p.add_argument("--pos_per_beat", type=int, default=16)
     p.add_argument("--bars", type=int, default=24)
+    p.add_argument("--max_beats", type=int, default=None, help="ban Pos_ at or past this beat; default: the prompts' meter, 0 = off")
     p.add_argument("--config", action="append", default=None, help="temperature,top_k,top_p (repeatable)")
     p.add_argument("--samples", type=int, default=1, help="continuations per prompt and config")
     p.add_argument("--seed", type=int, default=0)
@@ -38,6 +39,8 @@ def main():
     tok2idx, idx2tok = load_vocab(args.tok2idx)
     model = load_model(args.ckpt)
     prompts = load_sequences(args.prompts)
+    if args.max_beats is None:
+        args.max_beats = max(infer_beats_per_bar(s["tokens"], args.pos_per_beat) for s in prompts)
     configs = [SampleConfig(float(t), int(k), float(p)) for t, k, p in (c.split(",") for c in (args.config or ["1.0,0,1.0"]))]
 
     for cfg in configs:
@@ -46,7 +49,8 @@ def main():
         jobs = [(s["song_name"], j) for s in prompts for j in range(args.samples)]
         prompt_ids = {s["song_name"]: [tok2idx[t] for t in s["tokens"] if t != "<EOS>"] for s in prompts}
         t0 = time.time()
-        ids, nll = generate(model, [prompt_ids[name] for name, _ in jobs], args.bars, cfg, tok2idx, seed=args.seed)
+        ids, nll = generate(model, [prompt_ids[name] for name, _ in jobs], args.bars, cfg, tok2idx, seed=args.seed,
+                           max_pos=args.max_beats * args.pos_per_beat or None)
         pieces, info = [], []
         for (name, j), seq, loss in zip(jobs, ids, nll):
             fname = name if args.samples == 1 else f"{name}_{j}"

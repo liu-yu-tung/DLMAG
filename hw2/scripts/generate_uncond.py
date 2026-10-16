@@ -22,6 +22,7 @@ def parse_args():
     p.add_argument("--output_dir", type=str, required=True)
     p.add_argument("--tok2idx", type=str, default=str(DATA_ROOT.parent / "tokens" / "ppb16" / "tok2idx.json"))
     p.add_argument("--pos_per_beat", type=int, default=16)
+    p.add_argument("--max_beats", type=int, default=4, help="ban Pos_ at or past this beat; 0 = off")
     p.add_argument("--n", type=int, default=20)
     p.add_argument("--bars", type=int, default=32)
     p.add_argument("--temperature", type=float, default=1.0)
@@ -46,7 +47,8 @@ def main():
     for b0 in range(0, args.n, args.batch_size):
         n = min(args.batch_size, args.n - b0)
         prompts = [[tok2idx["<BOS>"], tok2idx["Bar"]]] * n
-        ids, nll = generate(model, prompts, args.bars - 1, cfg, tok2idx, seed=args.seed + b0)
+        ids, nll = generate(model, prompts, args.bars - 1, cfg, tok2idx, seed=args.seed + b0,
+                            max_pos=args.max_beats * args.pos_per_beat or None)
         for k, (seq, loss) in enumerate(zip(ids, nll)):
             name = f"{b0 + k:02d}"
             tokens = [idx2tok[i] for i in seq] + ["<EOS>"]

@@ -46,6 +46,7 @@ def generate(
     tok2idx: dict[str, int],
     seed: int = 0,
     max_tokens: int = 8192,
+    max_pos: int | None = None,
 ) -> tuple[list[list[int]], list[float]]:
     """Continue each prompt until it has n_bars new Bar-started bars.
 
@@ -58,6 +59,9 @@ def generate(
     ctx = model.config.n_positions
     bar, eos = tok2idx["Bar"], tok2idx["<EOS>"]
     banned = [tok2idx["<PAD>"], tok2idx["<BOS>"]]
+    # POP909 beat labels give some 5- and 6-beat bars; sampled into a 4-beat piece they stretch it (32 Bar tokens, 37 bars long)
+    if max_pos is not None:
+        banned += [i for t, i in tok2idx.items() if t.startswith("Pos_") and int(t[4:]) >= max_pos]
     gen = torch.Generator(device=device).manual_seed(seed)
 
     B = len(prompts)
