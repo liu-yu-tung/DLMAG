@@ -38,7 +38,7 @@ checkpoints/
 
 # Training outputs
 runs/
-outputs/
+**/outputs/*
 wandb/
 lightning_logs/
 

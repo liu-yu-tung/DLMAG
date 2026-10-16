@@ -1,0 +1,140 @@
+{
+ "args": {
+  "ckpt": "/home/liuyu/Developments/DLMAG/hw2/checkpoints/gpt2_ppb16/step_6000",
+  "output_dir": "/home/liuyu/Developments/DLMAG/hw2/outputs/exp1/t0.8_k0_p0.8",
+  "tok2idx": "/home/liuyu/Developments/DLMAG/hw2/data/tokens/ppb16/tok2idx.json",
+  "pos_per_beat": 16,
+  "n": 20,
+  "bars": 32,
+  "temperature": 0.8,
+  "top_k": 0,
+  "top_p": 0.8,
+  "batch_size": 20,
+  "seed": 0,
+  "wav": true
+ },
+ "config": "t0.8_k0_p0.8",
+ "seconds": 381.8,
+ "pieces": [
+  {
+   "song_name": "00",
+   "n_tokens": 2548,
+   "n_bars": 32,
+   "nll": 0.15420389570945245
+  },
+  {
+   "song_name": "01",
+   "n_tokens": 2424,
+   "n_bars": 32,
+   "nll": 0.24162255644337186
+  },
+  {
+   "song_name": "02",
+   "n_tokens": 3340,
+   "n_bars": 32,
+   "nll": 0.22242290661187486
+  },
+  {
+   "song_name": "03",
+   "n_tokens": 2980,
+   "n_bars": 32,
+   "nll": 0.5200750672742975
+  },
+  {
+   "song_name": "04",
+   "n_tokens": 3460,
+   "n_bars": 32,
+   "nll": 0.2189271757110067
+  },
+  {
+   "song_name": "05",
+   "n_tokens": 3508,
+   "n_bars": 32,
+   "nll": 0.17910462518194148
+  },
+  {
+   "song_name": "06",
+   "n_tokens": 1796,
+   "n_bars": 32,
+   "nll": 0.37630205516387166
+  },
+  {
+   "song_name": "07",
+   "n_tokens": 2728,
+   "n_bars": 32,
+   "nll": 0.13678964921910372
+  },
+  {
+   "song_name": "08",
+   "n_tokens": 4548,
+   "n_bars": 32,
+   "nll": 0.19411575108116538
+  },
+  {
+   "song_name": "09",
+   "n_tokens": 6196,
+   "n_bars": 32,
+   "nll": 0.17246062965974301
+  },
+  {
+   "song_name": "10",
+   "n_tokens": 2604,
+   "n_bars": 32,
+   "nll": 0.18760558258205748
+  },
+  {
+   "song_name": "11",
+   "n_tokens": 2376,
+   "n_bars": 32,
+   "nll": 0.3698774623906991
+  },
+  {
+   "song_name": "12",
+   "n_tokens": 3424,
+   "n_bars": 32,
+   "nll": 0.2926443059391915
+  },
+  {
+   "song_name": "13",
+   "n_tokens": 3476,
+   "n_bars": 32,
+   "nll": 0.49373430209834285
+  },
+  {
+   "song_name": "14",
+   "n_tokens": 3276,
+   "n_bars": 32,
+   "nll": 0.2672776958913901
+  },
+  {
+   "song_name": "15",
+   "n_tokens": 4264,
+   "n_bars": 32,
+   "nll": 0.11694172264498785
+  },
+  {
+   "song_name": "16",
+   "n_tokens": 1816,
+   "n_bars": 32,
+   "nll": 0.5564942777074912
+  },
+  {
+   "song_name": "17",
+   "n_tokens": 3236,
+   "n_bars": 32,
+   "nll": 0.3923283769429341
+  },
+  {
+   "song_name": "18",
+   "n_tokens": 3124,
+   "n_bars": 32,
+   "nll": 0.14350056009286372
+  },
+  {
+   "song_name": "19",
+   "n_tokens": 3036,
+   "n_bars": 32,
+   "nll": 0.16360802116700268
+  }
+ ]
+}

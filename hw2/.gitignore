@@ -1,3 +1,18 @@
 results/*_pieces.csv
 results/*_bars.csv
 results/silence_closure.csv
+
+# Generated outputs: only the records are tracked (gen_info.json, metrics.csv); MIDI, tokens, plans and WAVs stay local.
+# Left out: real POP909 material and the course prompts (ref, listening, baselines, stats, demo, TASK B, BONUS TASK).
+!outputs/*/
+outputs/ref/
+outputs/listening/
+outputs/baselines/
+outputs/stats/
+outputs/demo_velocity/
+outputs/exp4/
+outputs/task_b*/
+outputs/bonus*/
+outputs/**/*.mid
+outputs/**/sequences.json
+outputs/**/plans.json
