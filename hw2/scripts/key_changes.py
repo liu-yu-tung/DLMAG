@@ -24,11 +24,10 @@ import numpy as np
 import pandas as pd
 import pretty_midi
 
-from hw2.bonus import chord_token, read_beats
+from hw2.pop909 import KEY_PENALTY, SCALES, chord_token, key_path, read_beats
 from hw2.remi import DATA_ROOT, HW2_ROOT
 
 NAMES = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"]
-SCALES = np.array([[(pc - t) % 12 in (0, 2, 4, 5, 7, 9, 11) for pc in range(12)] for t in range(12)], dtype=float)
 
 
 def chord_pcs(tok):
@@ -36,20 +35,6 @@ def chord_pcs(tok):
     third = {"maj": 4, "min": 3, "dim": 3, "aug": 4, "sus": None}[q]
     fifth = {"dim": 6, "aug": 8}.get(q, 7)
     return [root, (root + fifth) % 12] + ([] if third is None else [(root + third) % 12])
-
-
-def viterbi(cost, penalty):
-    n = len(cost)
-    best_cost, back = cost[0].copy(), np.zeros((n, 12), dtype=int)
-    for b in range(1, n):
-        stay, best = best_cost, best_cost.min()
-        move = best + penalty
-        back[b] = np.where(stay <= move, np.arange(12), best_cost.argmin())
-        best_cost = np.minimum(stay, move) + cost[b]
-    path = [int(best_cost.argmin())]
-    for b in range(n - 1, 0, -1):
-        path.append(int(back[b][path[-1]]))
-    return path[::-1]
 
 
 def song_keys(d, penalty):
@@ -67,7 +52,7 @@ def song_keys(d, penalty):
     tot = hist.sum(1, keepdims=True)
     share = np.divide(hist, tot, out=np.zeros_like(hist), where=tot > 0)
     cost = np.where(tot > 0, 1 - share @ SCALES.T, 0.0)
-    local = viterbi(cost, penalty)
+    local = key_path(cost, penalty)
     global_key = int((hist.sum(0) @ SCALES.T).argmax())
 
     fit = {"global": 0.0, "local": 0.0, "total": 0.0}
@@ -93,7 +78,7 @@ def song_keys(d, penalty):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--penalty", type=float, default=4.0)
+    p.add_argument("--penalty", type=float, default=KEY_PENALTY)
     args = p.parse_args()
     songs = sorted(p for p in (DATA_ROOT / "training").iterdir() if p.is_dir())
     segs, fit = [], Counter()

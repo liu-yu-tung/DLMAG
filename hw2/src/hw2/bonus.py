@@ -1,82 +1,15 @@
-"""BONUS TASK tokens (bar-interleaved MELODY/PIANO) and the POP909 readers that hw2.plan reuses. Token layout and
-ablation variants in the README."""
+"""BONUS TASK tokens: bar-interleaved MELODY/PIANO, with the ablation variants. Token layout in docs/bonus.md."""
 
-import importlib.util
 import json
 from pathlib import Path
 
 import numpy as np
 import pretty_midi
 
-from hw2.remi import HW2_ROOT
+from hw2.pop909 import CHORD_QUALITIES, TA, bar_events, chord_token, note_tokens, read_beats, track
 
 SPECIAL = ["Mel", "Acc"]
-CHORD_QUALITIES = ["maj", "min", "dim", "aug", "sus"]
 CHORD_TOKENS = ["Chd", "Chord_N"] + [f"Chord_{r}_{q}" for r in range(12) for q in CHORD_QUALITIES]
-ROOTS = {"C": 0, "B#": 0, "C#": 1, "Db": 1, "D": 2, "D#": 3, "Eb": 3, "E": 4, "Fb": 4, "F": 5, "E#": 5, "F#": 6,
-         "Gb": 6, "G": 7, "G#": 8, "Ab": 8, "A": 9, "A#": 10, "Bb": 10, "B": 11, "Cb": 11}
-
-
-def load_ta():
-    spec = importlib.util.spec_from_file_location("ta_tokenization", HW2_ROOT / "scripts" / "ta" / "tokenization.py")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
-TA = load_ta()
-
-
-def read_beats(path: Path):
-    times, orders = [], []
-    for line in Path(path).read_text().splitlines():
-        parts = line.split()
-        if parts:
-            times.append(round(float(parts[0]), 6))
-            orders.append(float(parts[2]) if len(parts) > 2 else 0.0)
-    return times, orders
-
-
-def bar_events(notes, beat_times, beat_info, ppb):
-    """{bar: [(pos, pitch, vel, dur), ...]} with the TA tokenizer's grid, velocity and duration rules."""
-    max_pos = 8 * ppb
-    bars = {}
-    for n in notes:
-        bar, pos, b_len = TA.time_to_grid(n.start, beat_times, beat_info, ppb)
-        if pos >= max_pos:
-            continue
-        dur = max(1, min(max_pos * 2, int(((n.end - n.start) / b_len) * ppb)))
-        vel = max(1, n.velocity // 4 * 4 + 1)
-        bars.setdefault(bar, []).append((pos, n.pitch, vel, dur))
-    return {b: sorted(ev) for b, ev in bars.items()}
-
-
-def note_tokens(events):
-    out = []
-    for pos, pitch, vel, dur in events:
-        out += [f"Pos_{pos}", f"Pitch_{pitch}", f"Vel_{vel}", f"Dur_{dur}"]
-    return out
-
-
-def chord_token(label: str) -> str:
-    """POP909 label (e.g. C:min7, Ab:maj/3, D:sus4(b7), N) -> Chord_<root>_<maj|min|dim|aug|sus> or Chord_N."""
-    if label == "N" or ":" not in label:
-        return "Chord_N"
-    root, quality = label.split(":", 1)
-    if root not in ROOTS:
-        return "Chord_N"
-    quality = quality.split("/")[0].split("(")[0]
-    if "sus" in quality:
-        q = "sus"
-    elif quality.startswith(("dim", "hdim")):
-        q = "dim"
-    elif quality.startswith("aug"):
-        q = "aug"
-    elif quality.startswith("min"):
-        q = "min"
-    else:
-        q = "maj"
-    return f"Chord_{ROOTS[root]}_{q}"
 
 
 def chord_bar_events(chord_path, beat_times, beat_info, ppb):
@@ -133,10 +66,6 @@ def interleave(melody_bars, piano_bars, first_bar, last_bar, variant=None, chord
     for i, b in enumerate(bars):
         tokens += bar_prefix(i, melody, chords, variant) + note_tokens(piano_bars.get(b, []))
     return tokens + ["<EOS>"]
-
-
-def track(midi, name):
-    return next((i for i in midi.instruments if i.name.strip().upper() == name), None)
 
 
 def tokenize_song(midi_path, beat_path, ppb, variant=None, chord_path=None):

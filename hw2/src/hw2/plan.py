@@ -1,18 +1,16 @@
 """Plan-fill pipeline: rule labels per bar, plan tokens (whole song) and fill blocks (per bar). Rules and token
-layout in the README."""
+layout in docs/plan_fill.md."""
 
 from collections import Counter
 
 import numpy as np
 import pretty_midi
 
-from hw2.bonus import TA, chord_token, note_tokens, read_beats, bar_events
+from hw2.pop909 import CHORD_QUALITIES, KEY_PENALTY, SCALES, TA, bar_events, chord_token, key_path, note_tokens, read_beats
 
 PPB = 16
 SECTION_BARS = 8
 N_BINS = 8
-SCALES = np.array([[(pc - t) % 12 in (0, 2, 4, 5, 7, 9, 11) for pc in range(12)] for t in range(12)], dtype=float)
-KEY_PENALTY = 4.0
 
 STAT_NAMES = ("PDen", "PDur", "MDen", "MDur")
 REPEAT_LAGS = (2, 4, 8, 16)
@@ -22,7 +20,7 @@ REPEAT_KINDS = ("exact", "var", "rhythm")
 def vocab_tokens(repeat: bool = False) -> list[str]:
     toks = [f"Meter_{m}" for m in (4, 6)] + [f"Key_{k}" for k in range(12)] + ["Sec"]
     toks += [f"KeyShift_{k}" for k in range(-5, 7)]
-    toks += ["Chord_N"] + [f"Chord_{r}_{q}" for r in range(12) for q in ("maj", "min", "dim", "aug", "sus")]
+    toks += ["Chord_N"] + [f"Chord_{r}_{q}" for r in range(12) for q in CHORD_QUALITIES]
     toks += [f"{s}_{b}" for s in STAT_NAMES for b in range(N_BINS)]
     toks += ["Mel", "Acc"]
     if repeat:
@@ -58,26 +56,13 @@ def repeat_label(melody_bars: list[list], i: int) -> str:
     return f"Rep_{REPEAT_KINDS[k]}_{lag}"
 
 
-def viterbi(cost: np.ndarray, penalty: float) -> list[int]:
-    """Cheapest key path through per-bar costs (bars x 12) when a change costs `penalty`."""
-    best_cost, back = cost[0].copy(), np.zeros((len(cost), 12), dtype=int)
-    for b in range(1, len(cost)):
-        move = best_cost.min() + penalty
-        back[b] = np.where(best_cost <= move, np.arange(12), best_cost.argmin())
-        best_cost = np.minimum(best_cost, move) + cost[b]
-    path = [int(best_cost.argmin())]
-    for b in range(len(cost) - 1, 0, -1):
-        path.append(int(back[b][path[-1]]))
-    return path[::-1]
-
-
 def signed(k: int) -> int:
     k %= 12
     return k - 12 if k > 6 else k
 
 
 def bar_spans(beat_times, info):
-    """{bar: (start_sec, end_sec, beats)} from the TA beat grid."""
+    """{bar: (start_sec, end_sec, beats, index of its first beat)} from the TA beat grid."""
     first = {}
     for i, (bar, _) in enumerate(info):
         first.setdefault(bar, i)
@@ -131,7 +116,7 @@ def song_raw(song_dir):
                 hist[j, n.pitch % 12] += f - s
     tot = hist.sum(1, keepdims=True)
     share = np.divide(hist, tot, out=np.zeros_like(hist), where=tot > 0)
-    local = viterbi(np.where(tot > 0, 1 - share @ SCALES.T, 0.0), KEY_PENALTY)
+    local = key_path(np.where(tot > 0, 1 - share @ SCALES.T, 0.0), KEY_PENALTY)
 
     chords = []
     for line in (song_dir / "chord_midi.txt").read_text().splitlines():

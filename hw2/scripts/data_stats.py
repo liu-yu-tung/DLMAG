@@ -19,7 +19,7 @@ import numpy as np
 import pandas as pd
 import pretty_midi
 
-from hw2.bonus import chord_token, read_beats
+from hw2.pop909 import chord_token, read_beats
 from hw2.remi import DATA_ROOT, HW2_ROOT
 
 TRACKS = ("PIANO", "BRIDGE", "MELODY")
