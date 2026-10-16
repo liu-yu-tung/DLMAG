@@ -122,9 +122,9 @@ def web(args):
     kbps = min(96, int(args.budget_mb * 1e6 * 0.75 * 8 / seconds / 1000))
     clips, blobs = [], []
     for wav in wavs:
-        m4a = audio / f"{wav.stem}_{kbps}k.m4a"
+        m4a = audio / f"{wav.stem}_{kbps}k{'_mono' if args.mono else ''}.m4a"
         if not m4a.exists():
-            subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", wav, "-c:a", "aac", "-b:a", f"{kbps}k", m4a], check=True)
+            subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", wav] + (["-ac", "1"] if args.mono else []) + ["-c:a", "aac", "-b:a", f"{kbps}k", m4a], check=True)
         clips.append({"id": wav.stem, "mime": "audio/mp4", **roll_data(key[wav.stem])})
         b64 = base64.b64encode(m4a.read_bytes()).decode()
         blobs.append(f'<script type="text/plain" id="audio-{args.session}-{wav.stem}">{b64}</script>')
@@ -188,6 +188,7 @@ def main():
     c.add_argument("--session", required=True)
     c.add_argument("--title", default="")
     c.add_argument("--budget_mb", type=float, default=13.5, help="embedded audio size limit")
+    c.add_argument("--mono", action="store_true", help="mono AAC: twice the bitrate per channel, so more clips fit")
     d = sub.add_parser("import", help="copy ratings exported from the page (JSON list of rating documents) into listening.csv")
     d.add_argument("json")
     args = p.parse_args()
