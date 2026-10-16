@@ -1,0 +1,11 @@
+source,n,lead_beats_p50,lead_over_1bar,silent_share,gaps_1beat,gaps_1bar,longest_gap_beats,empty_bars,melody_entry_bar_p50,melody_bars,longest_melody_gap_bars,melody_gaps_2bar
+real_train_start,846,1.0,0.009,0.016,0.483,0.018,0.889,0.063,8.0,23.091,1.65,0.387
+real_train_inside,4803,0.0,0.002,0.013,0.37,0.005,0.669,0.025,1.0,26.366,4.363,0.739
+real_heldout_start,45,0.0,0.022,0.014,0.556,0.022,0.878,0.044,7.0,22.267,2.422,0.489
+real_heldout_inside,259,0.0,0.004,0.011,0.344,0.0,0.632,0.015,1.0,26.22,4.104,0.66
+outputs/cand_a/pf_newplan_fill040,20,0.375,0.05,0.033,1.5,0.2,1.575,0.1,5.0,23.85,2.75,0.7
+outputs/cand_a/pf_oldplan_fill040,20,0.0,0.0,0.016,0.25,0.0,0.688,0.0,5.0,25.6,1.65,0.65
+outputs/cand_a/pf_oldplan_fill060,20,0.0,0.0,0.03,1.15,0.0,1.2,0.0,5.0,25.25,1.85,0.7
+outputs/cand_a/single_t09_p1,20,0.0,0.0,0.009,0.45,0.0,0.8,0.0,,,,
+outputs/cand_a/single_t1_p095,20,0.0,0.0,0.009,0.15,0.0,0.525,0.0,,,,
+outputs/cand_a/single_t1_p1,20,0.0,0.0,0.009,0.2,0.0,0.562,0.0,,,,

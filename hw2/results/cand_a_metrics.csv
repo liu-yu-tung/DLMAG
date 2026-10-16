@@ -1,0 +1,7 @@
+dir,config,ckpt,n,H1_mean,H1_std,H4_mean,H4_std,GS_mean,GS_std,nll_mean,n_tokens_mean,bar_copy_mean,bar_copy_any_key_mean,ngram_copy_mean,note8_copy_mean
+outputs/cand_a/pf_newplan_fill040,melody_first_t1_k0_p1,,20,2.0374,0.1602,2.5653,0.1213,0.9622,0.0213,0.868,2161.0,0.0,0.0016,0.0,0.0122
+outputs/cand_a/pf_oldplan_fill040,melody_first_t1_k0_p1,,20,2.1072,0.1884,2.6468,0.143,0.9585,0.0299,0.793,2492.4,0.0,0.0,0.0,0.0171
+outputs/cand_a/pf_oldplan_fill060,melody_first_t1_k0_p1,,20,2.0848,0.149,2.6355,0.1434,0.9616,0.0246,0.8708,2522.0,0.0,0.0,0.0,0.0121
+outputs/cand_a/single_t09_p1,t0.9_k0_p1,checkpoints/gpt2_ppb16/loss_0.40,20,2.116,0.1102,2.5814,0.0957,0.9676,0.0248,0.5956,3301.7,0.0,0.0016,0.0,0.0258
+outputs/cand_a/single_t1_p095,t1_k0_p0.95,checkpoints/gpt2_ppb16/loss_0.40,20,2.1187,0.1714,2.5873,0.0756,0.9706,0.0196,0.5709,3434.6,0.0,0.0016,0.0,0.0283
+outputs/cand_a/single_t1_p1,t1_k0_p1,checkpoints/gpt2_ppb16/loss_0.40,20,2.18,0.1463,2.621,0.1348,0.9695,0.0208,0.7305,3179.4,0.0,0.0016,0.0,0.0214
