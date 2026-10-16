@@ -1,6 +1,6 @@
 # HW2: symbolic music generation on POP909
 
-GPT-2 decoders trained from scratch on POP909 (896 training songs; 45 held out for validation and as the real reference, see `results/findings.md`):
+GPT-2 decoders trained from scratch on POP909 (the course's 896 training songs; 45 of them are held out for validation and as the real reference, so the models train on 851; see `results/findings.md`):
 
 - **TASK A, single-stage:** one model writes REMI-style tokens from the TA tokenizer (16 positions per beat), all tracks merged.
 - **TASK A, plan-fill:** a plan model writes per-bar labels (key, chords, note density, melody repeats), then a fill model writes the MELODY and PIANO notes bar by bar (`docs/plan_fill.md`).
