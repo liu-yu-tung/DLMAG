@@ -51,7 +51,7 @@ Sections of the `bonus_chd` tokens: plan = `Bar Chd <Pos Chord pairs>`, melody =
 - A whole-song plan fits the context for every song; notes do not, so the fill stage works bar by bar with a sliding window.
 - The basic-task tokens (`data/tokens/ppb16`, all three tracks, with tempo) are about 86 tokens per bar at the median, 6700 per song; the model sees about 24 bars at once.
 
-## Chord label rule in use (`src/hw2/bonus.py`, `chord_token`)
+## Chord label rule in use (`src/hw2/pop909.py`, `chord_token`)
 
 Root as pitch class (enharmonics merged); quality collapsed to maj / min / dim / aug / sus; inversions and extensions dropped; N or unknown root = `Chord_N`. Share of song time: maj 54.3%, min 36.8%, sus 6.6%, N 1.5%, dim 0.7%, aug 0.1%. Detail dropped: inversions 7.4%, 7ths or extensions 7.8% of song time.
 
@@ -92,7 +92,7 @@ From `scripts/key_changes.py`. Local key per bar by Viterbi over the 12 major sc
 
 ## Silent starts in rendered audio (2026-10-16)
 
-Many POP909 songs start with a bar that holds only a pickup at its end, and both models learned it: the first note of a generated piece can come 1.5-5.7 s after the start (listening notes: "no sound at the start"). `hw2.render.midi_to_wav` now cuts the WAV to 0.2 s before the first sound above -50 dBFS; the MIDI keeps all 32 bars. Existing WAVs were trimmed with `scripts/trim_wavs.py`: 239 files, 325.6 s in total (TASK B prompts and the real held-out crops needed none over 0.5 s).
+Many POP909 songs start with a bar that holds only a pickup at its end, and both models learned it: the first note of a generated piece can come 1.5-5.7 s after the start (listening notes: "no sound at the start"). `hw2.render.midi_to_wav` now cuts the WAV to 0.2 s before the first sound above -50 dBFS; the MIDI keeps all 32 bars. Existing WAVs were trimmed once in place (a one-off script, removed afterwards): 239 files, 325.6 s in total (TASK B prompts and the real held-out crops needed none over 0.5 s).
 
 ## Silence, 8-bar windows and start/end return (`silence.csv`, `silence_windows.csv`, `silence_closure.csv`, `scripts/silence_stats.py`)
 
@@ -191,6 +191,8 @@ Teacher-forced loss on the melody tokens of the 45 held-out songs (bars with at 
 
 ### Fix at sampling time: `--repeat_bias` (`RepeatGuide` in `src/hw2/plan_generate.py`)
 
+**Bug found 2026-10-17, results below need a re-run:** `RepeatGuide` never uses up a source note whose pitch the model changed, so `Rep_rhythm` and changed `Rep_var` bars stack melody notes on one onset (up to 32). Every run with β 8 or more has such clusters (4-17 of 20 pieces); β 4 has none. See `docs/listening_issues.md` section 0. Fixed in code the same day (plus a rule that a part cannot strike the same position and pitch twice in a bar); a CPU test with a random-weight model on a real plan gives at most 6 melody notes on one onset vs 32 with the old guide. Runs not regenerated yet.
+
 On a melody bar whose plan label is `Rep_<kind>_<L>`, add a logit bonus β to the source bar's next note (bar b-L, moved to the bar's key), matched by position so one changed note does not shift the rest: exact = onset, pitch, velocity, duration; var = the same at β/2; rhythm = all but pitch. Same plans as `free` (`--plans_from`), 20 pieces each; `form_IABAE_var` plans with β 8.
 
 | Run | Asked kind written at the lag | Any repeat at the asked lag | Melody bars: exact / var / rhythm | MDen within 1 | Melody exact match, lag 2 / 4 / 8 |
@@ -228,7 +230,7 @@ Plan β 4 (bonus on chords + melody bins for exact, half for var, melody bins on
 
 `make task-b-plan PLAN_CKPT=checkpoints/plan_rep/best FILL_CKPT=checkpoints/fill_rep/best PLAN_RULES="--min_piano_bin 1 --cadence"`: each prompt folder is labelled by the training rules, the plan model continues the 8-bar plan to 32 bars, the fill model writes bars 9-32 after the forced prompt notes. The prompt bars in the output match the TA prompt tokens note for note. One plan per prompt, filled with the same three configs as the main model's `TASK B`. Prompt 001 has no MELODY track; `--melody_by_bar 9` makes the melody enter in bar 9.
 
-| Config | H4 | GS | Pitch-class similarity to the prompt, bars 9-32 | Main model `step_6000`, same config (`exp4.csv`) |
+| Config | H4 | GS | Pitch-class similarity to the prompt, bars 9-32 | Main model `step_6000`, same config (`task_b_fade.csv`) |
 |---|---|---|---|---|
 | t0.8 p0.9 | 2.49 | 0.965 | 0.743 | 0.758 |
 | t1.0 p0.95 | 2.50 | 0.966 | 0.753 | 0.747 |

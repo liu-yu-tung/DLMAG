@@ -78,7 +78,11 @@ class RepeatGuide:
             self.pos = int(tok[4:])
             self.left = [n for n in self.left if n[0] >= self.pos]
         elif state == "pitch":
-            self.match = next((n for n in self.left if n[:2] == (self.pos, int(tok[6:]))), None)
+            # A note written at a source onset uses up one source note there, the nearest pitch if none is equal;
+            # matching on pitch alone left re-pitched notes (rhythm, var) unused, and the onset bonus then stacked notes.
+            here = [n for n in self.left if n[0] == self.pos]
+            pitch = int(tok[6:])
+            self.match = min(here, key=lambda n: (n[1] != pitch, abs(n[1] - pitch))) if here else None
         elif state == "dur" and self.match is not None:
             self.left.remove(self.match)
             self.match = None
@@ -353,11 +357,16 @@ def sample_fill(model, tok2idx, idx2tok, plan: Plan, cfg, gen, melody_first=True
                 if b >= int(lag):
                     a = b - int(lag)
                     guide = RepeatGuide(out[a]["melody"], signed(bar.key - plan.bars[a].key), kind, repeat_bias, tok2idx, end)
+            struck = set()
             while True:
                 if state == "pos":
                     allowed = mk.pos_range(last, max_pos) | end if len(toks) < 4 * cap else end
                 else:
                     allowed = mk.of({"pitch": "Pitch_", "vel": "Vel_", "dur": "Dur_"}[state])
+                if state == "pitch" and struck:
+                    # one key cannot be struck twice at once (POP909 melodies: 0.39% of notes)
+                    allowed = allowed.clone()
+                    allowed[[tok2idx[f"Pitch_{p}"] for pos, p in struck if pos == last]] = False
                 t = st.sample(allowed, cfg, guide.bonus(state) if guide else None)
                 if end[t]:
                     break
@@ -366,6 +375,8 @@ def sample_fill(model, tok2idx, idx2tok, plan: Plan, cfg, gen, melody_first=True
                     guide.chose(state, tok)
                 toks.append(tok)
                 st.feed([t])
+                if state == "pitch":
+                    struck.add((last, int(tok[6:])))
                 if state == "pos":
                     last, state = int(tok[4:]), "pitch"
                 else:
