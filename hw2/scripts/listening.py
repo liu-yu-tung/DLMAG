@@ -211,7 +211,7 @@ SITE_HEAD = ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
 
 AB_INTRO = [
     "One pair at a time: Back and Next (or the arrow keys) move between pairs; the dots show which pairs are picked.",
-    "Play A and B, then pick which one is the better piece of music, or Same; tap what decided it, and add details or a comment if something stands out.",
+    "The top card holds the choice (which piece is better, what decided it) and the comment. Below it, A and B sit side by side: tap A or B to fold that column, and each section folds on its own.",
     "Clips are full length; tap a piano roll to jump. Every tap saves to this page.",
 ]
 AB_RULES = [

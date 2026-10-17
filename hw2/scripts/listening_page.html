@@ -185,30 +185,60 @@ canvas.pr { width: 100%; height: 168px; display: block; border-radius: 8px; back
 .deck .clip { border-color: var(--accent); }
 .pair-head { display: flex; align-items: baseline; gap: 10px; padding: 14px 14px 0; }
 .pair-head .status { flex: 1 1 auto; text-align: right; }
-.ab-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
-.ab-col { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
-.col-head { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
-.play {
-  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 6px 14px 6px 10px; border-radius: 22px;
-  font-family: var(--font-num); font-weight: 600; font-size: 1.15rem; color: var(--ink);
-  background: var(--accent-soft); border: 1px solid var(--accent); cursor: pointer;
+.pair-slide { display: flex; flex-direction: column; gap: 10px; }
+.pair-slide[hidden] { display: none; }
+.compare-card .clip-body, .ab-card .clip-body { padding-top: 4px; gap: 0; }
+.ab-card .clip-body { padding-top: 14px; }
+.sec { border-top: 1px solid var(--line); }
+.sec:first-child { border-top: 0; }
+.sec > summary {
+  cursor: pointer; list-style: none; display: flex; align-items: center; gap: 8px; min-height: 40px;
+  font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
 }
+.sec > summary::-webkit-details-marker { display: none; }
+.sec > summary::before {
+  content: ""; width: 7px; height: 7px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted);
+  transform: rotate(-45deg); transition: transform .15s; flex: none;
+}
+.sec[open] > summary::before { transform: rotate(45deg); }
+.sec > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sec-body { display: flex; flex-direction: column; gap: 8px; padding-bottom: 12px; }
+.sec .ab-block { border-top: 0; padding-top: 0; }
+.ab-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.ab-grid.a-closed { grid-template-columns: 64px minmax(0, 1fr); }
+.ab-grid.b-closed { grid-template-columns: minmax(0, 1fr) 64px; }
+.ab-grid.a-closed.b-closed { grid-template-columns: 64px 64px; }
+.ab-col { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.ab-col.closed > :not(.col-head) { display: none; }
+.col-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; padding-bottom: 6px; }
+.ab-col.closed .col-head { flex-direction: column; align-items: stretch; }
+.ab-col.closed .where { display: none; }
+.col-toggle {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 6px 12px;
+  font-family: var(--font-num); font-weight: 600; font-size: 1.15rem; color: var(--ink);
+  background: transparent; border: 1px solid var(--line); border-radius: 8px; cursor: pointer;
+}
+.col-toggle .chev { transform: rotate(-45deg); }
+.col-toggle[aria-expanded="true"] .chev { transform: rotate(45deg); }
+.col-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.play {
+  display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 22px; padding: 0;
+  color: var(--ink); background: var(--accent-soft); border: 1px solid var(--accent); cursor: pointer;
+}
+.ab-col.closed .play { width: auto; }
 .play svg { width: 16px; height: 16px; fill: currentColor; }
 .play .i-pause, .play.playing .i-play { display: none; }
 .play.playing .i-pause { display: inline; }
 .play.playing { background: var(--accent); color: var(--accent-ink); }
 .ab-col .where { font-size: 0.75rem; }
 .ab-col canvas.pr { height: 150px; }
-.ab-col .seg { align-self: flex-start; }
-.ab-details > summary { cursor: pointer; color: var(--accent); padding-top: 12px; border-top: 1px solid var(--line); }
-.ab-details[open] > summary { margin-bottom: 4px; }
-.ab-detail .ab-block:first-of-type { border-top: 0; padding-top: 4px; }
-.ab-detail .tags { gap: 4px; }
-.ab-detail .chip { font-size: 0.8rem; padding: 4px 9px; min-height: 32px; }
-.ab-detail .elem { grid-template-columns: minmax(0, 1fr); gap: 3px; padding-top: 8px; }
-.ab-detail .elem-where { grid-column: 1; }
-.ab-detail .elem .seg { display: flex; }
-.ab-detail .elem .seg button { flex: 1; padding: 5px 2px; }
+.ab-col .roll-seg { align-self: flex-start; }
+.ab-col .tags { gap: 4px; }
+.ab-col .chip { font-size: 0.8rem; padding: 4px 9px; min-height: 32px; }
+.ab-col .elem { grid-template-columns: minmax(0, 1fr); gap: 3px; padding-top: 6px; }
+.ab-col .elem-where { grid-column: 1; }
+.ab-col .elem .seg { display: flex; }
+.ab-col .elem .seg button { flex: 1; padding: 5px 2px; }
 .deck-bottom { display: flex; justify-content: space-between; gap: 8px; margin-top: 12px; }
 
 @media (prefers-reduced-motion: reduce) { .meter i, .chev { transition: none; } }
@@ -255,7 +285,7 @@ canvas.pr { width: 100%; height: 168px; display: block; border-radius: 8px; back
 const DRAFT_KEY = "hw2-listening-drafts";
 const OPEN_KEY = "hw2-listening-open";
 const PAIR_KEY = "hw2-listening-pair";
-const DETAILS_KEY = "hw2-ab-details-open";
+const LAYOUT_KEY = "hw2-ab-layout";
 const HALVES = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
 
 let sessions = [];
@@ -446,22 +476,38 @@ function setAudioSource(audio, session, clip, id, label) {
   });
 }
 
+function section(key, title, open) {
+  const d = el("details", "sec");
+  d.dataset.sec = key;
+  d.open = open;
+  d.appendChild(el("summary", null, title));
+  const body = el("div", "sec-body");
+  d.appendChild(body);
+  d._body = body;
+  return d;
+}
+
 function abColumn(session, clip, id, label) {
   const col = el("div", "ab-col");
   col.innerHTML = `
     <div class="col-head">
+      <button type="button" class="col-toggle" aria-expanded="true" aria-label="Show or hide ${label}"><span class="chev"></span><span>${label}</span></button>
       <button type="button" class="play" aria-label="Play or pause ${label}">
         <svg viewBox="0 0 16 16" aria-hidden="true"><path class="i-play" d="M4 2.5v11l9-5.5z"/><path class="i-pause" d="M3.5 2.5h3v11h-3zM9.5 2.5h3v11h-3z"/></svg>
-        <span>${label}</span>
       </button>
       <span class="where" aria-live="off"></span>
     </div>
-    <audio preload="none"></audio>
+    <audio preload="none"></audio>`;
+  const roll = section("roll", "Piano roll", true);
+  roll._body.innerHTML = `
     <canvas class="pr" aria-label="Piano roll of ${label}; tap to jump"></canvas>
-    <div class="seg" role="group" aria-label="Piano roll view of ${label}">
+    <div class="seg roll-seg" role="group" aria-label="Piano roll view of ${label}">
       <button type="button" data-mode="follow">Follow</button>
       <button type="button" data-mode="whole">Whole</button>
     </div>`;
+  col._secs = { roll, issues: section("issues", "Issues", true), elements: section("elements", "Elements (optional)", true) };
+  col.append(roll, col._secs.issues, col._secs.elements);
+  col._toggle = col.querySelector(".col-toggle");
   const audio = col.querySelector("audio");
   setAudioSource(audio, session, clip, id, label);
   const play = col.querySelector(".play");
@@ -477,7 +523,7 @@ function sideBlock(session, clip, id, label) {
     <audio controls preload="none"></audio>
     <div class="roll">
       <div class="roll-bar">
-        <div class="seg" role="group" aria-label="Piano roll view">
+        <div class="seg roll-seg" role="group" aria-label="Piano roll view">
           <button type="button" data-mode="follow">Follow</button>
           <button type="button" data-mode="whole">Whole</button>
         </div>
@@ -493,7 +539,7 @@ function sideBlock(session, clip, id, label) {
 
 function chipRow(label, items, cur, field, persistClip) {
   const box = el("div", "ab-block");
-  box.appendChild(el("div", "note-label", label));
+  if (label) box.appendChild(el("div", "note-label", label));
   const row = el("div", "tags");
   row.setAttribute("role", "group");
   row.setAttribute("aria-label", label);
@@ -525,7 +571,6 @@ const LEVELS = [[-1, "weak"], [0, "ok"], [1, "strong"]];
 
 function elementStrips(label, field, cur, persistClip) {
   const box = el("div", "ab-block elems");
-  box.appendChild(el("div", "note-label", "Elements (optional)"));
   const rows = [];
   for (const c of criteria.filter(c => c.key !== "overall")) {
     const name = el("span", "elem-name", c.label);
@@ -582,17 +627,45 @@ function elementStrips(label, field, cur, persistClip) {
 
 const PREFS = [[-2, "A", "clearly"], [-1, "A", "a bit"], [0, "=", "same"], [1, "B", "a bit"], [2, "B", "clearly"]];
 
-function detailsOpen() {
-  try { return localStorage.getItem(DETAILS_KEY) !== "0"; } catch (e) { return true; }
+const COL_SECTIONS = ["roll", "issues", "elements"];
+
+function loadLayout() {
+  const d = { A: { open: true, roll: true, issues: true, elements: true }, B: { open: true, roll: true, issues: true, elements: true },
+              compare: true, comment: true };
+  try {
+    const s = JSON.parse(localStorage.getItem(LAYOUT_KEY) || "{}");
+    return { A: { ...d.A, ...(s.A || {}) }, B: { ...d.B, ...(s.B || {}) }, compare: s.compare ?? d.compare, comment: s.comment ?? d.comment };
+  } catch (e) { return d; }
+}
+let layout = loadLayout();
+function saveLayout() { try { localStorage.setItem(LAYOUT_KEY, JSON.stringify(layout)); } catch (e) {} }
+
+function applyLayout(slide) {
+  slide._grid.classList.toggle("a-closed", !layout.A.open);
+  slide._grid.classList.toggle("b-closed", !layout.B.open);
+  for (const side of ["A", "B"]) {
+    const col = slide._cols[side];
+    col.classList.toggle("closed", !layout[side].open);
+    col._toggle.setAttribute("aria-expanded", String(layout[side].open));
+    for (const k of COL_SECTIONS) col._secs[k].open = layout[side][k];
+  }
+  slide._compare.open = layout.compare;
+  slide._comment.open = layout.comment;
+  requestAnimationFrame(() => slide._rolls.forEach(r => r.draw()));
+}
+
+function bindSection(details, get, set) {
+  details.addEventListener("toggle", () => { if (get() !== details.open) { set(details.open); saveLayout(); } });
 }
 
 function pairCard(session, pair) {
   const id = docId(session.id, pair.id);
   const cur = () => ratings[id] || (ratings[id] = { session: session.id, clip: pair.id });
   const persistClip = () => persist(session.id, pair.id);
-  const card = el("article", "clip");
-  card.id = `clip-${id}`;
+  const slide = el("article", "pair-slide");
+  slide.id = `clip-${id}`;
 
+  const compareCard = el("section", "clip compare-card");
   const head = el("div", "pair-head");
   const count = el("span", "count");
   count.id = `count-${id}`;
@@ -600,18 +673,10 @@ function pairCard(session, pair) {
   status.id = `status-${id}`;
   if (isRated(cur())) status.classList.add("ok");
   head.append(el("span", "clip-name", pair.id.replace("_", " ")), status, count);
+  const compareBody = el("div", "clip-body");
+  compareCard.append(head, compareBody);
 
-  const body = el("div", "clip-body");
-  body.id = `body-${id}`;
-  card.append(head, body);
-  const cols = [abColumn(session, pair.a, id, "A"), abColumn(session, pair.b, id, "B")];
-  const players = el("div", "ab-grid");
-  players.append(...cols);
-  body.appendChild(players);
-  card._rolls = cols.map(c => c._roll);
-
-  const pick = el("div", "ab-block");
-  pick.appendChild(el("div", "note-label", "Which is the better piece?"));
+  const compare = section("compare", "Which is better, and why", layout.compare);
   const prefs = el("div", "prefs");
   prefs.setAttribute("role", "group");
   prefs.setAttribute("aria-label", "Preference");
@@ -630,52 +695,66 @@ function pairCard(session, pair) {
     prefs.appendChild(b);
   }
   const showPref = v => prefs.querySelectorAll(".pref").forEach(b => b.setAttribute("aria-pressed", Number(b.dataset.v) === v ? "true" : "false"));
-  pick.appendChild(prefs);
   const reasons = chipRow("What decided it", criteria.filter(c => c.key !== "overall"), cur, "reasons", persistClip);
-  body.append(pick, reasons);
+  compare._body.append(prefs, reasons);
 
-  const tagsA = chipRow("Issues", tagList, cur, "tags_a", persistClip);
-  const tagsB = chipRow("Issues", tagList, cur, "tags_b", persistClip);
-  const stripsA = elementStrips("A", "elem_a", cur, persistClip);
-  const stripsB = elementStrips("B", "elem_b", cur, persistClip);
-  const details = el("details", "ab-details");
-  details.open = detailsOpen();
-  details.addEventListener("toggle", () => { try { localStorage.setItem(DETAILS_KEY, details.open ? "1" : "0"); } catch (e) {} });
-  details.appendChild(el("summary", null, "Details of A and B: issues, elements, where"));
-  const detailGrid = el("div", "ab-grid");
-  for (const [label, tags, strips] of [["A", tagsA, stripsA], ["B", tagsB, stripsB]]) {
-    const col = el("div", "ab-col ab-detail");
-    col.append(el("div", "side-label", label), tags, strips);
-    detailGrid.appendChild(col);
-  }
-  details.appendChild(detailGrid);
-  body.appendChild(details);
-
-  const noteLabel = el("label", "note-label", "Comment");
-  noteLabel.htmlFor = `note-${id}`;
+  const comment = section("comment", "Comment", layout.comment);
   const note = el("textarea");
   note.id = `note-${id}`;
+  note.setAttribute("aria-label", "Comment");
   note.placeholder = "Why, and where (A or B, bar number from the roll)";
   note.value = cur().note || "";
   const flush = () => { clearTimeout(noteTimers[id]); const r = cur(); if ((r.note || "") !== note.value) { r.note = note.value; persistClip(); } };
   note.addEventListener("input", () => { clearTimeout(noteTimers[id]); noteTimers[id] = setTimeout(flush, 900); });
   note.addEventListener("blur", flush);
-  body.append(noteLabel, note);
+  comment._body.appendChild(note);
+  compareBody.append(compare, comment);
 
-  card._flush = flush;
-  card._details = details;
-  card._sync = b => {
+  const abCard = el("section", "clip ab-card");
+  const abBody = el("div", "clip-body");
+  abCard.appendChild(abBody);
+  const grid = el("div", "ab-grid");
+  const cols = { A: abColumn(session, pair.a, id, "A"), B: abColumn(session, pair.b, id, "B") };
+  const tags = { A: chipRow(null, tagList, cur, "tags_a", persistClip), B: chipRow(null, tagList, cur, "tags_b", persistClip) };
+  const strips = { A: elementStrips("A", "elem_a", cur, persistClip), B: elementStrips("B", "elem_b", cur, persistClip) };
+  for (const side of ["A", "B"]) {
+    const col = cols[side];
+    col._secs.issues._body.appendChild(tags[side]);
+    col._secs.elements._body.appendChild(strips[side]);
+    col._toggle.addEventListener("click", () => {
+      const open = !layout[side].open;
+      layout[side].open = open;
+      if (open) COL_SECTIONS.forEach(k => { layout[side][k] = true; });
+      saveLayout();
+      applyLayout(slide);
+    });
+    for (const k of COL_SECTIONS) bindSection(col._secs[k], () => layout[side][k], v => { layout[side][k] = v; });
+    col._secs.roll.addEventListener("toggle", () => { if (col._secs.roll.open) requestAnimationFrame(() => col._roll.draw()); });
+    grid.appendChild(col);
+  }
+  bindSection(compare, () => layout.compare, v => { layout.compare = v; });
+  bindSection(comment, () => layout.comment, v => { layout.comment = v; });
+  abBody.appendChild(grid);
+  slide.append(compareCard, abCard);
+
+  slide._grid = grid;
+  slide._cols = cols;
+  slide._compare = compare;
+  slide._comment = comment;
+  slide._rolls = [cols.A._roll, cols.B._roll];
+  slide._flush = flush;
+  slide._sync = b => {
     showPref(b.pref);
     reasons._show(b.reasons);
-    tagsA._show(b.tags_a);
-    tagsB._show(b.tags_b);
-    stripsA._show();
-    stripsB._show();
+    tags.A._show(b.tags_a);
+    tags.B._show(b.tags_b);
+    strips.A._show();
+    strips.B._show();
   };
-  card._sync(cur());
-  cards.set(id, card);
-  card.hidden = true;
-  return card;
+  slide._sync(cur());
+  cards.set(id, slide);
+  slide.hidden = true;
+  return slide;
 }
 
 let deckIndex = 0;
@@ -696,9 +775,8 @@ function showPair(i, scroll) {
       return;
     }
     card.hidden = false;
-    card._details.open = detailsOpen();
+    applyLayout(card);
     card.querySelectorAll("audio").forEach(a => { a.preload = "metadata"; });
-    requestAnimationFrame(() => card._rolls.forEach(r => r.draw()));
     shown = card;
   });
   try { localStorage.setItem(pairKey(), String(deckIndex)); } catch (e) {}
@@ -935,7 +1013,7 @@ function attachRoll(card, clip) {
   const audio = card.querySelector("audio");
   const canvas = card.querySelector("canvas.pr");
   const where = card.querySelector(".where");
-  const buttons = card.querySelectorAll(".seg button");
+  const buttons = card.querySelectorAll(".roll-seg button");
   const notes = clip.notes || [];
   const bars = clip.bars || [];
   const end = clip.end || (notes.length ? Math.max(...notes.map(n => n[0] + n[1])) : 1);
@@ -967,6 +1045,8 @@ function attachRoll(card, clip) {
   }
 
   function draw() {
+    const t = audio.currentTime || 0;
+    where.textContent = `bar ${barAt(t)}/${Math.max(1, bars.length)} · ${fmt(t)}/${fmt(end)}`;
     const w = canvas.clientWidth, h = canvas.clientHeight;
     if (!w || !h) return;
     const dpr = window.devicePixelRatio || 1;
@@ -978,7 +1058,6 @@ function attachRoll(card, clip) {
     ctx.fillStyle = cssVar("--roll-bg");
     ctx.fillRect(0, 0, w, h);
 
-    const t = audio.currentTime || 0;
     const follow = mode === "follow";
     const top = 14, rowH = (h - top - 4) / (hi - lo + 1);
     const x = follow ? (s => (s - t) / FOLLOW_SECONDS * w + HEAD_AT * w) : (s => s / end * w);
@@ -1017,7 +1096,6 @@ function attachRoll(card, clip) {
     const hx = Math.round(follow ? HEAD_AT * w : t / end * w) + 0.5;
     ctx.fillStyle = cssVar("--roll-head");
     ctx.fillRect(hx - 0.5, top, 1.5, h - top);
-    where.textContent = `bar ${barAt(t)}/${Math.max(1, bars.length)} · ${fmt(t)}/${fmt(end)}`;
   }
 
   function loop() { draw(); raf = audio.paused ? 0 : requestAnimationFrame(loop); }
