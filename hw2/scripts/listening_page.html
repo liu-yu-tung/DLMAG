@@ -51,6 +51,7 @@ body {
   border-bottom: 1px solid var(--line); padding-block: 8px; display: flex; flex-direction: column; gap: 6px;
 }
 .bar-row { display: flex; align-items: center; gap: 8px; }
+.bar h1 small { font-family: var(--font-num); font-size: 0.7rem; font-weight: 400; color: var(--muted); }
 .bar h1 { font-size: 1rem; font-weight: 700; margin: 0; flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .bar select {
   font: inherit; font-size: 0.9rem; color: var(--ink); background: var(--sheet); min-width: 0;
@@ -290,7 +291,7 @@ canvas.pr { width: 100%; height: 168px; display: block; border-radius: 8px; back
 <div class="wrap">
   <header class="bar">
     <div class="bar-row">
-      <h1>Blind listening</h1>
+      <h1><span id="page-title">Blind listening</span> <small class="built" id="built"></small></h1>
       <select id="session" aria-label="Session"></select>
       <button type="button" class="help-btn" id="help-btn" aria-label="How this page works" aria-expanded="false" aria-controls="help-pop">?</button>
     </div>
@@ -1048,8 +1049,9 @@ function renderSession() {
     const intro = document.querySelector("#help-pop .intro");
     intro.innerHTML = "";
     for (const t of current.intro) intro.appendChild(el("p", null, t));
-    document.querySelector(".bar h1").textContent = "Blind A/B";
+    document.getElementById("page-title").textContent = "Blind A/B";
   }
+  document.getElementById("built").textContent = current.built ? `ready ${current.built}` : "";
   const ab = isAb();
   document.querySelector(".wrap").classList.toggle("wide", ab);
   box.classList.toggle("deck", ab);

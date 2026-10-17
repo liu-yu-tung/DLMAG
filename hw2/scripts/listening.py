@@ -5,6 +5,7 @@ import base64
 import collections
 import csv
 import json
+import time
 import random
 import re
 import shutil
@@ -264,7 +265,8 @@ def web(args):
             b64 = base64.b64encode(m4a.read_bytes()).decode()
             blobs.append(f'<script type="text/plain" id="audio-{args.session}-{wav.stem}">{b64}</script>')
         clips.append(clip)
-    session = {"id": args.session, "title": args.title or args.session, "clips": clips, "rubric": parse_rubric()}
+    session = {"id": args.session, "title": args.title or args.session, "clips": clips, "rubric": parse_rubric(),
+               "built": time.strftime("%a %d %b %H:%M")}
     if any("a" in v for v in key.values()):
         by_id = {c["id"]: c for c in clips}
         session.update(kind="ab", intro=AB_INTRO, rules=AB_RULES,
