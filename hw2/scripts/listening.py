@@ -129,7 +129,9 @@ def pairs(args):
                        if (str(Path(d)), w.name) not in used]
         rng.shuffle(pools[name])
     names = [s.split("=", 1)[0] for s in args.systems]
-    matchups = [(x, y) for i, x in enumerate(names) for y in names[i + 1:] for _ in range(args.k)]
+    chosen = [tuple(m.split(":")) for m in args.matchups.split(",") if m] or [(x, y) for i, x in enumerate(names) for y in names[i + 1:]]
+    same_file = {tuple(m.split(":")) for m in args.same_file.split(",") if m}
+    matchups = [m for m in chosen for _ in range(args.k)]
     matchups += [(x, "ref") for x in names for _ in range(args.anchor)]
     for system, n in collections.Counter(s for m in matchups for s in m).items():
         if len(pools[system]) < n:
@@ -147,8 +149,19 @@ def pairs(args):
         flips[(x, y)] += 1
         name = f"pair_{i:02d}"
         key[name] = {}
+        if (x, y) in same_file:
+            names_y = {w.name for _, w in pools[y]}
+            clip_x = next((c for c in pools[x] if c[1].name in names_y), None)
+            if clip_x is None:
+                raise SystemExit(f"{x}:{y}: no unused file name left in both")
+            clip_y = next(c for c in pools[y] if c[1].name == clip_x[1].name)
+            pools[x].remove(clip_x)
+            pools[y].remove(clip_y)
+            clips = {x: clip_x, y: clip_y}
+        else:
+            clips = {x: pools[x].pop(), y: pools[y].pop()}
         for side, system in zip("ab", sides):
-            src, wav = pools[system].pop()
+            src, wav = clips[system]
             shutil.copy(wav, out / f"{name}_{side}.wav")
             key[name][side] = {"system": system, "source": src, "file": wav.name}
     (out / "key.json").write_text(json.dumps(key, indent=1))
@@ -394,6 +407,8 @@ def main():
     e.add_argument("--k", type=int, default=8, help="pairs per two systems")
     e.add_argument("--anchor", type=int, default=2, help="pairs of each system against a real crop")
     e.add_argument("--ref", default="outputs/ref/heldout_crop32")
+    e.add_argument("--matchups", default="", help="x:y,x:y system pairs to compare (default: every two systems)")
+    e.add_argument("--same_file", default="", help="x:y,x:y matchups whose two clips share the file name (same plan or seed)")
     e.add_argument("--seed", type=int, default=0)
     e.add_argument("systems", nargs="+", help="name=dir[,dir...]")
     f = sub.add_parser("prompt_pairs", help="blind A/B session for TASK B: each prompt's continuation from every two systems (same file name in each dir)")
