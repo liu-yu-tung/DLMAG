@@ -1,13 +1,13 @@
 # HW2 status
 
-As of 2026-10-17 (T3 graded). Deadline Mon 2026-10-26 23:59; the report (PPT-style PDF, about 10 pages) is 100% of the grade. Evidence: `results/findings.md`. Listening comments: `docs/listening_issues.md`. Pipeline and commands: `README.md`. File map: `CLAUDE.md`.
+As of 2026-10-17 11:00. Deadline Mon 2026-10-26 23:59; the report (PPT-style PDF, about 10 pages) is 100% of the grade. Evidence: `results/findings.md`. Listening comments: `docs/listening_issues.md`. Pipeline and commands: `README.md`. File map: `CLAUDE.md`.
 
 ## Systems and checkpoints
 
 - **TASK A, single-stage (`gpt2_ppb16`):** checkpoint `loss_0.40` (T1 2026-10-17: 3 wins, 1 loss, 1 same vs `step_10000`). Sampling fixes: no `Pos_` past the meter (`--max_beats`), one opening tempo.
 - **TASK A, plan-fill:** plan `plan_rep/best` or `plan_rep_long/loss_0.60`, fill `fill_rep_long/loss_0.40` or `loss_0.60`; melody-first, `--form I4A8B8A8E4 --return_as var --repeat_bias 8`. Six candidate sets of 20 are in `outputs/cand_a/` (3 single-stage, 3 plan-fill) with the fixed guide; stats in `results/cand_a_*.csv`.
 - **TASK A decision (T2, 2026-10-17, `results/listening/t2_openings.csv`):** plan-fill won 3 of 6 pairs against single-stage (2 losses, 1 same), below the 5-of-6 rule, so single-stage `loss_0.40` is submitted; plan-fill stays an extra experiment. Best config `t1 p1` (`outputs/cand_a/single_t1_p1`, the other two configs `t1 p0.95`, `t0.9 p1` are in `outputs/cand_a/`).
-- **TASK B (T3, 2026-10-17, `results/listening/t3_continuations.csv`):** `outputs/task_b_final` uses the TASK A checkpoint `loss_0.40` (3 prompts x 3 configs, 8 + 24 bars). `t1 p0.95` won both of its pairs on every prompt, so it is the best config for all three prompts (`outputs/task_b_final/t1_k0_p0.95/`, 3 MIDI + 3 WAV). The older `outputs/task_b` used `step_6000` and is not submitted.
+- **TASK B:** must use the TASK A checkpoint (spec page 16); `outputs/task_b` used `step_6000`, so it is regenerated after the decision (3 prompts x 3 configs, 8 + 24 bars; best per prompt by T3 wins, tie to the lower temperature).
 - **BONUS TASK:** `abl_melody/step_7000`, ablations `abl_lookahead`, `abl_chords`. Done.
 - **Held-out songs:** 45 of 896 are held out; the report must say so.
 
@@ -36,7 +36,7 @@ As of 2026-10-17 (T3 graded). Deadline Mon 2026-10-26 23:59; the report (PPT-sty
 
 ## Plan
 
-1. TASK B is closed: T3 graded, best config `t1 p0.95` for all three prompts; metrics in `results/task_b.csv`, `task_b_fade.csv`.
+1. T3 (`t3_continuations`, TASK B: 3 prompts x 3 configs, 9 pairs, with the new element panel); `outputs/task_b_final` (configs `t0.9 p1`, `t1 p0.95`, `t1 p1`, metrics in `results/task_b.csv`, `task_b_fade.csv`); best config per prompt by wins.
 2. Final TASK A is `outputs/cand_a/single_t1_p1` (20 MIDI + 20 WAV + metrics).
 3. Plan-fill matters in the report even though it is not submitted (user, 2026-10-17): keep testing and improving it.
    - Longer training (user, 2026-10-17 15:10): `plan_rep_24k` (24k steps) then `fill_rep_60k` (60k steps, the same length and schedule as `gpt2_ppb16`), `runs/train_longer.sh`, started 15:12, ETA 19:30.
