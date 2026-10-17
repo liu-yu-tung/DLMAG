@@ -16,3 +16,6 @@ outputs/bonus*/
 outputs/**/*.mid
 outputs/**/sequences.json
 outputs/**/plans.json
+results/*_closure.csv
+outputs/**/*.log
+outputs/**/gpu.csv

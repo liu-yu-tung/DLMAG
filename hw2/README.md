@@ -19,10 +19,10 @@ Each stage reads what the stage before wrote. The `Makefile` runs most stages (`
 | Train (`make train-*`) | `train.py` | `checkpoints/<run>/`, `runs/<run>/` (args, loss log, val songs) |
 | Generate | `generate_uncond.py` (TASK A), `generate_cont.py` (TASK B), `generate_plan_fill.py` (TASK A, or TASK B with `--prompt_dir`), `generate_bonus.py` | `outputs/<dir>/`: `NN.mid`, `NN.wav`, `sequences.json`, `gen_info.json` (plan-fill also `plans.json`) |
 | Evaluate (`make eval-*`) | `eval_generated.py` (H1, H4, GS, sampled-token NLL, copy rate), `prompt_fade.py` (TASK B), `scripts/ta/eval_bonus.py`, `bonus_ablation.py`, `bonus_baselines.py` | `results/task_*.csv`, `results/bonus*.csv`, `<bonus dir>/metrics.csv` |
-| Analyze (`make analyze`) | `silence_stats.py`, `return_stats.py`, `adherence.py`, `repeat_probe.py` | `results/*.csv` |
+| Analyze (`make analyze`) | `silence_stats.py`, `return_stats.py`, `adherence.py`, `repeat_probe.py`; not in the Makefile: `loss_review.py` (held-out loss per token type), `stem_gap.py` (melody vs piano stem loudness) | `results/*.csv` |
 | Listen | `render_ref.py` (real anchors), `listening.py` (`prepare`/`pairs`, `web`, `import`, `reveal`) | `outputs/listening/`, `results/listening/` |
 
-Current state and plan: `docs/status.md`. Findings and decisions: `results/findings.md`. Listening comments and open issues: `docs/listening_issues.md`.
+Current state and plan: `docs/status.md` (file map for contributors: `CLAUDE.md`). Findings and decisions: `results/findings.md`. Listening comments and open issues: `docs/listening_issues.md`.
 
 Models (`runs/<run>/args.json` has every setting):
 
@@ -30,7 +30,7 @@ Models (`runs/<run>/args.json` has every setting):
 |---|---|---|---|
 | `gpt2_ppb16` | `ppb16` | TASK A single-stage, TASK B | 12 layers, 8 heads, 512 wide, 2048 context, 39.2M parameters |
 | `abl_melody` | `bonus_ppb16` | BONUS TASK (`abl_lookahead`, `abl_chords`: ablations) | same as `gpt2_ppb16` |
-| `plan_rep`, `fill_rep` | `plan_rep`, `fill_rep` | plan-fill with melody repeat labels | plan: 6 layers, 6 heads, 384 wide, 1024 context, 11.3M; fill: same as `gpt2_ppb16` |
+| `plan_rep`, `fill_rep` (longer runs: `plan_rep_long`, `fill_rep_long`) | `plan_rep`, `fill_rep` | plan-fill with melody repeat labels | plan: 6 layers, 6 heads, 384 wide, 1024 context, 11.3M; fill: same as `gpt2_ppb16` |
 | `plan_v1`, `fill_v1` | `plan`, `fill` | first plan-fill version, no repeat labels | as above |
 
 ## Setup
