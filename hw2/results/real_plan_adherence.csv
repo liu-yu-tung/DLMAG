@@ -1,0 +1,4 @@
+source,pieces,bars,chord_match,PDen_exact,PDen_within1,PDur_exact,PDur_within1,MDen_exact,MDen_within1,MDur_exact,MDur_within1,written_none,written_exact,written_var,written_rhythm,asked_repeat_bars,asked_label_written,asked_kind_at_lag,asked_any_at_lag,asked_none_written_none
+real_heldout,45,3745,0.852,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.477,0.215,0.168,0.14,1463,1.0,1.0,1.0,1.0
+outputs/real_plan/fill_rep_long_loss_0.40,45,1440,0.811,0.597,0.958,0.518,0.915,0.759,0.966,0.71,0.962,0.53,0.201,0.132,0.136,439,0.44,0.51,0.743,0.791
+outputs/cand_a/pf_oldplan_fill040,20,640,0.82,0.547,0.941,0.503,0.916,0.658,0.945,0.656,0.933,0.605,0.146,0.131,0.117,292,0.205,0.233,0.486,0.868

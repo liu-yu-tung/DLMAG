@@ -364,3 +364,26 @@ Why the predictor missed T3: the pairs share the 8-bar prompt, so whole-piece fe
 - **Predicted win vs a real opening (`win_vs_real_mean`):** `v1` 0.40-0.48 (fill), 0.40-0.49 (plan); `v3` 0.37-0.46 and 0.38-0.48. For comparison `pf_oldplan_fill040` 0.43, `single_t1_p1` 0.46 (`v1`, `grade_pred_cand_a_sets.csv`). The per-set standard error is about 0.02 (sd about 0.1 over 20 pieces), so no level stands out and there is no trend with training loss. In both runs the `best` checkpoint (lowest held-out loss, early: step 6000 fill, 3000 plan) has the lowest prediction.
 - **Silence:** every new fill checkpoint has more silent share (0.020-0.028) and a longer longest gap (0.85-1.36 beats) than `pf_oldplan_fill040` (0.016, 0.69) on the same plans; real openings 0.014, 0.88. Plan sweep: silent share 0.019-0.040, empty bars in 0-0.15 of pieces.
 - **T4 picks:** the last checkpoint of each run (the longest training, which is what the run was for): `fill_rep_60k/last` against `pf_oldplan_fill040` on the same plans, and `plan_rep_24k/last` (with the old fill) against `pf_oldplan_fill040`.
+
+## Fill model on real plans (2026-10-17; `outputs/real_plan/fill_rep_long_loss_0.40`, `real_plan_*.csv`, `grade_pred_real_plan*.csv`)
+
+The fill checkpoint of `pf_oldplan_fill040` (`fill_rep_long/loss_0.40`) fills the real plans (first 32 bars) of all 45 held-out songs (`generate_plan_fill.py --real_plans`, `--return_as var --repeat_bias 8`). Plan errors and fill errors separate: what stays wrong with a real plan is the fill model's.
+
+| | real held-out | real plan + fill | `pf_oldplan_fill040` (generated plan) |
+|---|---|---|---|
+| chord match | 0.852 | 0.811 | 0.820 |
+| piano density bin exact / within 1 | 1 / 1 | 0.597 / 0.958 | 0.547 / 0.941 |
+| melody density bin exact / within 1 | 1 / 1 | 0.759 / 0.966 | 0.658 / 0.945 |
+| bars with an asked repeat | 0.39 (whole songs) | 0.30 | 0.46 |
+| asked repeat written | 1 | 0.440 | 0.205 |
+| asked repeat at any lag | 1 | 0.743 | 0.486 |
+| silent share (song start) | 0.014 | 0.024 | 0.016 |
+| longest gap, beats | 0.88 | 1.43 | 0.69 |
+| empty bars | 0.044 | 0.044 | 0 |
+| predicted win vs real (`v1` / `v3`) | 0.51 / 0.52 (`heldout_open32`, 12) | 0.45 / 0.43 | 0.43 / 0.41 |
+
+- **Chords are the fill model's limit:** the chord match is the same with real and generated plans (0.81-0.82, real 0.85).
+- **Repeats are mostly a plan problem:** with real plans the fill writes the asked repeat twice as often (0.44 vs 0.21). Generated plans ask for a repeat in 46% of bars (real 30% in the first 32 bars). Why the fill model honors fewer of them is not checked yet.
+- **Silence is a fill problem:** with real plans the silent share and the longest gap are above the real level (0.024 vs 0.014, 1.43 vs 0.88 beats); the empty bars match the real songs (empty intro bars in the plan).
+- **Density bins** are followed better with real plans (melody exact 0.76 vs 0.66).
+- 12 of the 45 songs are also in `outputs/ref/heldout_open32`, so a later test can pair a real opening with the fill of its own plan.

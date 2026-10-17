@@ -42,7 +42,7 @@ As of 2026-10-17 11:00. Deadline Mon 2026-10-26 23:59; the report (PPT-style PDF
    - Longer training (user, 2026-10-17 15:10): `plan_rep_24k` (24k steps) and `fill_rep_60k` (60k steps, the same length and schedule as `gpt2_ppb16`), done 19:18.
    - Grade sweeps done 21:03 (`make grade-sweep-fill RUN=fill_rep_60k`, `make grade-sweep-plan RUN=plan_rep_24k`); findings section "Predicted grade vs loss for the longer plan-fill runs".
    - T4: the last checkpoint of each new run against `pf_oldplan_fill040` (2 pairs each; the fill pairs share the plan), and the three single-stage configs against each other (3 pairs).
-   - Fill model on real held-out plans (separates plan errors from fill errors; never done).
+   - Fill model on real held-out plans: done 21:28 (findings section "Fill model on real plans").
    - Cause of the sudden loud notes in plan-fill (see open issues).
    - Melody-repeat following (14-22% of asked repeats written) and bar-end silence.
 4. Listening-grade predictor (user, 2026-10-17; `docs/grade_model.md`): fit on T1, T2 and the pilot; after each graded session run `grade_model.py check` before `fit` (T3: `v1` 5 of 9, `v2` 3 of 9; `v3` built after T3, first tested on T4); score each new set; predicted grade vs loss for `exp2` (main model) and the new plan-fill runs.
