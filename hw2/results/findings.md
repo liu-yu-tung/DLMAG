@@ -328,3 +328,13 @@ Melody stem minus piano stem, integrated LUFS of each rendered stem (ffmpeg `ebu
 
 - The melody stem is quieter than the piano stem in real songs too (sparser notes). The generated sets match that level.
 - The lift in the listening build moves plan-fill about 0.8 dB above the real mean; single-stage clips have no melody track and get no lift.
+
+## Listening-grade predictor (2026-10-17)
+
+Method and pipeline: `docs/grade_model.md`. Fit on T1, T2 (13 decisive A/B pairs) and the four pilot sessions (56 clips).
+
+- **Leave-one-out, A/B pairs (`results/grade_model_cv.csv`):** `v1` 9 to 10 of 13 correct (0.69 at L2 0.1 and 1, 0.77 at 10); `v2` 10 of 13 at every penalty. Coin flip 0.5; "more notes wins" 0.31. On 13 pairs the error bar is about ±25 points.
+- **Leave-one-session-out, pilot:** mean Spearman of score vs `overall` 0.22 to 0.33 (`v1`), 0.46 to 0.49 (`v2`, optimistic: its features were picked on this data).
+- **Strongest single features (`results/grade_single_features.csv`):** `half_pc_sim` (first vs second half pitch-class similarity; the A/B winner has the higher value in 11 of 13 pairs, pilot Spearman 0.45), `key_fit` (9 of 13, 0.20), `one_note_bars` (pilot Spearman −0.45). `notes_per_bar` disagrees between A/B (winner has more notes in 4 of 13) and pilot (+0.45).
+- **Tags (`results/grade_tags.csv`, AUC with vs without the tag):** `silent_gap` vs `longest_onset_gap_beats` 0.84; `wrong_notes` vs `key_fit` 0.27 (lower fit with the tag); `cut_off_ending` vs `density_cv` 0.71; `abrupt_start` vs `opening_high_share` 0.51 (not caught).
+- **Loss evaluation:** predicted grade per checkpoint of the main model in `results/grade_pred_exp2_v1_sets.csv`, `results/figures/grade_vs_loss_main_v1.png` (and `_v2`); plan-fill runs follow after their training.

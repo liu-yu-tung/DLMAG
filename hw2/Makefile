@@ -19,6 +19,9 @@ TASK_B_CONFIGS ?= 0.9,0,1.0 1.0,0,0.95 1.0,0,1.0
 PLAN_RULES ?=
 PROMPT_DIR ?= data/POP909/prompts/basic-b
 WAV ?= --wav
+SWEEP_LEVELS ?= loss_1.00 loss_0.90 loss_0.80 loss_0.70 loss_0.60 loss_0.50 loss_0.40 loss_0.30 loss_0.20 best last
+SWEEP_PLANS ?= outputs/cand_a/pf_oldplan_fill040/plans.json
+SWEEP_FILL_ARGS ?= --n 20 --return_as var --repeat_bias 8 --min_piano_bin 1 --tempo_range 60,125 --cadence
 
 TASK_A_DIR ?= outputs/cand_a/single_t1_p1
 PLAN_FILL_DIR ?= outputs/plan_fill
@@ -43,7 +46,8 @@ endef
 .PHONY: help setup tokens check stats gpu-cool health \
 	train-main train-bonus train-plan train-fill train-plan-rep train-fill-rep \
 	task-a task-a-plan task-b task-b-plan bonus \
-	eval-task-a eval-task-a-plan eval-task-b eval-task-b-plan eval-bonus analyze
+	eval-task-a eval-task-a-plan eval-task-b eval-task-b-plan eval-bonus analyze \
+	grade-fit grade-check grade-predict grade-sweep-fill grade-sweep-plan
 
 help: ## list targets; override settings like make task-a TEMP=1.2 TOP_P=0.95
 	@grep -hE '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | sed -E 's/^([a-z-]+):.*## (.*)/  \1|\2/' | column -t -s '|'
@@ -69,6 +73,27 @@ stats: ## dataset statistics, figures, key changes
 gpu-cool: ## wait until the GPU is at or below GPU_START_C
 	@until t=$$(nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader,nounits | head -1); [ "$$t" -le $(GPU_START_C) ]; do \
 		echo "GPU $$t C, waiting for <= $(GPU_START_C) C"; sleep 30; done; echo "GPU $$t C, ok"
+
+grade-fit: ## listening-grade predictor: refit on every graded session (run grade-check SESSION=... first for a new one)
+	$(PY) scripts/grade_model.py fit
+
+grade-check: ## score a newly graded SESSION with the predictor fit before it
+	$(PY) scripts/grade_model.py check --session $(SESSION)
+
+grade-predict: ## predicted grades for every MIDI in DIRS, written to results/grade_pred_$(NAME).csv
+	$(PY) scripts/grade_model.py predict $(DIRS) --out results/grade_pred_$(NAME).csv
+
+grade-sweep-fill: gpu-cool ## fill checkpoints of RUN on the same 20 plans, then predicted grade vs loss
+	for c in $(SWEEP_LEVELS); do [ -d checkpoints/$(RUN)/$$c ] || continue; \
+		$(PY) scripts/generate_plan_fill.py --plan_ckpt $(PLAN_CKPT) --fill_ckpt checkpoints/$(RUN)/$$c --plans_from $(SWEEP_PLANS) \
+			$(SWEEP_FILL_ARGS) --output_dir outputs/sweep/$(RUN)/$$c; done
+	$(PY) scripts/grade_model.py predict outputs/sweep/$(RUN)/* --out results/grade_pred_$(RUN).csv --plot results/figures/grade_vs_loss_$(RUN).png
+
+grade-sweep-plan: gpu-cool ## plan checkpoints of RUN with one fill checkpoint, then predicted grade vs loss
+	for c in $(SWEEP_LEVELS); do [ -d checkpoints/$(RUN)/$$c ] || continue; \
+		$(PY) scripts/generate_plan_fill.py --plan_ckpt checkpoints/$(RUN)/$$c --fill_ckpt $(FILL_CKPT) --form I4A8B8A8E4 \
+			$(SWEEP_FILL_ARGS) --output_dir outputs/sweep/$(RUN)/$$c; done
+	$(PY) scripts/grade_model.py predict outputs/sweep/$(RUN)/* --ckpt_key plan_ckpt --out results/grade_pred_$(RUN).csv --plot results/figures/grade_vs_loss_$(RUN).png
 
 health: ## GPU, running jobs, stalled logs, disk
 	bash scripts/health_check.sh || true

@@ -21,6 +21,7 @@ Each stage reads what the stage before wrote. The `Makefile` runs most stages (`
 | Evaluate (`make eval-*`) | `eval_generated.py` (H1, H4, GS, sampled-token NLL, copy rate), `prompt_fade.py` (TASK B), `scripts/ta/eval_bonus.py`, `bonus_ablation.py`, `bonus_baselines.py` | `results/task_*.csv`, `results/bonus*.csv`, `<bonus dir>/metrics.csv` |
 | Analyze (`make analyze`) | `silence_stats.py`, `return_stats.py`, `adherence.py`, `repeat_probe.py`; not in the Makefile: `loss_review.py` (held-out loss per token type), `stem_gap.py` (melody vs piano stem loudness) | `results/*.csv` |
 | Listen | `render_ref.py` (real anchors), `listening.py` (`prepare`/`pairs`, `web`, `import`, `reveal`) | `outputs/listening/`, `results/listening/` |
+| Grade predictor (`make grade-*`) | `grade_model.py` (`fit`, `check`, `predict`; `docs/grade_model.md`) | `results/grade_*.csv`, `results/figures/grade_vs_loss_*.png`, `outputs/sweep/<run>/` |
 
 Current state and plan: `docs/status.md` (file map for contributors: `CLAUDE.md`). Findings and decisions: `results/findings.md`. Listening comments and open issues: `docs/listening_issues.md`.
 
@@ -126,6 +127,7 @@ The analysis scripts read POP909 for the real reference plus any generated folde
 - **`silence_stats.py`:** silence, empty bars, melody gaps, contrast between 8-bar windows, start/end similarity.
 - **`return_stats.py`:** intro and outro length, theme returns, repetition by lag (`results/figures/return_lags.png`).
 - **`adherence.py`:** plan-fill outputs only; how often the written notes match the planned chords, bins and repeat labels.
+- **`grade_model.py`:** listening-grade predictor fit on the graded sessions; `predict --plot` gives predicted grade vs checkpoint loss (`docs/grade_model.md`).
 - **`repeat_probe.py`:** teacher-forced melody loss of the fill models on held-out songs by true repeat kind, with repeat labels kept, set to `Rep_none` or removed (GPU, about 3 min).
 
 ## Code layout
@@ -141,6 +143,7 @@ The analysis scripts read POP909 for the real reference plus any generated folde
 - **`metrics.py`:** H1, H4, GS through the TA's `eval_basic.py` functions, with a fixed seed.
 - **`novelty.py`:** share of generated bars, 32-token n-grams and 8-note runs copied from the training songs.
 - **`render.py`:** MIDI to WAV; for listening pages also velocity matching to POP909 and loudness.
+- **`grade_features.py`:** piano-roll features of one MIDI (tracks merged) for the listening-grade predictor.
 
 Other folders:
 

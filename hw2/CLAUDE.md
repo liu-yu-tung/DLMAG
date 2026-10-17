@@ -12,7 +12,7 @@ Symbolic music generation on POP909. Deadline Mon 2026-10-26 23:59; the report (
 ## Where things are
 
 - **Code:** `src/hw2/` (package), `scripts/` (one script per stage; `scripts/ta/` is the TA's code with two fixes, see its README), `Makefile` (`make help`)
-- **Design notes:** `docs/plan_fill.md` (two-stage system), `docs/bonus.md` (BONUS TASK), `docs/references.md` (tools, papers, dropped ideas), `docs/slides_notes.md` (course slides)
+- **Design notes:** `docs/plan_fill.md` (two-stage system), `docs/grade_model.md` (listening-grade predictor), `docs/bonus.md` (BONUS TASK), `docs/references.md` (tools, papers, dropped ideas), `docs/slides_notes.md` (course slides)
 - **Tracked outputs:** `outputs/<set>/gen_info.json` and `metrics.csv` only (MIDI, WAV, `sequences.json` and logs are ignored); `outputs/cand_a/` holds the TASK A candidate sets
 - **Not in git:** `checkpoints/`, `data/`, `runs/`, `outputs/**/*.mid|wav`, `outputs/listening/` (listening sessions with their hidden `key.json`), course zips and the assignment PDF
 
@@ -27,6 +27,7 @@ Symbolic music generation on POP909. Deadline Mon 2026-10-26 23:59; the report (
 | `adherence*.csv`, `cand_a_adherence.csv` | `adherence.py` |
 | `loss_review.csv`, `repeat_probe.csv` | `loss_review.py`, `repeat_probe.py` |
 | `stem_gap.csv` | `stem_gap.py` |
+| `grade_model_*.json`, `grade_features.csv`, `grade_model_cv.csv`, `grade_model_check.csv`, `grade_single_features.csv`, `grade_tags.csv`, `grade_pred_*.csv`, `figures/grade_vs_loss_*.png` | `grade_model.py` (`docs/grade_model.md`) |
 | `bonus*.csv`, `bonus_ablation*` | BONUS TASK evaluation and ablation |
 | `baselines.csv`, `track_stats.csv`, `key_changes.csv`, `progressions.csv`, `chord_from_notes.csv`, `token_budget.csv`, `figures/` | data checks and data stats |
 | `listening/*.csv` | `listening.py reveal` and `import` (`candidates`, `ckpt`, `ckpt2`, `planfill`, `ratings_pilot` are the pilot sessions) |

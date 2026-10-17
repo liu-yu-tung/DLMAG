@@ -40,10 +40,12 @@ As of 2026-10-17 11:00. Deadline Mon 2026-10-26 23:59; the report (PPT-style PDF
 2. Final TASK A is `outputs/cand_a/single_t1_p1` (20 MIDI + 20 WAV + metrics).
 3. Plan-fill matters in the report even though it is not submitted (user, 2026-10-17): keep testing and improving it.
    - Longer training (user, 2026-10-17 15:10): `plan_rep_24k` (24k steps) then `fill_rep_60k` (60k steps, the same length and schedule as `gpt2_ppb16`), `runs/train_longer.sh`, started 15:12, ETA 19:30.
+   - After that training: `make grade-sweep-fill RUN=fill_rep_60k` and `make grade-sweep-plan RUN=plan_rep_24k` (predicted grade vs loss per checkpoint, about 2 h GPU).
    - T4: more plan-fill vs single-stage pairs, and the three single-stage configs against each other.
    - Fill model on real held-out plans (separates plan errors from fill errors; never done).
    - Cause of the sudden loud notes in plan-fill (see open issues).
    - Melody-repeat following (14-22% of asked repeats written) and bar-end silence.
-4. Extras: NLL matching of sampling settings, loss vs listening figure, SI feasibility.
-5. Packaging: checkpoint defaults in the `Makefile` and `generate_plan_fill.py`, `submission` branch, fresh-venv README test. Code, checkpoints and README go on the cloud drive (the user does this).
-6. Report (PPT-style PDF, about 10 pages; name and ID on the cover).
+4. Listening-grade predictor (user, 2026-10-17; `docs/grade_model.md`): fit on T1, T2 and the pilot; after each graded session run `grade_model.py check` before `fit` (T3 is the first real test of `v2`); score each new set; predicted grade vs loss for `exp2` (main model) and the new plan-fill runs.
+5. Extras: NLL matching of sampling settings, loss vs listening figure (partly covered by item 4), SI feasibility.
+6. Packaging: checkpoint defaults in the `Makefile` and `generate_plan_fill.py`, `submission` branch, fresh-venv README test. Code, checkpoints and README go on the cloud drive (the user does this).
+7. Report (PPT-style PDF, about 10 pages; name and ID on the cover).
