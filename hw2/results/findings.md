@@ -338,3 +338,11 @@ Method and pipeline: `docs/grade_model.md`. Fit on T1, T2 (13 decisive A/B pairs
 - **Strongest single features (`results/grade_single_features.csv`):** `half_pc_sim` (first vs second half pitch-class similarity; the A/B winner has the higher value in 11 of 13 pairs, pilot Spearman 0.45), `key_fit` (9 of 13, 0.20), `one_note_bars` (pilot Spearman −0.45). `notes_per_bar` disagrees between A/B (winner has more notes in 4 of 13) and pilot (+0.45).
 - **Tags (`results/grade_tags.csv`, AUC with vs without the tag):** `silent_gap` vs `longest_onset_gap_beats` 0.84; `wrong_notes` vs `key_fit` 0.27 (lower fit with the tag); `cut_off_ending` vs `density_cv` 0.71; `abrupt_start` vs `opening_high_share` 0.51 (not caught).
 - **Loss evaluation:** predicted grade per checkpoint of the main model in `results/grade_pred_exp2_v1_sets.csv`, `results/figures/grade_vs_loss_main_v1.png` (and `_v2`); plan-fill runs follow after their training.
+
+### Grade predictor on T3 (first held-out session, 2026-10-17)
+
+`grade_model.py check` before refitting (`results/grade_model_check.csv`): `v1` 5 of 9 pairs, `v2` 3 of 9. Neither beats a coin flip on T3; the T3 pairs share their first 8 bars (the prompt) and differ only in the continuation, which the whole-piece features see only in part. After refitting on 22 decisive pairs, leave-one-out is 0.77 (`v1`) and 0.73 (`v2`) at L2 0.1, "more notes wins" 0.45. `v2` lost its edge on new data, so `predict` keeps `v1`. The predictor stays a descriptive tool for the report, not a stand-in for listening.
+
+### T3: TASK B sampling configs (`results/listening/t3_continuations.csv`)
+
+9 pairs (3 prompts x 3 configs): `t1 p0.95` won 6 of 6 of its pairs (all clearly or a bit), `t1 p1` won 1 of 2 against `t0.9 p1`. Element marks (`t3_continuations_elements.csv`): `t1 p0.95` had the highest mean level on all six elements; `t0.9 p1` collected the most issue tags (wrong notes 4, cut-off ending 3). Best config for every prompt: `t1 p0.95`.

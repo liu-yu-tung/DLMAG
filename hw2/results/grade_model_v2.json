@@ -10,38 +10,38 @@
   "density_cv"
  ],
  "mean": {
-  "longest_onset_gap_beats": 2.8343023255813953,
-  "bass_dropout": 0.0321877344336084,
-  "high_share": 0.03357795947704382,
-  "half_pc_sim": 0.9314195213735752,
-  "half_register_shift": 1.9760196140185204,
-  "one_note_bars": 0.06976744186046512,
-  "key_fit": 0.9786673890708919,
-  "density_cv": 0.2990198755603046
+  "longest_onset_gap_beats": 2.6868421052631577,
+  "bass_dropout": 0.029467317487266553,
+  "high_share": 0.031013306040292617,
+  "half_pc_sim": 0.930796627611889,
+  "half_register_shift": 1.9183257740126254,
+  "one_note_bars": 0.06315789473684211,
+  "key_fit": 0.9788896081268653,
+  "density_cv": 0.2917240348313102
  },
  "std": {
-  "longest_onset_gap_beats": 1.5674119100476538,
-  "bass_dropout": 0.06699457543062093,
-  "high_share": 0.048382489625395333,
-  "half_pc_sim": 0.057481160639474144,
-  "half_register_shift": 1.796954352651129,
-  "one_note_bars": 0.5485960192521098,
-  "key_fit": 0.02657865410164792,
-  "density_cv": 0.09692219390508287
+  "longest_onset_gap_beats": 1.5693068419419238,
+  "bass_dropout": 0.0643369979335217,
+  "high_share": 0.0468369226213,
+  "half_pc_sim": 0.05724543817607133,
+  "half_register_shift": 1.741150444436423,
+  "one_note_bars": 0.5220769959475791,
+  "key_fit": 0.026253107525632844,
+  "density_cv": 0.09609003657287662
  },
  "weights": {
-  "longest_onset_gap_beats": -0.03901861489126093,
-  "bass_dropout": -0.13789249525017785,
-  "high_share": -0.16675088865952023,
-  "half_pc_sim": 0.29448229559827815,
-  "half_register_shift": -0.09605924109637465,
-  "one_note_bars": -0.08462442356014917,
-  "key_fit": 0.1590664122481316,
-  "density_cv": -0.007845861335510981
+  "longest_onset_gap_beats": -0.02828340095918382,
+  "bass_dropout": -0.14405179755219277,
+  "high_share": -0.17622184809122224,
+  "half_pc_sim": 0.20748209743812654,
+  "half_register_shift": -0.1556883311521383,
+  "one_note_bars": -0.08610889716844944,
+  "key_fit": 0.15920677959162907,
+  "density_cv": 0.05659262011489146
  },
  "lambda": 10.0,
- "real_score": 0.3306678593144281,
- "n_ab_pairs": 13,
+ "real_score": 0.25797542074801244,
+ "n_ab_pairs": 22,
  "n_scored_clips": 56,
  "sessions": [
   "candidates",
@@ -49,6 +49,7 @@
   "ckpt2",
   "planfill",
   "t1_checkpoint",
-  "t2_openings"
+  "t2_openings",
+  "t3_continuations"
  ]
 }
