@@ -39,9 +39,9 @@ As of 2026-10-17 11:00. Deadline Mon 2026-10-26 23:59; the report (PPT-style PDF
 1. T3 graded 2026-10-17 17:50: TASK B best config `t1 p0.95` for all prompts (see Systems). Metrics in `results/task_b.csv`, `task_b_fade.csv`; element marks in `results/listening/t3_continuations_elements.csv`.
 2. Final TASK A is `outputs/cand_a/single_t1_p1` (20 MIDI + 20 WAV + metrics).
 3. Plan-fill matters in the report even though it is not submitted (user, 2026-10-17): keep testing and improving it.
-   - Longer training (user, 2026-10-17 15:10): `plan_rep_24k` (24k steps) then `fill_rep_60k` (60k steps, the same length and schedule as `gpt2_ppb16`), `runs/train_longer.sh`, started 15:12, ETA 19:30.
-   - After that training: `make grade-sweep-fill RUN=fill_rep_60k` and `make grade-sweep-plan RUN=plan_rep_24k` (predicted grade vs loss per checkpoint, about 2 h GPU).
-   - T4: more plan-fill vs single-stage pairs, and the three single-stage configs against each other.
+   - Longer training (user, 2026-10-17 15:10): `plan_rep_24k` (24k steps) and `fill_rep_60k` (60k steps, the same length and schedule as `gpt2_ppb16`), done 19:18.
+   - Grade sweeps done 21:03 (`make grade-sweep-fill RUN=fill_rep_60k`, `make grade-sweep-plan RUN=plan_rep_24k`); findings section "Predicted grade vs loss for the longer plan-fill runs".
+   - T4: the last checkpoint of each new run against `pf_oldplan_fill040` (2 pairs each; the fill pairs share the plan), and the three single-stage configs against each other (3 pairs).
    - Fill model on real held-out plans (separates plan errors from fill errors; never done).
    - Cause of the sudden loud notes in plan-fill (see open issues).
    - Melody-repeat following (14-22% of asked repeats written) and bar-end silence.

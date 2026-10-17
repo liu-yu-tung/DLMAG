@@ -13,7 +13,7 @@ Symbolic music generation on POP909. Deadline Mon 2026-10-26 23:59; the report (
 
 - **Code:** `src/hw2/` (package), `scripts/` (one script per stage; `scripts/ta/` is the TA's code with two fixes, see its README), `Makefile` (`make help`)
 - **Design notes:** `docs/plan_fill.md` (two-stage system), `docs/grade_model.md` (listening-grade predictor), `docs/bonus.md` (BONUS TASK), `docs/references.md` (tools, papers, dropped ideas), `docs/slides_notes.md` (course slides)
-- **Tracked outputs:** `outputs/<set>/gen_info.json` and `metrics.csv` only (MIDI, WAV, `sequences.json` and logs are ignored); `outputs/cand_a/` holds the TASK A candidate sets
+- **Tracked outputs:** `outputs/<set>/gen_info.json` and `metrics.csv` only (MIDI, WAV, `sequences.json` and logs are ignored); `outputs/cand_a/` holds the TASK A candidate sets, `outputs/sweep/<run>/<checkpoint>` the per-checkpoint grade sweeps
 - **Not in git:** `checkpoints/`, `data/`, `runs/`, `outputs/**/*.mid|wav`, `outputs/listening/` (listening sessions with their hidden `key.json`), course zips and the assignment PDF
 
 ## Results index
@@ -22,7 +22,7 @@ Symbolic music generation on POP909. Deadline Mon 2026-10-26 23:59; the report (
 |---|---|
 | `task_a_sampling.csv`, `task_a_checkpoints.csv`, `cand_a_metrics.csv` | `eval_generated.py` |
 | `task_a_plan.csv`, `task_b_plan*.csv`, `task_b_fade.csv`, `plan_fill*.csv` | plan-fill and TASK B evaluations |
-| `silence*.csv`, `cand_a_silence*.csv` | `silence_stats.py` (per-piece, per-bar and closure tables are regenerated, not tracked) |
+| `silence*.csv`, `cand_a_silence*.csv`, `sweep_silence*.csv` | `silence_stats.py` (per-piece, per-bar and closure tables are regenerated, not tracked) |
 | `return*.csv`, `cand_a_return*.csv`, `figures/*return*` | `return_stats.py` |
 | `adherence*.csv`, `cand_a_adherence.csv` | `adherence.py` |
 | `loss_review.csv`, `repeat_probe.csv` | `loss_review.py`, `repeat_probe.py` |
