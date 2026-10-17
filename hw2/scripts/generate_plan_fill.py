@@ -10,10 +10,11 @@ import numpy as np
 import torch
 
 from hw2 import code_version
+from hw2.data import split_songs
 from hw2.generate import SampleConfig, load_model
 from hw2.plan import song_raw, song_tokens
 from hw2.plan_generate import PlanRules, parse_form, parse_plan, sample_fill, sample_plan, to_outputs
-from hw2.remi import DATA_ROOT, HW2_ROOT, load_vocab
+from hw2.remi import DATA_ROOT, HW2_ROOT, load_sequences, load_vocab
 from hw2.render import midi_to_wav
 
 
@@ -31,6 +32,8 @@ def parse_args():
     p.add_argument("--order", choices=("melody_first", "piano_first"), default="melody_first")
     p.add_argument("--drop", type=str, default="", help="label groups left out of the fill prefix: repeat,chords,piano_stats,melody_stats")
     p.add_argument("--plans_from", type=str, default=None, help="plans.json of an earlier TASK A run: fill the same plans")
+    p.add_argument("--real_plans", action="store_true", help="fill the real plans of the first --bars bars of --n songs "
+                   "held out from the plan run (separates plan errors from fill errors)")
     p.add_argument("--min_piano_bin", type=int, default=0, help="1 = no bar without piano notes (POP909: 0.4%% of bars)")
     p.add_argument("--tempo_range", type=str, default="", help="e.g. 60,125 (POP909 5th-95th percentile)")
     p.add_argument("--melody_by_bar", type=int, default=0, help="melody enters by this bar (0 = model decides; POP909 median entry is bar 8)")
@@ -72,7 +75,7 @@ def prompt_plans(prompt_dir: Path, prompt_bars: int, tok2idx_path: Path, tok2idx
 
 def main():
     args = parse_args()
-    assert not (args.prompt_dir and args.plans_from), "--plans_from holds TASK A plans only"
+    assert sum(map(bool, (args.prompt_dir, args.plans_from, args.real_plans))) <= 1, "pick one plan source"
     out = Path(args.output_dir)
     if args.tok2idx is None:
         run_args = HW2_ROOT / "runs" / Path(args.fill_ckpt).parent.name / "args.json"
@@ -91,6 +94,14 @@ def main():
 
     if args.plans_from:
         jobs = [(p["song_name"], parse_plan(p["tokens"]), None) for p in json.loads(Path(args.plans_from).read_text())[: args.n]]
+    elif args.real_plans:
+        plan_run = json.loads((HW2_ROOT / "runs" / Path(args.plan_ckpt).parent.name / "args.json").read_text())
+        _, held_out = split_songs(load_sequences(HW2_ROOT / plan_run["tokens_dir"] / "sequences.json"), plan_run["n_val"], plan_run["seed"])
+        jobs = []
+        for song in held_out[: args.n]:
+            bar_starts = [i for i, t in enumerate(song["tokens"]) if t == "Bar"]
+            assert len(bar_starts) > args.bars, f"{song['song_name']} is shorter than {args.bars} bars"
+            jobs.append((song["song_name"], parse_plan(song["tokens"][: bar_starts[args.bars]]), None))
     else:
         prompts = (prompt_plans(Path(args.prompt_dir), args.prompt_bars, Path(args.tok2idx), tok2idx) if args.prompt_dir
                    else [(f"{i:02d}", None, None) for i in range(args.n)])
