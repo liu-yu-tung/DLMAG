@@ -100,11 +100,22 @@ def velocity_maps(midis: list[pretty_midi.PrettyMIDI], real: dict[str, np.ndarra
     return maps
 
 
-def apply_velocity_map(midi: pretty_midi.PrettyMIDI, maps: dict[str, np.ndarray]) -> pretty_midi.PrettyMIDI:
+def median_velocity(counts: np.ndarray) -> int:
+    return int(np.searchsorted(np.cumsum(counts) / counts.sum(), 0.5))
+
+
+def apply_velocity_map(midi: pretty_midi.PrettyMIDI, maps: dict[str, np.ndarray], min_gap: int = 0) -> pretty_midi.PrettyMIDI:
+    """min_gap: lifts the MELODY velocities of a piece until its median is that far above the PIANO median (a sampled piece can land at equal levels)."""
     for inst in midi.instruments:
         table = maps[track_role(midi, inst)]
         for n in inst.notes:
             n.velocity = int(table[n.velocity])
+    melody = [n for i in midi.instruments if i.name.upper() == "MELODY" for n in i.notes]
+    piano = [n.velocity for i in midi.instruments if i.name.upper() != "MELODY" for n in i.notes]
+    if melody and piano:
+        lift = min_gap - (int(np.median([n.velocity for n in melody])) - int(np.median(piano)))
+        for n in melody if lift > 0 else []:
+            n.velocity = min(127, n.velocity + lift)
     return midi
 
 

@@ -18,7 +18,7 @@ from scipy.io import wavfile
 from scipy.stats import binomtest
 
 from hw2.remi import HW2_ROOT
-from hw2.render import (apply_velocity_map, first_sound, loudness_lufs, midi_to_wav, one_keyboard, real_velocity_counts,
+from hw2.render import (apply_velocity_map, first_sound, loudness_lufs, median_velocity, midi_to_wav, one_keyboard, real_velocity_counts,
                          velocity_maps)
 
 RESULTS = HW2_ROOT / "results" / "listening"
@@ -217,7 +217,7 @@ def web(args):
             if entry["source"] not in maps:
                 maps[entry["source"]] = velocity_maps(
                     [pretty_midi.PrettyMIDI(str(m)) for m in sorted((HW2_ROOT / entry["source"]).glob("*.mid"))], real)
-            apply_velocity_map(midi, maps[entry["source"]])
+            apply_velocity_map(midi, maps[entry["source"]], min_gap=median_velocity(real["MELODY"]) - median_velocity(real["PIANO"]))
             one_keyboard(midi)
             audio = cache / f"{wav.stem}_realvel_keyboard.wav"
             if not audio.exists():
