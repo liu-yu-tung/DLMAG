@@ -10,3 +10,13 @@ t1_checkpoint,pair_05,0,harmony,silent_gap;cut_off_ending;odd_tempo;timing_off,w
 B has weird harmony/key/chord which is not yet seen in recent listening but the structure is okay"
 t1_checkpoint,pair_06,2,harmony;flow;phrasing;form;accompaniment,silent_gap;abrupt_start;wrong_notes;odd_tempo;timing_off,,A full empty bar 2 how did it happen and bad harmony in first half especially 
 t1_checkpoint,pair_07,-2,harmony;accompaniment,silent_gap;abrupt_start;odd_tempo,wrong_notes;too_repetitive;melody_missing,B is SO LOUD and really bad harmony 
+t2_openings,pair_01,-1,flow;form;accompaniment,,abrupt_start;cut_off_ending;wrong_notes;odd_tempo;melody_missing;timing_off,"
+B too messy and random at start and ending "
+t2_openings,pair_02,1,flow;form,abrupt_start;wrong_notes,cut_off_ending,
+t2_openings,pair_03,-2,harmony;phrasing;form,abrupt_start;odd_tempo,wrong_notes;odd_tempo,
+t2_openings,pair_04,-1,flow,,abrupt_start,
+t2_openings,pair_05,2,flow;phrasing;form;accompaniment,silent_gap;cut_off_ending;odd_tempo,silent_gap,"long note in A is silent in later half 
+B very good "
+t2_openings,pair_06,2,melody;phrasing;form;accompaniment,too_repetitive;melody_missing,,biggest issue in A the first half and later half is totally different in piano sheet spectrum 
+t2_openings,pair_07,2,harmony;melody;flow;form,abrupt_start;cut_off_ending;wrong_notes;odd_tempo;melody_missing;timing_off,cut_off_ending,B very good just last 2 bar is kinda off
+t2_openings,pair_08,0,,,,both very good

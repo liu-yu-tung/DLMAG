@@ -6,7 +6,7 @@ As of 2026-10-17 11:00. Deadline Mon 2026-10-26 23:59; the report (PPT-style PDF
 
 - **TASK A, single-stage (`gpt2_ppb16`):** checkpoint `loss_0.40` (T1 2026-10-17: 3 wins, 1 loss, 1 same vs `step_10000`). Sampling fixes: no `Pos_` past the meter (`--max_beats`), one opening tempo.
 - **TASK A, plan-fill:** plan `plan_rep/best` or `plan_rep_long/loss_0.60`, fill `fill_rep_long/loss_0.40` or `loss_0.60`; melody-first, `--form I4A8B8A8E4 --return_as var --repeat_bias 8`. Six candidate sets of 20 are in `outputs/cand_a/` (3 single-stage, 3 plan-fill) with the fixed guide; stats in `results/cand_a_*.csv`.
-- **TASK A decision:** T2 (`t2_openings`, 8 pairs, live on the A/B page) decides. Rule: plan-fill is submitted only if it wins at least 5 of 6 pairs vs single-stage with no distressing flags; otherwise single-stage.
+- **TASK A decision (T2, 2026-10-17, `results/listening/t2_openings.csv`):** plan-fill won 3 of 6 pairs against single-stage (2 losses, 1 same), below the 5-of-6 rule, so single-stage `loss_0.40` is submitted; plan-fill stays an extra experiment. Best config `t1 p1` (`outputs/cand_a/single_t1_p1`, the other two configs `t1 p0.95`, `t0.9 p1` are in `outputs/cand_a/`).
 - **TASK B:** must use the TASK A checkpoint (spec page 16); `outputs/task_b` used `step_6000`, so it is regenerated after the decision (3 prompts x 3 configs, 8 + 24 bars; best per prompt by T3 wins, tie to the lower temperature).
 - **BONUS TASK:** `abl_melody/step_7000`, ablations `abl_lookahead`, `abl_chords`. Done.
 - **Held-out songs:** 45 of 896 are held out; the report must say so.
@@ -36,8 +36,8 @@ As of 2026-10-17 11:00. Deadline Mon 2026-10-26 23:59; the report (PPT-style PDF
 
 ## Plan
 
-1. T2 grades, then the TASK A decision.
-2. Final TASK A (20 MIDI + 20 WAV + metrics with H4, GS and a Real row) and TASK B (3 x 3, prompt fade); T3 for TASK B (9 pairs).
+1. T3 (`t3_continuations`, TASK B: 3 prompts x 3 configs, 9 pairs, with the new element panel); `outputs/task_b_final` (configs `t0.9 p1`, `t1 p0.95`, `t1 p1`, metrics in `results/task_b.csv`, `task_b_fade.csv`); best config per prompt by wins.
+2. Final TASK A is `outputs/cand_a/single_t1_p1` (20 MIDI + 20 WAV + metrics).
 3. Extras: NLL matching of sampling settings, loss vs listening figure, SI feasibility.
 4. Packaging: checkpoint defaults in the `Makefile` and `generate_plan_fill.py`, `submission` branch, fresh-venv README test. Code, checkpoints and README go on the cloud drive (the user does this).
 5. Report (PPT-style PDF, about 10 pages; name and ID on the cover).

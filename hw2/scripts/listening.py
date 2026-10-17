@@ -64,7 +64,7 @@ def parse_rubric(path=RUBRIC) -> dict:
 
 
 ASPECTS_V2 = [c["key"] for c in parse_rubric()["criteria"]]
-AB_FIELDS = ["session", "pair", "pref", "reasons", "tags_a", "tags_b", "note"]
+AB_FIELDS = ["session", "pair", "pref", "reasons", "tags_a", "tags_b", "elem_a", "elem_b", "note"]
 FIELDS = ["session", "clip"] + ASPECTS_V1 + [a for a in ASPECTS_V2 if a not in ASPECTS_V1] + ["tags", "note"]
 
 
@@ -150,6 +150,30 @@ def pairs(args):
             key[name][side] = {"system": system, "source": src, "file": wav.name}
     (out / "key.json").write_text(json.dumps(key, indent=1))
     print(f"{len(key)} pairs in {out}; build the page with: listening.py web --session {args.session} --page ab")
+
+
+def prompt_pairs(args):
+    rng = random.Random(args.seed)
+    dirs = {name: Path(d) for name, d in (spec.split("=", 1) for spec in args.systems)}
+    names = list(dirs)
+    prompts = sorted(set.intersection(*[{w.name for w in d.glob("*.wav")} for d in dirs.values()]))
+    matchups = [(x, y, w) for w in prompts for i, x in enumerate(names) for y in names[i + 1:]]
+    rng.shuffle(matchups)
+    out = LISTENING / args.session
+    if out.exists():
+        raise SystemExit(f"{out} exists; pick another --session")
+    out.mkdir(parents=True)
+    key, flips = {}, collections.Counter()
+    for i, (x, y, wav) in enumerate(matchups, 1):
+        sides = (x, y) if flips[(x, y)] % 2 == 0 else (y, x)
+        flips[(x, y)] += 1
+        name = f"pair_{i:02d}"
+        key[name] = {}
+        for side, system in zip("ab", sides):
+            shutil.copy(dirs[system] / wav, out / f"{name}_{side}.wav")
+            key[name][side] = {"system": system, "source": str(dirs[system]), "file": wav}
+    (out / "key.json").write_text(json.dumps(key, indent=1))
+    print(f"{len(key)} pairs in {out}; build the page with: listening.py web --session {args.session} --page ab --velocity generated")
 
 
 def source_midi(entry) -> Path:
@@ -265,9 +289,10 @@ def import_ratings(args):
         old = pd.read_csv(AB_SHEET, dtype=str) if AB_SHEET.exists() else pd.DataFrame(columns=AB_FIELDS)
         new = pd.DataFrame([{"session": d["session"], "pair": d["clip"], "pref": d.get("pref"), "reasons": ";".join(d.get("reasons") or []),
                              "tags_a": ";".join(d.get("tags_a") or []), "tags_b": ";".join(d.get("tags_b") or []),
+                             "elem_a": json.dumps(d.get("elem_a") or {}), "elem_b": json.dumps(d.get("elem_b") or {}),
                              "note": d.get("note") or ""} for d in pair_docs])
         keep = ~old.set_index(["session", "pair"]).index.isin(new.set_index(["session", "pair"]).index)
-        pd.concat([old[keep], new])[AB_FIELDS].sort_values(["session", "pair"]).to_csv(AB_SHEET, index=False)
+        pd.concat([old[keep], new]).reindex(columns=AB_FIELDS).sort_values(["session", "pair"]).to_csv(AB_SHEET, index=False)
         print(f"{len(new)} rated pairs written to {AB_SHEET}")
     docs = [d for d in docs if d not in pair_docs]
     rated = {(d["session"], d["clip"]): d for d in docs if "session" in d and "clip" in d}
@@ -305,6 +330,10 @@ def reveal_ab(session: str, key: dict):
                      "x_first_wins": int(((g["system_a"] == x) & (adv > 0)).sum()), "x_first": int((g["system_a"] == x).sum())})
     print(pd.DataFrame(rows).to_string(index=False))
     print("A wins %d, B wins %d, same %d (order bias check)" % ((df["pref"] < 0).sum(), (df["pref"] > 0).sum(), (df["pref"] == 0).sum()))
+    if (df["file_a"] == df["file_b"]).all():
+        wins = df[df["winner"] != "same"].assign(prompt=lambda d: d["file_a"].str.replace(".wav", "", regex=False))
+        print("TASK B wins per prompt and config:")
+        print(pd.crosstab(wins["prompt"], wins["winner"]).to_string())
     reasons = df.assign(reason=df["reasons"].fillna("").str.split(";")).explode("reason", ignore_index=True).query("reason != ''")
     if len(reasons):
         print("what decided it, by winner:")
@@ -314,6 +343,16 @@ def reveal_ab(session: str, key: dict):
     if len(tags):
         print("issue tags per system:")
         print(pd.crosstab(tags["system"], tags["tag"]).to_string())
+    elems = []
+    for side in "ab":
+        for _, r in df.iterrows():
+            for element, e in json.loads(r.get(f"elem_{side}") or "{}").items() if isinstance(r.get(f"elem_{side}"), str) else []:
+                elems.append({"system": r[f"system_{side}"], "element": element, "level": e["v"], "bars": ";".join(str(i * 8 + 1) + "-" + str(i * 8 + 8) for i in e.get("bars", [])) or "all"})
+    if elems:
+        e = pd.DataFrame(elems)
+        print("element levels per system (-1 weak, 0 ok, 1 strong; mean and count):")
+        print(e.groupby(["system", "element"])["level"].agg(["mean", "size"]).round(2).unstack("system").to_string())
+        e.to_csv(RESULTS / f"{session}_elements.csv", index=False)
     print(f"-> {out}")
 
 
@@ -353,6 +392,10 @@ def main():
     e.add_argument("--ref", default="outputs/ref/heldout_crop32")
     e.add_argument("--seed", type=int, default=0)
     e.add_argument("systems", nargs="+", help="name=dir[,dir...]")
+    f = sub.add_parser("prompt_pairs", help="blind A/B session for TASK B: each prompt's continuation from every two systems (same file name in each dir)")
+    f.add_argument("--session", required=True)
+    f.add_argument("--seed", type=int, default=0)
+    f.add_argument("systems", nargs="+", help="name=dir")
     b = sub.add_parser("reveal", help="join ratings with the hidden key -> results/listening/<session>.csv; "
                                       "means per source, or win counts per system pair for an A/B session")
     b.add_argument("--session", required=True)
@@ -373,7 +416,7 @@ def main():
                                       f"or a folder of rating files such as the site's {SITE_RATINGS}")
     d.add_argument("json")
     args = p.parse_args()
-    {"prepare": prepare, "pairs": pairs, "reveal": reveal, "web": web, "import": import_ratings}[args.cmd](args)
+    {"prepare": prepare, "pairs": pairs, "prompt_pairs": prompt_pairs, "reveal": reveal, "web": web, "import": import_ratings}[args.cmd](args)
 
 
 if __name__ == "__main__":

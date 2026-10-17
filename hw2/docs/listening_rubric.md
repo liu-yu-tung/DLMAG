@@ -107,3 +107,7 @@ Tick any that apply; they are counted per source in the report.
 - **Odd tempo:** much too slow or fast for pop, or the pace seems to change.
 - **Melody missing:** no melody for 4 bars or more.
 - **Timing off:** melody and piano not aligned in time.
+
+## A/B pages: element strips (from `t3_continuations`)
+
+Under the preference, each piece has an optional "Details" panel: the six elements above, each marked weak, ok or strong. Choosing a level opens four bar ranges (1-8, 9-16, 17-24, 25-32) for where it applies; none selected means the whole piece. `listening.py reveal` writes `results/listening/<session>_elements.csv` (system, element, level, bars) and prints the mean level per system and element. In TASK B sessions (`listening.py prompt_pairs`) bars 1-8 are the prompt, and `reveal` also prints the wins per prompt and config.

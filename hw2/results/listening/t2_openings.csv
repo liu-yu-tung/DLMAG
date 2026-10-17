@@ -1,0 +1,11 @@
+session,pair,pref,reasons,tags_a,tags_b,note,system_a,source_a,file_a,system_b,source_b,file_b
+t2_openings,pair_01,-1,flow;form;accompaniment,,abrupt_start;cut_off_ending;wrong_notes;odd_tempo;melody_missing;timing_off,"
+B too messy and random at start and ending ",set_a,outputs/cand_a/pf_oldplan_fill040,01.wav,set_b,outputs/cand_a/single_t1_p1,16.wav
+t2_openings,pair_02,1,flow;form,abrupt_start;wrong_notes,cut_off_ending,,set_b,outputs/cand_a/single_t1_p1,11.wav,set_a,outputs/cand_a/pf_oldplan_fill040,02.wav
+t2_openings,pair_03,-2,harmony;phrasing;form,abrupt_start;odd_tempo,wrong_notes;odd_tempo,,set_a,outputs/cand_a/pf_oldplan_fill040,18.wav,set_b,outputs/cand_a/single_t1_p1,17.wav
+t2_openings,pair_04,-1,flow,,abrupt_start,,set_b,outputs/cand_a/single_t1_p1,14.wav,set_a,outputs/cand_a/pf_oldplan_fill040,11.wav
+t2_openings,pair_05,2,flow;phrasing;form;accompaniment,silent_gap;cut_off_ending;odd_tempo,silent_gap,"long note in A is silent in later half 
+B very good ",set_a,outputs/cand_a/pf_oldplan_fill040,05.wav,ref,outputs/ref/heldout_open32,206.wav
+t2_openings,pair_06,2,melody;phrasing;form;accompaniment,too_repetitive;melody_missing,,biggest issue in A the first half and later half is totally different in piano sheet spectrum ,set_b,outputs/cand_a/single_t1_p1,08.wav,ref,outputs/ref/heldout_open32,231.wav
+t2_openings,pair_07,2,harmony;melody;flow;form,abrupt_start;cut_off_ending;wrong_notes;odd_tempo;melody_missing;timing_off,cut_off_ending,B very good just last 2 bar is kinda off,set_a,outputs/cand_a/pf_oldplan_fill040,16.wav,set_b,outputs/cand_a/single_t1_p1,19.wav
+t2_openings,pair_08,0,,,,both very good,set_b,outputs/cand_a/single_t1_p1,00.wav,set_a,outputs/cand_a/pf_oldplan_fill040,12.wav
