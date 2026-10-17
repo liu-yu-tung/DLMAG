@@ -5,9 +5,9 @@ SHELL := bash
 PY := uv run python
 GPU_START_C ?= 75
 
-MAIN_CKPT ?= checkpoints/gpt2_ppb16/step_6000
-PLAN_CKPT ?= checkpoints/plan_v1/best
-FILL_CKPT ?= checkpoints/fill_v1/best
+MAIN_CKPT ?= checkpoints/gpt2_ppb16/loss_0.40
+PLAN_CKPT ?= checkpoints/plan_rep/best
+FILL_CKPT ?= checkpoints/fill_rep_long/loss_0.40
 BONUS_CKPT ?= checkpoints/abl_melody/step_7000
 BONUS_TOKENS ?= data/tokens/bonus_ppb16
 
@@ -15,12 +15,12 @@ TEMP ?= 1.0
 TOP_P ?= 1.0
 N ?= 20
 BARS ?= 32
-TASK_B_CONFIGS ?= 0.8,0,0.9 1.0,0,0.95 1.2,0,1.0
+TASK_B_CONFIGS ?= 0.9,0,1.0 1.0,0,0.95 1.0,0,1.0
 PLAN_RULES ?=
 PROMPT_DIR ?= data/POP909/prompts/basic-b
 WAV ?= --wav
 
-TASK_A_DIR ?= outputs/task_a
+TASK_A_DIR ?= outputs/cand_a/single_t1_p1
 PLAN_FILL_DIR ?= outputs/plan_fill
 TASK_B_DIR ?= outputs/task_b
 PLAN_TASK_B_DIR ?= outputs/task_b_plan
