@@ -345,4 +345,12 @@ Method and pipeline: `docs/grade_model.md`. Fit on T1, T2 (13 decisive A/B pairs
 
 ### T3: TASK B sampling configs (`results/listening/t3_continuations.csv`)
 
-9 pairs (3 prompts x 3 configs): `t1 p0.95` won 6 of 6 of its pairs (all clearly or a bit), `t1 p1` won 1 of 2 against `t0.9 p1`. Element marks (`t3_continuations_elements.csv`): `t1 p0.95` had the highest mean level on all six elements; `t0.9 p1` collected the most issue tags (wrong notes 4, cut-off ending 3). Best config for every prompt: `t1 p0.95`.
+9 pairs (3 prompts x 3 configs, each piece in two pairs): `t1 p0.95` won 6 of 6 of its pairs, `t1 p1` beat `t0.9 p1` 2 of 3. Element marks (`t3_continuations_elements.csv`): `t1 p0.95` had the highest mean level on all six elements; `t0.9 p1` collected the most issue tags (wrong notes 4, cut-off ending 3). Best config for every prompt: `t1 p0.95`.
+
+Comments, checked against the MIDI (`scripts` not changed; checks in this section only):
+
+- **"Weird key change in the last 8 bars" (prompt 3, `t0.9 p1`, pairs 03 and 07):** bars 29-32 move to C# (fit of the prompt's A key 0.48 in that window); every other piece keeps the prompt key at 0.8 or more in every 4-bar window. The same piece still won pair 07 against `t1 p1`, so the judgment is relative.
+- **"Weird key change dropping harmony degree" (prompt 3, `t1 p1`, pair 05):** no 4-bar window leaves the prompt key, so this is a chord-level problem (wrong scale degrees inside the key), not a modulation.
+- **"Sounds broken", "chords broken in bars 9-24" (prompt 2, `t0.9 p1`, pairs 06 and 09, the same piece):** 2.1% of its onsets have two sounding notes a semitone apart, against 0.4% for the `t1 p0.95` piece on that prompt; it also re-strikes a sounding key 104 times (58). The re-strikes are cut at render time (`one_keyboard`, since 2026-10-16), and the decoder round trip passes, so no program or encoding fault was found; the clashes are in the generated notes.
+
+Why the predictor missed T3: the pairs share the 8-bar prompt, so whole-piece features dilute the 24-bar difference; 5 of the 9 `v1` predictions sat between 0.46 and 0.54 (no signal). The deciding reasons were harmony (key change, clashing chords), which `key_fit` sees only over the whole piece; it got pair 03 right and pair 07 wrong (the same weird piece won against a worse one). `v2`'s `half_pc_sim` hurt here because the first half includes the shared prompt. Next version (`v3`, to be tested on the next session before fitting): features on the generated bars only, prompt-key fit per 4-bar window, semitone-clash share.
