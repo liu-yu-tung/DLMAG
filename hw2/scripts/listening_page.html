@@ -165,6 +165,52 @@ canvas.pr { width: 100%; height: 168px; display: block; border-radius: 8px; back
 .pref:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .ab-block { display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid var(--line); }
 
+.wrap.wide { max-width: 1080px; }
+.deck-nav { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.deck-nav[hidden] { display: none; }
+.nav-btn {
+  font: inherit; font-size: 0.92rem; font-weight: 500; min-height: 40px; padding: 6px 14px; border-radius: 8px;
+  border: 1px solid var(--accent); background: transparent; color: var(--accent); cursor: pointer;
+}
+.nav-btn.primary { background: var(--accent); color: var(--accent-ink); }
+.nav-btn:disabled { opacity: 0.4; cursor: default; }
+.nav-btn:focus-visible, .dot:focus-visible, .play:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.deck-pos { flex: 1; text-align: center; font-family: var(--font-num); font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+.dots { flex-basis: 100%; display: flex; justify-content: center; flex-wrap: wrap; }
+.dot { width: 30px; height: 26px; border: 0; background: transparent; padding: 0; cursor: pointer; display: grid; place-items: center; }
+.dot i { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--muted); }
+.dot.done i { background: var(--ok); border-color: var(--ok); }
+.dot[aria-current="true"] i { outline: 2px solid var(--accent); outline-offset: 2px; }
+.deck .clip[hidden] { display: none; }
+.deck .clip { border-color: var(--accent); }
+.pair-head { display: flex; align-items: baseline; gap: 10px; padding: 14px 14px 0; }
+.pair-head .status { flex: 1 1 auto; text-align: right; }
+.ab-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+.ab-col { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.col-head { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.play {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 6px 14px 6px 10px; border-radius: 22px;
+  font-family: var(--font-num); font-weight: 600; font-size: 1.15rem; color: var(--ink);
+  background: var(--accent-soft); border: 1px solid var(--accent); cursor: pointer;
+}
+.play svg { width: 16px; height: 16px; fill: currentColor; }
+.play .i-pause, .play.playing .i-play { display: none; }
+.play.playing .i-pause { display: inline; }
+.play.playing { background: var(--accent); color: var(--accent-ink); }
+.ab-col .where { font-size: 0.75rem; }
+.ab-col canvas.pr { height: 150px; }
+.ab-col .seg { align-self: flex-start; }
+.ab-details > summary { cursor: pointer; color: var(--accent); padding-top: 12px; border-top: 1px solid var(--line); }
+.ab-details[open] > summary { margin-bottom: 4px; }
+.ab-detail .ab-block:first-of-type { border-top: 0; padding-top: 4px; }
+.ab-detail .tags { gap: 4px; }
+.ab-detail .chip { font-size: 0.8rem; padding: 4px 9px; min-height: 32px; }
+.ab-detail .elem { grid-template-columns: minmax(0, 1fr); gap: 3px; padding-top: 8px; }
+.ab-detail .elem-where { grid-column: 1; }
+.ab-detail .elem .seg { display: flex; }
+.ab-detail .elem .seg button { flex: 1; padding: 5px 2px; }
+.deck-bottom { display: flex; justify-content: space-between; gap: 8px; margin-top: 12px; }
+
 @media (prefers-reduced-motion: reduce) { .meter i, .chev { transition: none; } }
 </style>
 
@@ -174,6 +220,12 @@ canvas.pr { width: 100%; height: 168px; display: block; border-radius: 8px; back
     <select id="session" aria-label="Session"></select>
     <span class="progress" id="progress"></span>
     <div class="meter" aria-hidden="true"><i id="meter"></i></div>
+    <nav class="deck-nav" id="deck-nav" aria-label="Pairs" hidden>
+      <button type="button" class="nav-btn" data-step="-1">&lsaquo; Back</button>
+      <span class="deck-pos" id="deck-pos"></span>
+      <button type="button" class="nav-btn primary" data-step="1">Next &rsaquo;</button>
+      <div class="dots" id="deck-dots"></div>
+    </nav>
   </header>
 
   <section class="intro">
@@ -202,6 +254,8 @@ canvas.pr { width: 100%; height: 168px; display: block; border-radius: 8px; back
 <script>
 const DRAFT_KEY = "hw2-listening-drafts";
 const OPEN_KEY = "hw2-listening-open";
+const PAIR_KEY = "hw2-listening-pair";
+const DETAILS_KEY = "hw2-ab-details-open";
 const HALVES = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
 
 let sessions = [];
@@ -251,6 +305,7 @@ function renderProgress() {
   const done = current.clips.filter(c => isRated(ratings[docId(current.id, c.id)])).length;
   document.getElementById("progress").innerHTML = `<b>${done}</b> / ${n} rated`;
   document.getElementById("meter").style.width = `${n ? (100 * done / n) : 0}%`;
+  renderDeckNav();
 }
 
 function renderCount(id) {
@@ -375,6 +430,47 @@ function scaleRow(c, id, cur, persistClip) {
   return row;
 }
 
+function setAudioSource(audio, session, clip, id, label) {
+  const blob = document.getElementById(`audio-${session.id}-${clip.id}`);
+  if (clip.src) {
+    audio.src = clip.src;
+  } else if (blob) {
+    const bin = atob(blob.textContent.trim());
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    audio.src = URL.createObjectURL(new Blob([bytes], { type: clip.mime }));
+  }
+  audio.addEventListener("error", e => {
+    const a = e.target;
+    setStatus(id, `Audio ${label || ""} failed to load (code ${a.error ? a.error.code : "?"})`, "err");
+  });
+}
+
+function abColumn(session, clip, id, label) {
+  const col = el("div", "ab-col");
+  col.innerHTML = `
+    <div class="col-head">
+      <button type="button" class="play" aria-label="Play or pause ${label}">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path class="i-play" d="M4 2.5v11l9-5.5z"/><path class="i-pause" d="M3.5 2.5h3v11h-3zM9.5 2.5h3v11h-3z"/></svg>
+        <span>${label}</span>
+      </button>
+      <span class="where" aria-live="off"></span>
+    </div>
+    <audio preload="none"></audio>
+    <canvas class="pr" aria-label="Piano roll of ${label}; tap to jump"></canvas>
+    <div class="seg" role="group" aria-label="Piano roll view of ${label}">
+      <button type="button" data-mode="follow">Follow</button>
+      <button type="button" data-mode="whole">Whole</button>
+    </div>`;
+  const audio = col.querySelector("audio");
+  setAudioSource(audio, session, clip, id, label);
+  const play = col.querySelector(".play");
+  play.addEventListener("click", () => { if (audio.paused) audio.play().catch(() => {}); else audio.pause(); });
+  ["play", "pause", "ended"].forEach(ev => audio.addEventListener(ev, () => play.classList.toggle("playing", !audio.paused)));
+  col._roll = attachRoll(col, clip);
+  return col;
+}
+
 function sideBlock(session, clip, id, label) {
   const side = el("div", "side");
   side.innerHTML = `
@@ -390,20 +486,7 @@ function sideBlock(session, clip, id, label) {
       <canvas class="pr" aria-label="Piano roll; tap to jump"></canvas>
     </div>`;
   if (label) side.prepend(el("div", "side-label", label));
-  const audio = side.querySelector("audio");
-  const blob = document.getElementById(`audio-${session.id}-${clip.id}`);
-  if (clip.src) {
-    audio.src = clip.src;
-  } else if (blob) {
-    const bin = atob(blob.textContent.trim());
-    const bytes = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-    audio.src = URL.createObjectURL(new Blob([bytes], { type: clip.mime }));
-  }
-  audio.addEventListener("error", e => {
-    const a = e.target;
-    setStatus(id, `Audio ${label || ""} failed to load (code ${a.error ? a.error.code : "?"})`, "err");
-  });
+  setAudioSource(side.querySelector("audio"), session, clip, id, label);
   side._roll = attachRoll(side, clip);
   return side;
 }
@@ -441,8 +524,8 @@ const BAR_RANGES = ["bars 1-8", "9-16", "17-24", "25-32"];
 const LEVELS = [[-1, "weak"], [0, "ok"], [1, "strong"]];
 
 function elementStrips(label, field, cur, persistClip) {
-  const box = el("details", "ab-block elems");
-  box.appendChild(el("summary", null, `Details for ${label}: each element, and where (optional)`));
+  const box = el("div", "ab-block elems");
+  box.appendChild(el("div", "note-label", "Elements (optional)"));
   const rows = [];
   for (const c of criteria.filter(c => c.key !== "overall")) {
     const name = el("span", "elem-name", c.label);
@@ -499,31 +582,33 @@ function elementStrips(label, field, cur, persistClip) {
 
 const PREFS = [[-2, "A", "clearly"], [-1, "A", "a bit"], [0, "=", "same"], [1, "B", "a bit"], [2, "B", "clearly"]];
 
-function pairCard(session, pair, index, openSet) {
+function detailsOpen() {
+  try { return localStorage.getItem(DETAILS_KEY) !== "0"; } catch (e) { return true; }
+}
+
+function pairCard(session, pair) {
   const id = docId(session.id, pair.id);
   const cur = () => ratings[id] || (ratings[id] = { session: session.id, clip: pair.id });
   const persistClip = () => persist(session.id, pair.id);
   const card = el("article", "clip");
   card.id = `clip-${id}`;
 
-  const head = el("button", "clip-head");
-  head.type = "button";
-  head.setAttribute("aria-controls", `body-${id}`);
-  head.append(el("span", "chev"), el("span", "clip-name", pair.id.replace("_", " ")));
+  const head = el("div", "pair-head");
   const count = el("span", "count");
   count.id = `count-${id}`;
   const status = el("span", "status", isRated(cur()) ? "Saved" : "");
   status.id = `status-${id}`;
   if (isRated(cur())) status.classList.add("ok");
-  head.append(status, count);
-  head.addEventListener("click", () => { setOpen(card, !card.classList.contains("open")); saveOpen(); });
+  head.append(el("span", "clip-name", pair.id.replace("_", " ")), status, count);
 
   const body = el("div", "clip-body");
   body.id = `body-${id}`;
   card.append(head, body);
-  const sides = [sideBlock(session, pair.a, id, "A"), sideBlock(session, pair.b, id, "B")];
-  body.append(...sides);
-  card._rolls = sides.map(s => s._roll);
+  const cols = [abColumn(session, pair.a, id, "A"), abColumn(session, pair.b, id, "B")];
+  const players = el("div", "ab-grid");
+  players.append(...cols);
+  body.appendChild(players);
+  card._rolls = cols.map(c => c._roll);
 
   const pick = el("div", "ab-block");
   pick.appendChild(el("div", "note-label", "Which is the better piece?"));
@@ -546,14 +631,25 @@ function pairCard(session, pair, index, openSet) {
   }
   const showPref = v => prefs.querySelectorAll(".pref").forEach(b => b.setAttribute("aria-pressed", Number(b.dataset.v) === v ? "true" : "false"));
   pick.appendChild(prefs);
-  body.appendChild(pick);
-
   const reasons = chipRow("What decided it", criteria.filter(c => c.key !== "overall"), cur, "reasons", persistClip);
-  const tagsA = chipRow("Issues in A", tagList, cur, "tags_a", persistClip);
-  const tagsB = chipRow("Issues in B", tagList, cur, "tags_b", persistClip);
+  body.append(pick, reasons);
+
+  const tagsA = chipRow("Issues", tagList, cur, "tags_a", persistClip);
+  const tagsB = chipRow("Issues", tagList, cur, "tags_b", persistClip);
   const stripsA = elementStrips("A", "elem_a", cur, persistClip);
   const stripsB = elementStrips("B", "elem_b", cur, persistClip);
-  body.append(reasons, tagsA, tagsB, stripsA, stripsB);
+  const details = el("details", "ab-details");
+  details.open = detailsOpen();
+  details.addEventListener("toggle", () => { try { localStorage.setItem(DETAILS_KEY, details.open ? "1" : "0"); } catch (e) {} });
+  details.appendChild(el("summary", null, "Details of A and B: issues, elements, where"));
+  const detailGrid = el("div", "ab-grid");
+  for (const [label, tags, strips] of [["A", tagsA, stripsA], ["B", tagsB, stripsB]]) {
+    const col = el("div", "ab-col ab-detail");
+    col.append(el("div", "side-label", label), tags, strips);
+    detailGrid.appendChild(col);
+  }
+  details.appendChild(detailGrid);
+  body.appendChild(details);
 
   const noteLabel = el("label", "note-label", "Comment");
   noteLabel.htmlFor = `note-${id}`;
@@ -566,19 +662,8 @@ function pairCard(session, pair, index, openSet) {
   note.addEventListener("blur", flush);
   body.append(noteLabel, note);
 
-  const last = index === session.clips.length - 1;
-  const next = el("button", "next", last ? "Close pair" : "Next pair");
-  next.type = "button";
-  next.addEventListener("click", () => {
-    flush();
-    setOpen(card, false);
-    const nextCard = last ? null : cards.get(docId(session.id, session.clips[index + 1].id));
-    if (nextCard) setOpen(nextCard, true);
-    saveOpen();
-    (nextCard || card).scrollIntoView({ block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
-  });
-  body.appendChild(next);
-
+  card._flush = flush;
+  card._details = details;
   card._sync = b => {
     showPref(b.pref);
     reasons._show(b.reasons);
@@ -589,9 +674,83 @@ function pairCard(session, pair, index, openSet) {
   };
   card._sync(cur());
   cards.set(id, card);
-  setOpen(card, openSet.has(id));
+  card.hidden = true;
   return card;
 }
+
+let deckIndex = 0;
+
+function pairKey() { return `${PAIR_KEY}-${current.id}`; }
+
+function showPair(i, scroll) {
+  if (!isAb() || !current.clips.length) return;
+  deckIndex = Math.max(0, Math.min(current.clips.length - 1, i));
+  let shown = null;
+  current.clips.forEach((c, k) => {
+    const card = cards.get(docId(current.id, c.id));
+    if (!card) return;
+    if (k !== deckIndex) {
+      if (!card.hidden && card._flush) card._flush();
+      card.querySelectorAll("audio").forEach(a => a.pause());
+      card.hidden = true;
+      return;
+    }
+    card.hidden = false;
+    card._details.open = detailsOpen();
+    card.querySelectorAll("audio").forEach(a => { a.preload = "metadata"; });
+    requestAnimationFrame(() => card._rolls.forEach(r => r.draw()));
+    shown = card;
+  });
+  try { localStorage.setItem(pairKey(), String(deckIndex)); } catch (e) {}
+  renderDeckNav();
+  if (scroll && shown) {
+    const top = shown.getBoundingClientRect().top + window.scrollY - document.querySelector(".bar").offsetHeight - 8;
+    window.scrollTo({ top: Math.max(0, top), behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  }
+}
+
+function renderDeckNav() {
+  const nav = document.getElementById("deck-nav");
+  nav.hidden = !isAb();
+  const bottom = document.getElementById("deck-bottom");
+  if (!isAb()) return;
+  const n = current.clips.length;
+  document.getElementById("deck-pos").textContent = `pair ${deckIndex + 1} of ${n}`;
+  for (const box of [nav, bottom]) {
+    if (!box) continue;
+    box.querySelector('[data-step="-1"]').disabled = deckIndex === 0;
+    box.querySelector('[data-step="1"]').disabled = deckIndex === n - 1;
+  }
+  const dots = document.getElementById("deck-dots");
+  if (dots.childElementCount !== n) {
+    dots.innerHTML = "";
+    current.clips.forEach((c, k) => {
+      const d = el("button", "dot");
+      d.type = "button";
+      d.appendChild(el("i"));
+      d.addEventListener("click", () => showPair(k, true));
+      dots.appendChild(d);
+    });
+  }
+  [...dots.children].forEach((d, k) => {
+    const done = isRated(ratings[docId(current.id, current.clips[k].id)]);
+    d.classList.toggle("done", done);
+    d.setAttribute("aria-current", k === deckIndex ? "true" : "false");
+    d.setAttribute("aria-label", `pair ${k + 1}${done ? ", picked" : ""}`);
+  });
+}
+
+document.getElementById("deck-nav").addEventListener("click", e => {
+  const b = e.target.closest("[data-step]");
+  if (b) showPair(deckIndex + Number(b.dataset.step), true);
+});
+
+document.addEventListener("keydown", e => {
+  if (!isAb() || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+  if (e.target.closest && e.target.closest("textarea, input, select")) return;
+  if (e.key === "ArrowLeft") showPair(deckIndex - 1, true);
+  else if (e.key === "ArrowRight") showPair(deckIndex + 1, true);
+});
 
 function clipCard(session, clip, index, openSet) {
   const id = docId(session.id, clip.id);
@@ -695,8 +854,29 @@ function renderSession() {
     document.querySelector(".bar h1").textContent = "Blind A/B listening";
     document.querySelector("#rules summary").textContent = "How to judge";
   }
-  const openSet = loadOpen();
-  current.clips.forEach((c, i) => box.appendChild((isAb() ? pairCard : clipCard)(current, c, i, openSet)));
+  const ab = isAb();
+  document.querySelector(".wrap").classList.toggle("wide", ab);
+  box.classList.toggle("deck", ab);
+  document.getElementById("deck-dots").innerHTML = "";
+  if (ab) {
+    document.getElementById("rules").open = false;
+    current.clips.forEach(c => box.appendChild(pairCard(current, c)));
+    const bottom = el("div", "deck-bottom");
+    bottom.id = "deck-bottom";
+    bottom.innerHTML = `<button type="button" class="nav-btn" data-step="-1">&lsaquo; Back</button>
+      <button type="button" class="nav-btn primary" data-step="1">Next pair &rsaquo;</button>`;
+    bottom.addEventListener("click", e => {
+      const b = e.target.closest("[data-step]");
+      if (b) showPair(deckIndex + Number(b.dataset.step), true);
+    });
+    box.appendChild(bottom);
+    let saved = 0;
+    try { saved = Number(localStorage.getItem(pairKey())) || 0; } catch (e) {}
+    showPair(saved, false);
+  } else {
+    const openSet = loadOpen();
+    current.clips.forEach((c, i) => box.appendChild(clipCard(current, c, i, openSet)));
+  }
   const sn = document.getElementById("session-note");
   sn.value = (ratings[`session__${current.id}`] || {}).note || "";
   const st = document.querySelector(".session-note .status");
@@ -837,7 +1017,7 @@ function attachRoll(card, clip) {
     const hx = Math.round(follow ? HEAD_AT * w : t / end * w) + 0.5;
     ctx.fillStyle = cssVar("--roll-head");
     ctx.fillRect(hx - 0.5, top, 1.5, h - top);
-    where.textContent = `bar ${barAt(t)} of ${Math.max(1, bars.length)} · ${fmt(t)} / ${fmt(end)}`;
+    where.textContent = `bar ${barAt(t)}/${Math.max(1, bars.length)} · ${fmt(t)}/${fmt(end)}`;
   }
 
   function loop() { draw(); raf = audio.paused ? 0 : requestAnimationFrame(loop); }

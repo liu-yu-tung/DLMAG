@@ -108,6 +108,8 @@ Tick any that apply; they are counted per source in the report.
 - **Melody missing:** no melody for 4 bars or more.
 - **Timing off:** melody and piano not aligned in time.
 
-## A/B pages: element strips (from `t3_continuations`)
+## A/B pages: cards and element strips (from `t3_continuations`)
 
-Under the preference, each piece has an optional "Details" panel: the six elements above, each marked weak, ok or strong. Choosing a level opens four bar ranges (1-8, 9-16, 17-24, 25-32) for where it applies; none selected means the whole piece. `listening.py reveal` writes `results/listening/<session>_elements.csv` (system, element, level, bars) and prints the mean level per system and element. In TASK B sessions (`listening.py prompt_pairs`) bars 1-8 are the prompt, and `reveal` also prints the wins per prompt and config.
+Sections after "Issue tags" are notes; `parse_rubric` stops there. The A/B page shows one pair at a time (Back, Next, arrow keys, a dot per pair). Each card has A and B side by side: play button, piano roll, then the preference and what decided it, then a "Details" panel with A and B side by side.
+
+In the "Details" panel, each piece has its issue tags and the six elements above, each marked weak, ok or strong. Choosing a level opens four bar ranges (1-8, 9-16, 17-24, 25-32) for where it applies; none selected means the whole piece. `listening.py reveal` writes `results/listening/<session>_elements.csv` (system, element, level, bars) and prints the mean level per system and element. In TASK B sessions (`listening.py prompt_pairs`) bars 1-8 are the prompt, and `reveal` also prints the wins per prompt and config.

@@ -41,6 +41,8 @@ def parse_rubric(path=RUBRIC) -> dict:
     """docs/listening_rubric.md -> {"rules": [...], "criteria": [...], "tags": [...]} for the page and the sheet."""
     rules, criteria, tags, cur = [], [], [], None
     for line in path.read_text().splitlines():
+        if line.startswith("## ") and criteria and cur is None:
+            break
         if line.startswith("## "):
             cur = None if line[3:].strip() == "Issue tags" else {"key": slug(line[3:]), "label": line[3:].strip(), "question": "",
                                                                   "scope": "", "listen": "", "not": "", "anchors": {}}
@@ -208,9 +210,9 @@ SITE_HEAD = ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
 
 
 AB_INTRO = [
-    "Each pair has two clips, A and B. Listen to both, then pick which one is the better piece of music, or Same.",
-    "Then tap what decided it, tick issues for either side, and add a comment if something stands out.",
-    "Clips are full length; you can jump around with the piano roll. Every tap saves to this page.",
+    "One pair at a time: Back and Next (or the arrow keys) move between pairs; the dots show which pairs are picked.",
+    "Play A and B, then pick which one is the better piece of music, or Same; tap what decided it, and add details or a comment if something stands out.",
+    "Clips are full length; tap a piano roll to jump. Every tap saves to this page.",
 ]
 AB_RULES = [
     "Judge the music, not the sound quality: every clip uses the same piano sound, and the volume is matched.",
