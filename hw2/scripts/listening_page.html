@@ -764,18 +764,20 @@ function attachRoll(card, clip) {
   if (lo > hi) { lo = 48; hi = 84; }
   lo -= 2; hi += 2;
   let raf = 0;
+  let mode = rollMode;
 
   const roll = { draw, setMode };
   rolls.add(roll);
 
   function setMode(m) {
+    mode = m;
     buttons.forEach(b => b.setAttribute("aria-pressed", b.dataset.mode === m ? "true" : "false"));
     draw();
   }
   buttons.forEach(b => b.addEventListener("click", () => {
     rollMode = b.dataset.mode;
     try { localStorage.setItem("hw2-roll-mode", rollMode); } catch (e) {}
-    rolls.forEach(r => r.setMode(rollMode));
+    setMode(rollMode);
   }));
 
   function barAt(t) {
@@ -797,7 +799,7 @@ function attachRoll(card, clip) {
     ctx.fillRect(0, 0, w, h);
 
     const t = audio.currentTime || 0;
-    const follow = rollMode === "follow";
+    const follow = mode === "follow";
     const top = 14, rowH = (h - top - 4) / (hi - lo + 1);
     const x = follow ? (s => (s - t) / FOLLOW_SECONDS * w + HEAD_AT * w) : (s => s / end * w);
     const y = p => top + (hi - p) * rowH;
@@ -845,12 +847,12 @@ function attachRoll(card, clip) {
   canvas.addEventListener("click", e => {
     const r = canvas.getBoundingClientRect();
     const fx = (e.clientX - r.left) / r.width;
-    const target = rollMode === "follow" ? audio.currentTime + (fx - HEAD_AT) * FOLLOW_SECONDS : fx * end;
+    const target = mode === "follow" ? audio.currentTime + (fx - HEAD_AT) * FOLLOW_SECONDS : fx * end;
     audio.currentTime = Math.max(0, Math.min(end, target));
     draw();
   });
 
-  setMode(rollMode);
+  setMode(mode);
   requestAnimationFrame(draw);
   return roll;
 }
