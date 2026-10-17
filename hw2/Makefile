@@ -25,7 +25,7 @@ SWEEP_FILL_ARGS ?= --n 20 --return_as var --repeat_bias 8 --min_piano_bin 1 --te
 
 TASK_A_DIR ?= outputs/cand_a/single_t1_p1
 PLAN_FILL_DIR ?= outputs/plan_fill
-TASK_B_DIR ?= outputs/task_b
+TASK_B_DIR ?= outputs/task_b_final
 PLAN_TASK_B_DIR ?= outputs/task_b_plan
 BONUS_DIR ?= outputs/bonus_final
 
