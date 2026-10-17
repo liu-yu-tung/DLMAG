@@ -10,37 +10,37 @@
   "density_cv"
  ],
  "mean": {
-  "longest_onset_gap_beats": 2.6868421052631577,
-  "bass_dropout": 0.029467317487266553,
-  "high_share": 0.031013306040292617,
-  "half_pc_sim": 0.930796627611889,
-  "half_register_shift": 1.9183257740126254,
+  "longest_onset_gap_beats": 2.681578947368421,
+  "bass_dropout": 0.029576966610073568,
+  "high_share": 0.031197466171274557,
+  "half_pc_sim": 0.9292759584539981,
+  "half_register_shift": 1.896478528034738,
   "one_note_bars": 0.06315789473684211,
-  "key_fit": 0.9788896081268653,
-  "density_cv": 0.2917240348313102
+  "key_fit": 0.9786087192620665,
+  "density_cv": 0.2896644003235608
  },
  "std": {
-  "longest_onset_gap_beats": 1.5693068419419238,
-  "bass_dropout": 0.0643369979335217,
-  "high_share": 0.0468369226213,
-  "half_pc_sim": 0.05724543817607133,
-  "half_register_shift": 1.741150444436423,
+  "longest_onset_gap_beats": 1.5758491907198788,
+  "bass_dropout": 0.06434894388826579,
+  "high_share": 0.04683640622275725,
+  "half_pc_sim": 0.05871066018820193,
+  "half_register_shift": 1.7619594557623575,
   "one_note_bars": 0.5220769959475791,
-  "key_fit": 0.026253107525632844,
-  "density_cv": 0.09609003657287662
+  "key_fit": 0.02711017013804356,
+  "density_cv": 0.0987165288437654
  },
  "weights": {
-  "longest_onset_gap_beats": -0.02828340095918382,
-  "bass_dropout": -0.14405179755219277,
-  "high_share": -0.17622184809122224,
-  "half_pc_sim": 0.20748209743812654,
-  "half_register_shift": -0.1556883311521383,
-  "one_note_bars": -0.08610889716844944,
-  "key_fit": 0.15920677959162907,
-  "density_cv": 0.05659262011489146
+  "longest_onset_gap_beats": -0.02859828711507073,
+  "bass_dropout": -0.14634587423451775,
+  "high_share": -0.18110966044705487,
+  "half_pc_sim": 0.16999714037452435,
+  "half_register_shift": -0.1418409114889078,
+  "one_note_bars": -0.08548513097297318,
+  "key_fit": 0.13429153743505032,
+  "density_cv": 0.06523966516816844
  },
  "lambda": 10.0,
- "real_score": 0.25797542074801244,
+ "real_score": 0.22508206331024486,
  "n_ab_pairs": 22,
  "n_scored_clips": 56,
  "sessions": [

@@ -45,7 +45,7 @@ As of 2026-10-17 11:00. Deadline Mon 2026-10-26 23:59; the report (PPT-style PDF
    - Fill model on real held-out plans (separates plan errors from fill errors; never done).
    - Cause of the sudden loud notes in plan-fill (see open issues).
    - Melody-repeat following (14-22% of asked repeats written) and bar-end silence.
-4. Listening-grade predictor (user, 2026-10-17; `docs/grade_model.md`): fit on T1, T2 and the pilot; after each graded session run `grade_model.py check` before `fit` (T3 is the first real test of `v2`); score each new set; predicted grade vs loss for `exp2` (main model) and the new plan-fill runs.
+4. Listening-grade predictor (user, 2026-10-17; `docs/grade_model.md`): fit on T1, T2 and the pilot; after each graded session run `grade_model.py check` before `fit` (T3: `v1` 5 of 9, `v2` 3 of 9; `v3` built after T3, first tested on T4); score each new set; predicted grade vs loss for `exp2` (main model) and the new plan-fill runs.
 5. Extras: NLL matching of sampling settings, loss vs listening figure (partly covered by item 4), SI feasibility.
 6. Packaging: checkpoint defaults in the `Makefile` and `generate_plan_fill.py`, `submission` branch, fresh-venv README test. Code, checkpoints and README go on the cloud drive (the user does this).
 7. Report (PPT-style PDF, about 10 pages; name and ID on the cover).

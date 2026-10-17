@@ -1,6 +1,7 @@
 """Piece features for the listening-grade predictor (`scripts/grade_model.py`), read from the MIDI with all tracks
 merged: single-stage pieces and real songs are one piano track while plan-fill has two, so a per-track feature would
-only identify the system."""
+only identify the system. With `first_bar` (TASK B: the 8 prompt bars), features cover the generated bars only, and the
+key reference is the prompt."""
 
 from pathlib import Path
 
@@ -18,7 +19,7 @@ FEATURES = [
     "bass_dropout", "high_share", "opening_high_share", "opening_density_ratio", "skyline_leap",
     "half_rhythm_sim", "half_register_shift", "half_density_change", "half_pc_sim",
     "loop_run", "one_note_bars", "key_fit", "key_fit_worst8", "mean_chord", "velocity_spike_share",
-    "tempo", "tempo_changes", "duration_s",
+    "tempo", "tempo_changes", "duration_s", "opening_key_fit_min4", "semitone_clash_share", "restrike_share",
 ]
 
 
@@ -40,7 +41,7 @@ def runs_of(mask: np.ndarray) -> int:
     return best
 
 
-def piece_features(path: str | Path, bars: int = BARS) -> dict:
+def piece_features(path: str | Path, bars: int = BARS, first_bar: int = 0) -> dict:
     pm = pretty_midi.PrettyMIDI(str(path))
     notes = sorted((n for inst in pm.instruments if not inst.is_drum for n in inst.notes), key=lambda n: (n.start, n.pitch))
     beats = pm.get_beats()
@@ -52,12 +53,17 @@ def piece_features(path: str | Path, bars: int = BARS) -> dict:
         t = np.asarray(t, float)
         return np.where(t <= beats[-1], np.interp(t, beats, np.arange(len(beats))), len(beats) - 1 + (t - beats[-1]) / step)
 
-    bar_beats = to_beats(np.append(downbeats, end))[:bars + 1]
-    n_bars = len(bar_beats) - 1
+    all_bars = to_beats(np.append(downbeats, end))[:bars + 1]
     start = to_beats(np.array([n.start for n in notes]))
     stop = to_beats(np.array([n.end for n in notes]))
     pitch = np.array([n.pitch for n in notes])
     velocity = np.array([n.velocity for n in notes])
+    ref_end = all_bars[min(first_bar or 8, len(all_bars) - 1)]
+    ref = (start >= all_bars[0]) & (start < ref_end)
+    ref_pc = np.bincount(pitch[ref] % 12, (np.minimum(stop, ref_end) - start)[ref], 12)
+    ref_key = max(range(12), key=lambda k: ref_pc[np.roll(MAJOR, k)].sum())
+    bar_beats = all_bars[first_bar:]
+    n_bars = len(bar_beats) - 1
     keep = (start >= bar_beats[0]) & (start < bar_beats[-1])
     start, stop, pitch, velocity = start[keep], stop[keep], pitch[keep], velocity[keep]
     bar = np.searchsorted(bar_beats, start, side="right") - 1
@@ -88,6 +94,18 @@ def piece_features(path: str | Path, bars: int = BARS) -> dict:
     chord = np.bincount(np.unique(np.round(start * SLOTS / 4), return_inverse=True)[1])
     bar_median = np.array([np.median(velocity[bar == b]) if filled[b] else np.nan for b in range(n_bars)])
     tempos = pm.get_tempo_changes()[1]
+    windows = [pc_hist((bar >= b) & (bar < b + 4)) for b in range(0, n_bars - 3, 4)]
+    window_fit = [w[np.roll(MAJOR, ref_key)].sum() / w.sum() for w in windows if w.sum() > 0]
+    grid = np.unique(np.round(start * SLOTS / 4) * 4 / SLOTS)
+    clashes = 0
+    for t in grid:
+        sounding = np.unique(pitch[(start <= t + 1e-6) & (stop > t + 0.1)])
+        clashes += bool(np.any(np.diff(sounding) == 1))
+    order = np.lexsort((pitch, start))
+    restrikes, last_end = 0, {}
+    for i in order:
+        restrikes += last_end.get(pitch[i], -1.0) > start[i] + 1e-6
+        last_end[pitch[i]] = max(last_end.get(pitch[i], -1.0), stop[i])
     return {
         "notes_per_bar": count.mean(),
         "density_cv": count.std() / count.mean() if count.mean() > 0 else np.nan,
@@ -112,4 +130,7 @@ def piece_features(path: str | Path, bars: int = BARS) -> dict:
         "tempo": float(tempos[0]) if len(tempos) else np.nan,
         "tempo_changes": max(0, len(tempos) - 1),
         "duration_s": float(downbeats[bars]) if len(downbeats) > bars else end,
+        "opening_key_fit_min4": float(min(window_fit)) if window_fit else np.nan,
+        "semitone_clash_share": clashes / len(grid) if len(grid) else np.nan,
+        "restrike_share": restrikes / len(pitch) if len(pitch) else np.nan,
     }

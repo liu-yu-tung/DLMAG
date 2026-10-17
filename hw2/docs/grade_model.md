@@ -19,12 +19,14 @@ All tracks are merged first: single-stage pieces and real songs are one piano tr
 | Scattered notes in bars 1-4 | `opening_high_share`, `opening_density_ratio`, `skyline_leap` |
 | Gaps, held notes that fade to silence | `longest_onset_gap_beats`, `onset_gaps_1bar`, `empty_bars` |
 | Wrong notes | `key_fit` (share of note time in the best diatonic set), `key_fit_worst8` |
+| Key change away from the opening or prompt key, clashing chords (T3 comments) | `opening_key_fit_min4`, `semitone_clash_share`, `restrike_share` |
 | Others | `notes_per_bar`, `density_cv`, `mean_chord`, `velocity_spike_share`, `tempo`, `tempo_changes`, `duration_s` |
 
 ## Model (`scripts/grade_model.py`)
 
 - **Score:** weighted sum of standardized features; P(A preferred) = sigmoid(score A − score B). Fit by L2-penalized logistic regression on feature differences (no intercept, so the A/B order does not matter).
-- **Two feature sets:** `v1` was chosen from the rolls before any fit. `v2` swaps in the strongest single features from the first screen (`half_pc_sim`, `one_note_bars`), so its cross-validation is optimistic; only sessions graded after 2026-10-17 test it. `predict` uses `v1` until a later session shows `v2` holds up.
+- **Three feature sets:** `v1` was chosen from the rolls before any fit. `v2` swaps in the strongest single features from the first screen (`half_pc_sim`, `one_note_bars`); on T3, scored before refitting, it got 3 of 9 (`v1` 5 of 9). `v3` (built after T3) is `v1` plus the two harmony checks from the T3 comments: `opening_key_fit_min4` (fit of the opening key, or the prompt key in TASK B, in the weakest 4-bar window) and `semitone_clash_share` (share of onsets with two sounding notes a semitone apart). T4 is its first test. `predict` uses `v1` until a later session shows another set does better before refitting.
+- **TASK B pieces:** features cover the 24 generated bars only (`first_bar` from the set's `gen_info.json`: a prompt file or folder means 8 prompt bars); the prompt sets the reference key.
 - **Left out of the model:** `tempo_changes` and `velocity_spike_share` mostly tell real songs and the two systems apart.
 - **`win_vs_real`:** sigmoid(score − mean score of the real anchors in `outputs/ref/`), the predicted chance that a piece beats a typical real opening.
 

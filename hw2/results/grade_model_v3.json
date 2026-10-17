@@ -1,0 +1,67 @@
+{
+ "features": [
+  "longest_onset_gap_beats",
+  "bass_dropout",
+  "high_share",
+  "opening_high_share",
+  "half_rhythm_sim",
+  "half_register_shift",
+  "loop_run",
+  "key_fit",
+  "density_cv",
+  "opening_key_fit_min4",
+  "semitone_clash_share"
+ ],
+ "mean": {
+  "longest_onset_gap_beats": 2.681578947368421,
+  "bass_dropout": 0.029576966610073568,
+  "high_share": 0.031197466171274557,
+  "opening_high_share": 0.05267706884718326,
+  "half_rhythm_sim": 0.785677664690764,
+  "half_register_shift": 1.896478528034738,
+  "loop_run": 0.010526315789473684,
+  "key_fit": 0.9786087192620665,
+  "density_cv": 0.2896644003235608,
+  "opening_key_fit_min4": 0.9021896937997015,
+  "semitone_clash_share": 0.025408952364677852
+ },
+ "std": {
+  "longest_onset_gap_beats": 1.5758491907198788,
+  "bass_dropout": 0.06434894388826579,
+  "high_share": 0.04683640622275725,
+  "opening_high_share": 0.09294790796522656,
+  "half_rhythm_sim": 0.20294061548284292,
+  "half_register_shift": 1.7619594557623575,
+  "loop_run": 0.10259783520851541,
+  "key_fit": 0.02711017013804356,
+  "density_cv": 0.0987165288437654,
+  "opening_key_fit_min4": 0.12043391221015565,
+  "semitone_clash_share": 0.019489840711809578
+ },
+ "weights": {
+  "longest_onset_gap_beats": -0.004601783830206885,
+  "bass_dropout": -0.17217698747792506,
+  "high_share": -0.17497582650097646,
+  "opening_high_share": -0.11113168687991855,
+  "half_rhythm_sim": 0.06560477063161613,
+  "half_register_shift": -0.1368476711764461,
+  "loop_run": -0.08332421379520837,
+  "key_fit": 0.08350111136429592,
+  "density_cv": 0.06905218135053555,
+  "opening_key_fit_min4": 0.16721726955415808,
+  "semitone_clash_share": -0.09919983316395044
+ },
+ "lambda": 10.0,
+ "real_score": 0.2648877330257143,
+ "n_ab_pairs": 22,
+ "n_scored_clips": 56,
+ "sessions": [
+  "candidates",
+  "ckpt",
+  "ckpt2",
+  "planfill",
+  "t1_checkpoint",
+  "t2_openings",
+  "t3_continuations"
+ ]
+}

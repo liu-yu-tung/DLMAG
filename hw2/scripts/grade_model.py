@@ -23,14 +23,17 @@ from hw2.remi import HW2_ROOT
 LISTENING = HW2_ROOT / "results" / "listening"
 RESULTS = HW2_ROOT / "results"
 REFS = ["outputs/ref/heldout_open32", "outputs/ref/heldout_crop32"]
-# v1: chosen from the piano rolls before any fit; v2: v1 after the single-feature screen of 2026-10-17 (T1, T2, pilot),
-# so only sessions graded later test it. tempo_changes and velocity_spike_share stay out: they mostly tell real songs
-# and systems apart.
+# v1: chosen from the piano rolls before any fit; v2: v1 after the single-feature screen of 2026-10-17 (T1, T2, pilot);
+# v3: v1 plus the harmony checks from the T3 comments (key drift from the opening or prompt key, semitone clashes),
+# built 2026-10-17 after T3, so only sessions graded later test it. tempo_changes and velocity_spike_share stay out:
+# they mostly tell real songs and systems apart.
 VARIANTS = {
     "v1": ["longest_onset_gap_beats", "bass_dropout", "high_share", "opening_high_share", "half_rhythm_sim",
            "half_register_shift", "loop_run", "key_fit", "density_cv"],
     "v2": ["longest_onset_gap_beats", "bass_dropout", "high_share", "half_pc_sim", "half_register_shift",
            "one_note_bars", "key_fit", "density_cv"],
+    "v3": ["longest_onset_gap_beats", "bass_dropout", "high_share", "opening_high_share", "half_rhythm_sim",
+           "half_register_shift", "loop_run", "key_fit", "density_cv", "opening_key_fit_min4", "semitone_clash_share"],
 }
 TAG_FEATURES = {"silent_gap": "longest_onset_gap_beats", "too_repetitive": "loop_run", "abrupt_start": "opening_high_share",
                 "wrong_notes": "key_fit", "melody_missing": "bass_dropout", "odd_tempo": "tempo", "cut_off_ending": "density_cv",
@@ -64,8 +67,19 @@ def load_grades() -> tuple[pd.DataFrame, pd.DataFrame]:
     return pd.DataFrame(pairs), pd.DataFrame(scored).dropna(subset=["overall"])
 
 
+def first_bar_of(folder: Path) -> int:
+    """TASK B sets (a prompt file or folder in gen_info.json) start generating after the prompt bars."""
+    info = folder / "gen_info.json"
+    args = json.loads(info.read_text()).get("args", {}) if info.exists() else {}
+    return int(args.get("prompt_bars") or 8) if args.get("prompts") or args.get("prompt_dir") else 0
+
+
+def features_of(path: Path) -> dict:
+    return piece_features(path, first_bar=first_bar_of(path.parent))
+
+
 def feature_table(paths) -> pd.DataFrame:
-    return pd.DataFrame([{"path": p, **piece_features(HW2_ROOT / p)} for p in sorted(set(paths))]).set_index("path")
+    return pd.DataFrame([{"path": p, **features_of(HW2_ROOT / p)} for p in sorted(set(paths))]).set_index("path")
 
 
 def training_pairs(pairs: pd.DataFrame, scored: pd.DataFrame) -> pd.DataFrame:
@@ -203,8 +217,8 @@ def check(args):
         if args.session in model["sessions"]:
             print(f"{variant}: already fit on {args.session}, skipped")
             continue
-        correct = [(score_features(piece_features(HW2_ROOT / r.a), cols, beta, mean, std)
-                    > score_features(piece_features(HW2_ROOT / r.b), cols, beta, mean, std)) == (r.a_better == 1) for r in g.itertuples()]
+        correct = [(score_features(features_of(HW2_ROOT / r.a), cols, beta, mean, std)
+                    > score_features(features_of(HW2_ROOT / r.b), cols, beta, mean, std)) == (r.a_better == 1) for r in g.itertuples()]
         rows.append({"session": args.session, "variant": variant, "pairs": len(correct), "correct": int(sum(correct)),
                      "accuracy": float(np.mean(correct)), "fit_on": ";".join(model["sessions"])})
     if rows:
@@ -264,7 +278,7 @@ def predict(args):
     for folder in args.folders:
         folder = folder.resolve()
         for mid in sorted(folder.glob("*.mid")):
-            f = piece_features(mid)
+            f = features_of(mid)
             score = score_features(f, cols, beta, mean, std)
             rows.append({"source": str(folder.relative_to(HW2_ROOT)), "piece": mid.stem, "score": score,
                          "win_vs_real": 1 / (1 + np.exp(-(score - model["real_score"]))), **f})
