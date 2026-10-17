@@ -38,6 +38,11 @@ As of 2026-10-17 11:00. Deadline Mon 2026-10-26 23:59; the report (PPT-style PDF
 
 1. T3 (`t3_continuations`, TASK B: 3 prompts x 3 configs, 9 pairs, with the new element panel); `outputs/task_b_final` (configs `t0.9 p1`, `t1 p0.95`, `t1 p1`, metrics in `results/task_b.csv`, `task_b_fade.csv`); best config per prompt by wins.
 2. Final TASK A is `outputs/cand_a/single_t1_p1` (20 MIDI + 20 WAV + metrics).
-3. Extras: NLL matching of sampling settings, loss vs listening figure, SI feasibility.
-4. Packaging: checkpoint defaults in the `Makefile` and `generate_plan_fill.py`, `submission` branch, fresh-venv README test. Code, checkpoints and README go on the cloud drive (the user does this).
-5. Report (PPT-style PDF, about 10 pages; name and ID on the cover).
+3. Plan-fill matters in the report even though it is not submitted (user, 2026-10-17): keep testing and improving it.
+   - T4: more plan-fill vs single-stage pairs, and the three single-stage configs against each other.
+   - Fill model on real held-out plans (separates plan errors from fill errors; never done).
+   - Cause of the sudden loud notes in plan-fill (see open issues).
+   - Melody-repeat following (14-22% of asked repeats written) and bar-end silence.
+4. Extras: NLL matching of sampling settings, loss vs listening figure, SI feasibility.
+5. Packaging: checkpoint defaults in the `Makefile` and `generate_plan_fill.py`, `submission` branch, fresh-venv README test. Code, checkpoints and README go on the cloud drive (the user does this).
+6. Report (PPT-style PDF, about 10 pages; name and ID on the cover).
