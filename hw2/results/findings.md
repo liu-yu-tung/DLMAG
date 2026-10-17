@@ -293,3 +293,38 @@ Fill columns with two values are melody / piano. Plan model (`plan_rep/best`, `l
 - The fill model reads the plan. At `step_6000` the melody loss is 1.16 with the true labels, 1.28 with the labels removed and 1.72 with each song's labels shuffled between its bars (piano 1.39 / 1.45 / 1.67). Wrong labels cost more than no labels.
 - Fill held-out loss is lowest near `step_6000` and rises by `step_10000`, the same pattern as the main model.
 - No setting change for the longer runs: the fill model already uses its labels, so label dropout stays as it is.
+
+## TASK A candidate sets with the fixed guide and the longer runs (2026-10-17; `outputs/cand_a/*`, `cand_a_*.csv`)
+
+20 pieces of 32 bars per set, single-stage with `--max_beats` and one tempo, plan-fill with `--form I4A8B8A8E4 --return_as var --repeat_bias 8`. Plan-fill sets are named `<plan>_<fill>`: `newplan` = `plan_rep_long/loss_0.60`, `oldplan` = `plan_rep/best`, fill = `fill_rep_long/loss_0.40` or `loss_0.60`.
+
+| Set | H1 | H4 | GS | silent share | empty bars | chord match | asked repeat written |
+|---|---|---|---|---|---|---|---|
+| real held-out | | | | 0.014 | 0.044 | 0.852 | 1.00 |
+| `single_t1_p1` | 2.18 | 2.62 | 0.970 | 0.009 | 0 | | |
+| `single_t1_p095` | 2.12 | 2.59 | 0.971 | 0.009 | 0 | | |
+| `single_t09_p1` | 2.12 | 2.58 | 0.968 | 0.009 | 0 | | |
+| `newplan_fill040` | 2.04 | 2.57 | 0.962 | 0.033 | 0.100 | 0.803 | 0.220 |
+| `oldplan_fill040` | 2.11 | 2.65 | 0.958 | 0.016 | 0 | 0.820 | 0.205 |
+| `oldplan_fill060` | 2.09 | 2.64 | 0.962 | 0.030 | 0 | 0.805 | 0.138 |
+
+- **H1/H4/GS still separate nothing:** all six sets sit in the same range as before (H4 2.58-2.65, GS 0.958-0.971).
+- **Copying:** `bar_copy` is 0 for every set; 8-note copy 1.2-2.8%.
+- **Silence:** `newplan_fill040` has 1-bar gaps (20% of pieces) and empty bars (10%); `oldplan_fill040` is closest to the real silent share.
+- **Repeat labels:** the fill model writes an asked repeat in 14-22% of the bars; the fix did not make it follow the labels.
+- **Length:** plan-fill pieces are shorter in tokens (2160-2520) than single-stage (3180-3430).
+
+## Stem loudness: melody vs piano (`stem_gap.csv`, `scripts/stem_gap.py`)
+
+Melody stem minus piano stem, integrated LUFS of each rendered stem (ffmpeg `ebur128`, gated), real songs seconds 8-72.
+
+| Source | pieces | mean dB | median dB | sd |
+|---|---|---|---|---|
+| real POP909 | 299 | -2.73 | -2.80 | 2.42 |
+| `oldplan_fill040` (real-velocity map) | 20 | -2.80 | -4.00 | 2.73 |
+| `newplan_fill040` | 20 | -2.31 | -2.00 | 2.15 |
+| `oldplan_fill060` | 20 | -3.32 | -3.40 | 2.13 |
+| same three with the `min_gap` lift | 20 each | -1.98 / -1.65 / -2.30 | -3.00 / -1.90 / -1.95 | 2.11 / 1.62 / 1.66 |
+
+- The melody stem is quieter than the piano stem in real songs too (sparser notes). The generated sets match that level.
+- The lift in the listening build moves plan-fill about 0.8 dB above the real mean; single-stage clips have no melody track and get no lift.
