@@ -39,6 +39,7 @@ As of 2026-10-17 11:00. Deadline Mon 2026-10-26 23:59; the report (PPT-style PDF
 1. T3 (`t3_continuations`, TASK B: 3 prompts x 3 configs, 9 pairs, with the new element panel); `outputs/task_b_final` (configs `t0.9 p1`, `t1 p0.95`, `t1 p1`, metrics in `results/task_b.csv`, `task_b_fade.csv`); best config per prompt by wins.
 2. Final TASK A is `outputs/cand_a/single_t1_p1` (20 MIDI + 20 WAV + metrics).
 3. Plan-fill matters in the report even though it is not submitted (user, 2026-10-17): keep testing and improving it.
+   - Longer training (user, 2026-10-17 15:10): `plan_rep_24k` (24k steps) then `fill_rep_60k` (60k steps, the same length and schedule as `gpt2_ppb16`), `runs/train_longer.sh`, started 15:12, ETA 19:30.
    - T4: more plan-fill vs single-stage pairs, and the three single-stage configs against each other.
    - Fill model on real held-out plans (separates plan errors from fill errors; never done).
    - Cause of the sudden loud notes in plan-fill (see open issues).
