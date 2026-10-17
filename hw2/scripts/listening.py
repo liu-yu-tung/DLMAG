@@ -210,8 +210,8 @@ SITE_HEAD = ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
 
 
 AB_INTRO = [
-    "One pair at a time: Back and Next (or the arrow keys) move between pairs; the dots show which pairs are picked.",
-    "The top card holds the choice (which piece is better, what decided it) and the comment. Below it, A and B sit side by side: tap A or B to fold that column, and each section folds on its own.",
+    "One pair at a time: Back and Next at the bottom (or the arrow keys); the dots show which pairs are picked.",
+    "Top card: which piece is better, what decided it, and a comment. Below it, A and B are tabs: tap a letter to fold that column. The bar at the top switches the columns (A, A+B, B) and the sections (Roll, Issues, Elements) for both at once.",
     "Clips are full length; tap a piano roll to jump. Every tap saves to this page.",
 ]
 AB_RULES = [
