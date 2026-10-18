@@ -13,11 +13,14 @@ SECTION_BARS = 8
 N_BINS = 8
 
 STAT_NAMES = ("PDen", "PDur", "MDen", "MDur")
+# Rel_k: pitch measured from the root of the chord sounding at the note's start (k = pitch - signed(root)), so 21-108
+# becomes 15-113.
+REL_RANGE = range(15, 114)
 REPEAT_LAGS = (2, 4, 8, 16)
 REPEAT_KINDS = ("exact", "var", "rhythm")
 
 
-def vocab_tokens(repeat: bool = False) -> list[str]:
+def vocab_tokens(repeat: bool = False, relative: bool = False) -> list[str]:
     toks = [f"Meter_{m}" for m in (4, 6)] + [f"Key_{k}" for k in range(12)] + ["Sec"]
     toks += [f"KeyShift_{k}" for k in range(-5, 7)]
     toks += ["Chord_N"] + [f"Chord_{r}_{q}" for r in range(12) for q in CHORD_QUALITIES]
@@ -25,7 +28,23 @@ def vocab_tokens(repeat: bool = False) -> list[str]:
     toks += ["Mel", "Acc"]
     if repeat:
         toks += ["Rep_none"] + [f"Rep_{k}_{lag}" for k in REPEAT_KINDS for lag in REPEAT_LAGS]
+    if relative:
+        toks += [f"Rel_{k}" for k in REL_RANGE]
     return toks
+
+
+def chord_root(chords: list[str], pos: int, half: int) -> int:
+    """Root pitch class of the chord sounding at slot pos (first chord before the half-bar beat); the tonic for Chord_N."""
+    tok = chords[min(int(pos >= half), len(chords) - 1)] if chords else "Chord_N"
+    return 0 if tok == "Chord_N" else int(tok.split("_")[1])
+
+
+def to_relative(events, chords: list[str], half: int):
+    return [(pos, pitch - signed(chord_root(chords, pos, half)), vel, dur) for pos, pitch, vel, dur in events]
+
+
+def from_relative(events, chords: list[str], half: int):
+    return [(pos, k + signed(chord_root(chords, pos, half)), vel, dur) for pos, k, vel, dur in events]
 
 
 def repeat_kind(bar: list, earlier: list) -> str | None:
@@ -158,8 +177,9 @@ def transpose_events(events, shift):
     return [(pos, min(108, max(21, pitch - shift)), vel, dur) for pos, pitch, vel, dur in events]
 
 
-def song_tokens(raw, edges, repeat: bool = False):
-    """Plan tokens and fill blocks of one song (pitches transposed so the first key is C)."""
+def song_tokens(raw, edges, repeat: bool = False, relative: bool = False):
+    """Plan tokens and fill blocks of one song (pitches transposed so the first key is C; relative: Rel_ tokens)."""
+    half = max(1, raw["meter"] // 2) * PPB
     melody_bars = [bar["melody"] for bar in raw["bars"]]
     header = [f"Tempo_{raw['tempo']}", f"Meter_{raw['meter']}", f"Key_{raw['key']}"]
     plan, blocks, prev = ["<BOS>"] + header, [], raw["key"]
@@ -171,10 +191,11 @@ def song_tokens(raw, edges, repeat: bool = False):
         stats = [f"{n}_{stat_bin(v, edges[n])}" for n, v in zip(STAT_NAMES, bar["stats"])]
         rep = [repeat_label(melody_bars, j)] if repeat else []
         plan += marks + ["Bar"] + rep + [rel_chord(c, bar["tonic"]) for c in bar["chords"]] + stats
-        blocks.append({
-            "prefix": marks + ["Bar"] + rep + [rel_chord(c, raw["key"]) for c in bar["chords"]] + stats,
-            "melody": note_tokens(transpose_events(bar["melody"], raw["shift"])),
-            "piano": note_tokens(transpose_events(bar["piano"], raw["shift"])),
-        })
+        chords = [rel_chord(c, raw["key"]) for c in bar["chords"]]
+        notes = {s: transpose_events(bar[s], raw["shift"]) for s in ("melody", "piano")}
+        if relative:
+            notes = {s: to_relative(e, chords, half) for s, e in notes.items()}
+        blocks.append({"prefix": marks + ["Bar"] + rep + chords + stats,
+                       **{s: note_tokens(e, "Rel" if relative else "Pitch") for s, e in notes.items()}})
     return plan + ["<EOS>"], {"song_name": raw["song_name"], "header": [f"Meter_{raw['meter']}"], "key": raw["key"],
                               "shift": raw["shift"], "tempo": raw["tempo"], "blocks": blocks}

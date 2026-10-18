@@ -54,10 +54,10 @@ def bar_events(notes, beat_times, beat_info, ppb):
     return {b: sorted(ev) for b, ev in bars.items()}
 
 
-def note_tokens(events):
+def note_tokens(events, pitch_tag: str = "Pitch"):
     out = []
     for pos, pitch, vel, dur in events:
-        out += [f"Pos_{pos}", f"Pitch_{pitch}", f"Vel_{vel}", f"Dur_{dur}"]
+        out += [f"Pos_{pos}", f"{pitch_tag}_{pitch}", f"Vel_{vel}", f"Dur_{dur}"]
     return out
 
 

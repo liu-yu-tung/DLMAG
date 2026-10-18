@@ -6,6 +6,8 @@ Bin edges come from all 896 training songs (labels only, no note content).
 
 uv run python scripts/tokenize_plan.py   (songs are split over all CPU cores)
 uv run python scripts/tokenize_plan.py --repeat   (adds repeat labels; writes data/tokens/{plan,fill}_rep)
+uv run python scripts/tokenize_plan.py --repeat --relative   (fill pitches as Rel_ tokens; writes data/tokens/fill_rel only,
+    with the plan_rep vocabulary plus the Rel_ tokens at the end, so plan_rep models keep their token ids)
 """
 
 import argparse
@@ -23,11 +25,13 @@ from hw2.remi import DATA_ROOT
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--repeat", action="store_true", help="add a repeat label per bar (hw2.plan.repeat_label)")
+    p.add_argument("--relative", action="store_true", help="fill pitches measured from the chord root (Rel_ tokens)")
     args = p.parse_args()
-    suffix = "_rep" if args.repeat else ""
+    assert args.repeat or not args.relative, "--relative is built on the repeat token set"
+    suffix = "_rel" if args.relative else "_rep" if args.repeat else ""
     base = json.loads((DATA_ROOT.parent / "tokens" / "ppb16" / "tok2idx.json").read_text())
     tok2idx = dict(base)
-    for t in vocab_tokens(args.repeat):
+    for t in vocab_tokens(args.repeat, args.relative):
         tok2idx.setdefault(t, len(tok2idx))
 
     songs = sorted(p for p in (DATA_ROOT / "training").iterdir() if p.is_dir())
@@ -36,7 +40,7 @@ def main():
     edges = bin_edges(raws)
     plans, fills = [], []
     for r in raws:
-        plan, fill = song_tokens(r, edges, args.repeat)
+        plan, fill = song_tokens(r, edges, args.repeat, args.relative)
         plans.append({"song_name": r["song_name"], "tokens": plan})
         fills.append(fill)
 
@@ -44,7 +48,8 @@ def main():
     unknown -= set(tok2idx)
     assert not unknown, f"tokens missing from the vocabulary: {sorted(unknown)[:20]}"
 
-    for name, payload_name, payload in (("plan", "sequences.json", plans), ("fill", "songs.json", fills)):
+    outputs = [("plan", "sequences.json", plans), ("fill", "songs.json", fills)]
+    for name, payload_name, payload in outputs[1:] if args.relative else outputs:
         out = DATA_ROOT.parent / "tokens" / f"{name}{suffix}"
         out.mkdir(parents=True, exist_ok=True)
         (out / "tok2idx.json").write_text(json.dumps(tok2idx, indent=1))
