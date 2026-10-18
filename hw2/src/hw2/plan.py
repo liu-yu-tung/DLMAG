@@ -33,6 +33,17 @@ def vocab_tokens(repeat: bool = False, relative: bool = False) -> list[str]:
     return toks
 
 
+# POP909 labels merge sus2 and sus4 into one quality, so it keeps both added notes.
+CHORD_QUALITY = {"maj": (0, 4, 7), "min": (0, 3, 7), "dim": (0, 3, 6), "aug": (0, 4, 8), "sus": (0, 2, 5, 7)}
+
+
+def chord_tones(tok: str) -> set[int] | None:
+    if tok == "Chord_N":
+        return None
+    _, root, quality = tok.split("_")
+    return {(int(root) + i) % 12 for i in CHORD_QUALITY[quality]}
+
+
 def chord_root(chords: list[str], pos: int, half: int) -> int:
     """Root pitch class of the chord sounding at slot pos (first chord before the half-bar beat); the tonic for Chord_N."""
     tok = chords[min(int(pos >= half), len(chords) - 1)] if chords else "Chord_N"

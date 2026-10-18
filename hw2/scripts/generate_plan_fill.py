@@ -49,8 +49,6 @@ def parse_args():
                    "Rep label (repeat-label models; exact: all note parts, var: half, rhythm: onsets, velocities, durations)")
     p.add_argument("--plan_repeat_bias", type=float, default=0.0, help="logit bonus toward the source bar's chords and melody "
                    "bins when the plan model writes a Rep label (POP909 repeats keep them; exact: chords + melody bins, var: half, rhythm: melody bins)")
-    p.add_argument("--chord_bias", type=float, default=0.0, help="logit bonus for chord tones when a melody note starts on "
-                   "beat 1 or the half-bar beat, and the same penalty on durations over a beat for a melody note off the chord")
     p.add_argument("--plan_temperature", type=float, default=1.0)
     p.add_argument("--plan_top_p", type=float, default=1.0)
     p.add_argument("--temperature", type=float, default=1.0)
@@ -113,10 +111,15 @@ def main():
         prompts = (prompt_plans(Path(args.prompt_dir), args.prompt_bars, Path(args.tok2idx), tok2idx) if args.prompt_dir
                    else [(f"{i:02d}", None, None) for i in range(args.n)])
         plan_model = load_model(args.plan_ckpt, args.device)
+        # a Rel_ fill vocabulary is the plan vocabulary plus tokens at the end; the plan model needs its own size
+        plan_run = HW2_ROOT / "runs" / Path(args.plan_ckpt).parent.name / "args.json"
+        plan_tokens = HW2_ROOT / json.loads(plan_run.read_text())["tokens_dir"] if plan_run.exists() else Path(args.tok2idx).parent
+        plan_vocab = load_vocab(plan_tokens / "tok2idx.json")
+        assert all(tok2idx.get(t) == i for t, i in plan_vocab[0].items()), "plan and fill vocabularies disagree"
         jobs = []
         for i, (name, prompt, given) in enumerate(prompts):
             gen = torch.Generator(device=args.device).manual_seed(args.seed + i)
-            jobs.append((name, sample_plan(plan_model, tok2idx, idx2tok, total_bars, plan_cfg, gen, prompt=prompt, rules=rules), given))
+            jobs.append((name, sample_plan(plan_model, *plan_vocab, total_bars, plan_cfg, gen, prompt=prompt, rules=rules), given))
         del plan_model
 
     fill_model = load_model(args.fill_ckpt, args.device)
@@ -129,8 +132,7 @@ def main():
             t1 = time.time()
             gen = torch.Generator(device=args.device).manual_seed(args.seed + 1000 + i)
             notes, nll = sample_fill(fill_model, tok2idx, idx2tok, plan, cfg, gen, melody_first=args.order == "melody_first",
-                                     drop=drop, given=given, copy_melody=copy_melody, repeat_bias=args.repeat_bias,
-                                     chord_bias=args.chord_bias)
+                                     drop=drop, given=given, copy_melody=copy_melody, repeat_bias=args.repeat_bias)
             if args.skip_bars:
                 kept = plan.bars[args.skip_bars:]
                 # a key change inside the dropped bars must stay on the first kept bar, or plans.json reads it in the first key

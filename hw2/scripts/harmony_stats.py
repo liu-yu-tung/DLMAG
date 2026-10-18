@@ -17,8 +17,8 @@ import numpy as np
 import pandas as pd
 
 from hw2.data import split_songs
-from hw2.plan import PPB, signed
-from hw2.plan_generate import chord_tones, fill_prefix, note_events, parse_plan
+from hw2.plan import PPB, chord_tones, signed
+from hw2.plan_generate import fill_prefix, note_events, parse_plan
 from hw2.remi import HW2_ROOT, TICKS_PER_BEAT
 
 BARS = 32
@@ -66,7 +66,7 @@ def piece_counts(source: str, piece: str, meter: int, prefixes: list[list[str]],
     total, key, bar_len = {}, 0, meter * PPB
     for i, (prefix, notes) in enumerate(zip(prefixes[:BARS], bars[:BARS])):
         key = next((int(t.split("_")[1]) for t in reversed(prefix) if t.startswith("KeyShift_")), key)
-        held = [(p - bar_len, q, v, d - (bar_len - p)) for p, q, v, d in bars[i - 1]["piano"] if p + d > bar_len] if i else []
+        held = [(p - bar_len, q, v, d) for p, q, v, d in bars[i - 1]["piano"] if p + d > bar_len] if i else []
         for k, v in bar_counts(meter, prefix, key, notes["melody"], notes["piano"] + held).items():
             total[k] = total.get(k, 0) + v
             if i < OPENING:

@@ -8,7 +8,8 @@ import miditoolkit
 import torch
 
 from hw2.generate import SampleConfig, filter_logits
-from hw2.plan import N_BINS, PPB, SECTION_BARS, STAT_NAMES, signed
+from hw2.plan import N_BINS, PPB, REL_RANGE, SECTION_BARS, STAT_NAMES, chord_root, signed
+from hw2.pop909 import note_tokens
 from hw2.remi import TICKS_PER_BEAT
 
 
@@ -57,8 +58,10 @@ class RepeatGuide:
     PARTS = {"exact": {"pos": 1.0, "pitch": 1.0, "vel": 1.0, "dur": 1.0}, "var": {"pos": 0.5, "pitch": 0.5, "vel": 0.5, "dur": 0.5},
              "rhythm": {"pos": 1.0, "pitch": 0.0, "vel": 1.0, "dur": 1.0}}
 
-    def __init__(self, notes, shift: int, kind: str, bias: float, tok2idx, end: torch.Tensor):
+    def __init__(self, notes, shift: int, kind: str, bias: float, tok2idx, end: torch.Tensor,
+                 pitch_token=lambda pos, pitch: f"Pitch_{pitch}"):
         self.left = sorted((pos, pitch + shift, vel, dur) for pos, pitch, vel, dur in notes)
+        self.pitch_token = pitch_token
         self.weight = {k: v * bias for k, v in self.PARTS[kind].items()}
         self.tok2idx, self.end_ids = tok2idx, end.nonzero()[:, 0].tolist()
         self.pos, self.match = None, None
@@ -68,7 +71,8 @@ class RepeatGuide:
         if state == "pos":
             return {self.tok2idx[f"Pos_{self.left[0][0]}"]: w} if self.left else {i: w for i in self.end_ids}
         if state == "pitch":
-            return {self.tok2idx[f"Pitch_{n[1]}"]: w for n in self.left if n[0] == self.pos and f"Pitch_{n[1]}" in self.tok2idx}
+            toks = [self.pitch_token(n[0], n[1]) for n in self.left if n[0] == self.pos]
+            return {self.tok2idx[t]: w for t in toks if t in self.tok2idx}
         if self.match is None:
             return {}
         return {self.tok2idx[f"Vel_{self.match[2]}" if state == "vel" else f"Dur_{self.match[3]}"]: w}
@@ -292,17 +296,6 @@ def sample_plan(model, tok2idx, idx2tok, n_bars, cfg, gen, prompt: Plan | None =
     return plan
 
 
-# POP909 labels merge sus2 and sus4 into one quality, so it keeps both added notes.
-CHORD_QUALITY = {"maj": (0, 4, 7), "min": (0, 3, 7), "dim": (0, 3, 6), "aug": (0, 4, 8), "sus": (0, 2, 5, 7)}
-
-
-def chord_tones(tok: str) -> set[int] | None:
-    if tok == "Chord_N":
-        return None
-    _, root, quality = tok.split("_")
-    return {(int(root) + i) % 12 for i in CHORD_QUALITY[quality]}
-
-
 def fill_prefix(bar: PlanBar, drop=()) -> list[str]:
     """Plan bar -> fill prefix: chords move from degrees above the local key to pitch classes of the C-based song."""
     chords = []
@@ -322,7 +315,7 @@ def note_events(tokens):
         kind, _, v = t.partition("_")
         if kind == "Pos":
             cur = {"pos": int(v)}
-        elif kind == "Pitch" and "pos" in cur:
+        elif kind in ("Pitch", "Rel") and "pos" in cur:
             cur["pitch"] = int(v)
         elif kind == "Vel" and "pitch" in cur:
             cur["vel"] = int(v)
@@ -334,23 +327,23 @@ def note_events(tokens):
 
 @torch.no_grad()
 def sample_fill(model, tok2idx, idx2tok, plan: Plan, cfg, gen, melody_first=True, drop=(), given=None, max_notes=(32, 64),
-                copy_melody: dict[int, int] | None = None, repeat_bias: float = 0.0, chord_bias: float = 0.0):
+                copy_melody: dict[int, int] | None = None, repeat_bias: float = 0.0):
     """Notes for every plan bar, in the C-based song (add signed(plan.key) to play), and the NLL of each sampled token.
     given[b] forces streams of bar b (prompts); copy_melody[b] = an earlier bar whose melody bar b repeats, moved to b's key;
-    repeat_bias > 0 guides melody bars with a Rep label toward their source bar (RepeatGuide); chord_bias > 0 adds that
-    logit to chord tones for a melody note on a strong beat and takes it off durations over a beat for a melody note off
-    the chord (POP909 melodies: 71% of note time on chord tones, results/harmony.csv)."""
+    repeat_bias > 0 guides melody bars with a Rep label toward their source bar (RepeatGuide). A fill model on Rel_ tokens
+    (hw2.plan.REL_RANGE) writes pitches from the chord root; they are decoded with the bar's chords, so the returned
+    notes, given and copy_melody are absolute pitches either way."""
     st, mk = Stepper(model, tok2idx, gen, keep=0.8), Masks(tok2idx, next(model.parameters()).device)
     st.feed([tok2idx["<BOS>"], tok2idx[f"Meter_{plan.meter}"]])
     ends = mk.of("KeyShift_", exact=["Bar", "Sec", "<EOS>"])
     max_pos = min(plan.meter * PPB, 128)
     half = max(1, plan.meter // 2) * PPB
-    pitch_ids = {int(t[6:]): i for t, i in tok2idx.items() if t.startswith("Pitch_")}
-    long_durs = [i for t, i in tok2idx.items() if t.startswith("Dur_") and int(t[4:]) > PPB]
+    tag = "Rel" if f"Rel_{REL_RANGE[0]}" in tok2idx else "Pitch"
     out = []
     for b, bar in enumerate(plan.bars):
         st.feed([tok2idx[t] for t in fill_prefix(bar, drop)])
-        tones = [chord_tones(t) for t in fill_prefix(bar) if t.startswith("Chord_")]
+        chords = [t for t in fill_prefix(bar) if t.startswith("Chord_")]
+        shift_at = (lambda pos: signed(chord_root(chords, pos, half))) if tag == "Rel" else (lambda pos: 0)
         order = ("melody", "piano") if melody_first else ("piano", "melody")
         res = {}
         for i, stream in enumerate(order):
@@ -362,9 +355,9 @@ def sample_fill(model, tok2idx, idx2tok, plan: Plan, cfg, gen, melody_first=True
                 forced = [t for pos, pitch, vel, dur in out[a]["melody"] if f"Pitch_{pitch + k}" in tok2idx
                           for t in (f"Pos_{pos}", f"Pitch_{pitch + k}", f"Vel_{vel}", f"Dur_{dur}")]
             if forced is not None:
-                if forced:
-                    st.feed([tok2idx[t] for t in forced])
                 res[stream] = note_events(forced)
+                if forced:
+                    st.feed([tok2idx[t] for t in note_tokens([(p, x - shift_at(p), v, d) for p, x, v, d in res[stream]], tag)])
                 continue
             end = mk.of(exact=["Acc" if stream == "melody" else "Mel"]) if i == 0 else ends
             toks, state, last = [], "pos", 0
@@ -374,43 +367,33 @@ def sample_fill(model, tok2idx, idx2tok, plan: Plan, cfg, gen, melody_first=True
                 _, kind, lag = bar.rep.split("_")
                 if b >= int(lag):
                     a = b - int(lag)
-                    guide = RepeatGuide(out[a]["melody"], signed(bar.key - plan.bars[a].key), kind, repeat_bias, tok2idx, end)
-            struck, off_chord = set(), False
+                    guide = RepeatGuide(out[a]["melody"], signed(bar.key - plan.bars[a].key), kind, repeat_bias, tok2idx, end,
+                                        pitch_token=lambda pos, pitch: f"{tag}_{pitch - shift_at(pos)}")
+            struck = set()
             while True:
                 if state == "pos":
                     allowed = mk.pos_range(last, max_pos) | end if len(toks) < 4 * cap else end
                 else:
-                    allowed = mk.of({"pitch": "Pitch_", "vel": "Vel_", "dur": "Dur_"}[state])
+                    allowed = mk.of({"pitch": f"{tag}_", "vel": "Vel_", "dur": "Dur_"}[state])
                 if state == "pitch" and struck:
                     # one key cannot be struck twice at once (POP909 melodies: 0.39% of notes)
                     allowed = allowed.clone()
-                    allowed[[tok2idx[f"Pitch_{p}"] for pos, p in struck if pos == last]] = False
-                bonus = dict(guide.bonus(state)) if guide else {}
-                here = tones[int(last >= half)] if len(tones) > int(last >= half) else None
-                if chord_bias and stream == "melody" and here is not None:
-                    if state == "pitch" and last in (0, half):
-                        for p, i in pitch_ids.items():
-                            if p % 12 in here:
-                                bonus[i] = bonus.get(i, 0.0) + chord_bias
-                    elif state == "dur" and off_chord:
-                        for i in long_durs:
-                            bonus[i] = bonus.get(i, 0.0) - chord_bias
-                t = st.sample(allowed, cfg, bonus or None)
+                    allowed[[tok2idx[f"{tag}_{p}"] for pos, p in struck if pos == last]] = False
+                t = st.sample(allowed, cfg, guide.bonus(state) if guide else None)
                 if end[t]:
                     break
                 tok = idx2tok[t]
                 if guide:
-                    guide.chose(state, tok)
+                    guide.chose(state, f"Pitch_{int(tok.split('_')[1]) + shift_at(last)}" if state == "pitch" else tok)
                 toks.append(tok)
                 st.feed([t])
                 if state == "pitch":
-                    struck.add((last, int(tok[6:])))
-                    off_chord = here is not None and int(tok[6:]) % 12 not in here
+                    struck.add((last, int(tok.split("_")[1])))
                 if state == "pos":
                     last, state = int(tok[4:]), "pitch"
                 else:
                     state = {"pitch": "vel", "vel": "dur", "dur": "pos"}[state]
-            res[stream] = note_events(toks)
+            res[stream] = [(p, x + shift_at(p), v, d) for p, x, v, d in note_events(toks)]
         out.append(res)
     return out, st.nll
 
