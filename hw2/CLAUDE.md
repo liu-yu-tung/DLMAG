@@ -27,6 +27,7 @@ Symbolic music generation on POP909. Deadline Mon 2026-10-26 23:59; the report (
 | `adherence*.csv`, `cand_a_adherence.csv` | `adherence.py` |
 | `loss_review.csv`, `repeat_probe.csv` | `loss_review.py`, `repeat_probe.py` |
 | `stem_gap.csv` | `stem_gap.py` |
+| `velocity_spikes.csv` | `velocity_spikes.py` |
 | `grade_model_*.json`, `grade_features.csv`, `grade_model_cv.csv`, `grade_model_check.csv`, `grade_single_features.csv`, `grade_tags.csv`, `grade_pred_*.csv`, `figures/grade_vs_loss_*.png` | `grade_model.py` (`docs/grade_model.md`) |
 | `real_plan_*.csv` | fill model on real held-out plans (`generate_plan_fill.py --real_plans`, then the analysis scripts) |
 | `bonus*.csv`, `bonus_ablation*` | BONUS TASK evaluation and ablation |

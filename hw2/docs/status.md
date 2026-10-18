@@ -25,8 +25,8 @@ As of 2026-10-18. Deadline Mon 2026-10-26 23:59; the report (PPT-style PDF, abou
 ## Open issues
 
 - Loud sparse or high clip, empty bar 2, "broken piano" re-listen (`docs/listening_issues.md` section 11).
-- Sudden loud notes in plan-fill (8.7% of notes vs 5.0% single-stage, 6% real); the `min_gap` melody lift in the listening build raised it to 9.6%. Keep or remove the lift: decide before final WAV rendering.
-- The submitted TASK A WAVs are rendered without the real-velocity map; whether they need it is part of the volume decision above.
+- Sudden loud notes: resolved 2026-10-18 (findings section "Sudden loud notes"): mostly melody over piano, as in real openings (7.7%); the `min_gap` lift stays for plan-fill audio.
+- Final TASK A and TASK B WAVs: velocities as written, loudness to −18 LUFS like the rated clips (now −38 to −30); a packaging step.
 
 ## Done 2026-10-16/17
 
@@ -44,9 +44,8 @@ As of 2026-10-18. Deadline Mon 2026-10-26 23:59; the report (PPT-style PDF, abou
    - T4 graded 2026-10-18 03:00 (findings section "T4"): new fill checkpoint `fill_rep_60k/last`, plan stays `plan_rep/best`, config decision moved to T5.
    - T5: the three config matchups with the sides swapped (3 pairs), and plan-fill with the new fill against single-stage `t1 p1` (6 pairs, sides alternating; the 5-of-6 rule, comparable with T2).
    - Fill model on real held-out plans: done 21:28 (findings section "Fill model on real plans").
-   - Cause of the sudden loud notes in plan-fill (see open issues).
    - Melody-repeat following (14-22% of asked repeats written) and bar-end silence.
 4. Listening-grade predictor (user, 2026-10-17; `docs/grade_model.md`): fit on T1, T2 and the pilot; after each graded session run `grade_model.py check` before `fit` (T3: `v1` 5 of 9, `v2` 3 of 9; T4: `v1` 5 of 7, `v2` 4 of 7, `v3` 6 of 7, so `predict` uses `v3` since 2026-10-18); score each new set; predicted grade vs loss for `exp2` (main model) and the new plan-fill runs.
 5. Extras: NLL matching of sampling settings, loss vs listening figure (partly covered by item 4), SI feasibility.
-6. Packaging: checkpoint defaults in the `Makefile` and `generate_plan_fill.py`, `submission` branch, fresh-venv README test. Code, checkpoints and README go on the cloud drive (the user does this).
+6. Packaging: checkpoint defaults in the `Makefile` and `generate_plan_fill.py`, final TASK A and TASK B WAVs at −18 LUFS, `submission` branch, fresh-venv README test. Code, checkpoints and README go on the cloud drive (the user does this).
 7. Report (PPT-style PDF, about 10 pages; name and ID on the cover).

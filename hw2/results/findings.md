@@ -410,3 +410,20 @@ Decisions (rules in `docs/status.md`):
 ### Grade predictor on T4 (second held-out session)
 
 `grade_model.py check` before refitting: `v1` 5 of 7, `v2` 4 of 7, `v3` 6 of 7. `v3` missed pair 03 (`pf_oldplan_fill040/07` vs `plan_rep_24k/last/03`) and got pair 05 right by a score margin of 0.01, so its edge over `v1` is one near-tie pair; "side B wins" would also get 6 of 7. After refitting on 29 decisive pairs, leave-one-out at L2 10 (the penalty in use): `v1` 0.66, `v2` 0.62, `v3` 0.79; "more notes wins" 0.52. By the rule in `docs/grade_model.md`, `predict` now uses `v3`. `grade_pred_*` files written before 2026-10-18 without a variant suffix are `v1`.
+
+## Sudden loud notes (2026-10-18; `velocity_spikes.csv`, `scripts/velocity_spikes.py`)
+
+Share of notes at least 20 above their bar's median velocity (all tracks merged, the `velocity_spike_share` rule), first 32 bars, after `one_keyboard`. Real: every tenth training song (90). "map" is the listening build's real-velocity map, "lift" adds the `min_gap` melody lift.
+
+| | spike share | share of spikes on melody notes | spikes against the note's own track | melody-piano median gap (sd) |
+|---|---|---|---|---|
+| real openings | 0.077 | 0.59 | 0.037 | 14.0 (11.7) |
+| `single_t1_p1` written / map | 0.064 / 0.046 | (one track) | 0.064 / 0.046 | |
+| `pf_oldplan_fill040` written / map / map + lift | 0.060 / 0.085 / 0.095 | 0.79 / 0.67 / 0.71 | 0.021 / 0.041 / 0.041 | 10.0 / 9.0 / 14.5 |
+| `fill_rep_60k/last` written / map / map + lift | 0.086 / 0.072 / 0.074 | 0.67 / 0.57 / 0.59 | 0.044 / 0.044 / 0.044 | 16.0 / 9.5 / 11.0 |
+
+- **Cause:** most spikes are melody notes above a bar median set by the more numerous piano notes, in real songs as in plan-fill. Against their own track, plan-fill notes spike at the real level (0.041-0.044 vs 0.037). The 6% real level quoted before (`docs/listening_issues.md` section 11) was whole songs; real openings are at 7.7%.
+- **Plan-fill as played** is at 7.4% (`fill_rep_60k/last`) to 9.5% (`pf_oldplan_fill040`) against 7.7% real; the lift adds 0.2 and 1.0 points.
+- **Submitted WAVs are quiet:** `single_t1_p1` median −33.8 LUFS (−38.3 to −30.1), TASK B `t1_k0_p0.95` −34.2 to −31.2, while every rated clip played at −18 LUFS.
+
+Decisions: keep the `min_gap` lift for plan-fill audio (the rated clips have it). Single-stage velocities stay as written (spike share under the real level, quantiles within 2 of real), and the final TASK A and TASK B WAVs get the listening build's loudness step (gain to −18 LUFS, peak limiter) so the submission sounds like what was rated.
