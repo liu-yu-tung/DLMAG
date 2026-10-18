@@ -1,5 +1,6 @@
 source,pieces,bars,chord_match,PDen_exact,PDen_within1,PDur_exact,PDur_within1,MDen_exact,MDen_within1,MDur_exact,MDur_within1,written_none,written_exact,written_var,written_rhythm,asked_repeat_bars,asked_label_written,asked_kind_at_lag,asked_any_at_lag,asked_none_written_none
 real_heldout,45,3745,0.852,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.477,0.215,0.168,0.14,1463,1.0,1.0,1.0,1.0
+outputs/cand_a/pf_fill60k_skip8,20,640,0.78,0.488,0.908,0.484,0.877,0.639,0.923,0.628,0.912,0.571,0.085,0.169,0.175,291,0.141,0.172,0.399,0.822
 outputs/cand_a/pf_newplan_fill040,20,640,0.803,0.594,0.95,0.512,0.912,0.742,0.962,0.666,0.942,0.583,0.161,0.157,0.099,304,0.22,0.289,0.48,0.896
 outputs/cand_a/pf_oldplan_fill040,20,640,0.82,0.547,0.941,0.503,0.916,0.658,0.945,0.656,0.933,0.605,0.146,0.131,0.117,292,0.205,0.233,0.486,0.868
 outputs/cand_a/pf_oldplan_fill060,20,640,0.805,0.589,0.948,0.42,0.869,0.705,0.956,0.653,0.919,0.57,0.16,0.127,0.143,290,0.138,0.179,0.476,0.814

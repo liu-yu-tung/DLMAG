@@ -1,4 +1,5 @@
 dir,config,ckpt,n,H1_mean,H1_std,H4_mean,H4_std,GS_mean,GS_std,nll_mean,n_tokens_mean,bar_copy_mean,bar_copy_any_key_mean,ngram_copy_mean,note8_copy_mean
+outputs/cand_a/pf_fill60k_skip8,melody_first_t1_k0_p1,,20,1.9801,0.1507,2.5459,0.1351,0.9791,0.0125,0.479,2116.2,0.0,0.0,0.0,0.0239
 outputs/cand_a/pf_newplan_fill040,melody_first_t1_k0_p1,,20,2.0374,0.1602,2.5653,0.1213,0.9622,0.0213,0.868,2161.0,0.0,0.0016,0.0,0.0122
 outputs/cand_a/pf_oldplan_fill040,melody_first_t1_k0_p1,,20,2.1072,0.1884,2.6468,0.143,0.9585,0.0299,0.793,2492.4,0.0,0.0,0.0,0.0171
 outputs/cand_a/pf_oldplan_fill060,melody_first_t1_k0_p1,,20,2.0848,0.149,2.6355,0.1434,0.9616,0.0246,0.8708,2522.0,0.0,0.0,0.0,0.0121
