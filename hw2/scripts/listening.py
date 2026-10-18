@@ -236,6 +236,7 @@ AB_INTRO = [
 AB_RULES = [
     "Judge the music, not the sound quality: every clip uses the same piano sound, and the volume is matched.",
     "Clearly: you would pick it every time. A bit: you lean that way but it is close. Same: no preference.",
+    "Pick a bit whenever you lean at all; same only when you cannot choose. Wins are counted; how much is kept for the report.",
 ]
 
 

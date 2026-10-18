@@ -405,7 +405,7 @@ Comments, checked against the MIDI:
 Decisions (rules in `docs/status.md`):
 
 - **Plan-fill fill checkpoint:** `fill_rep_60k/last` (most wins). **Plan checkpoint:** `plan_rep/best` stays (tie).
-- **TASK A config:** `t0.9 p1` has the most wins, but every pair was decided by side B in a session that B won 6 to 1, so it is not a clear result. TASK A stays `t1 p1` until T5 replays the three matchups with the sides swapped; the decision then uses T4 and T5 together (two pairs per matchup, one on each side): most wins, tie to the lower temperature.
+- **TASK A config:** `t0.9 p1` has the most wins, but every pair was decided by side B in a session that B won 6 to 1, so it is not a clear result. TASK A stays `t1 p1`. (A side-swapped re-test was planned for T5 and dropped on 2026-10-18 in favour of the cut test.)
 
 ### Grade predictor on T4 (second held-out session)
 

@@ -162,8 +162,9 @@ class Form:
 
 
 def parse_form(form: str, n_bars: int) -> Form:
-    """'I4A8B8A8E4': sections and their lengths in bars. I = intro without melody, E = free ending, a letter seen
-    before repeats that section bar by bar (plan and melody; the fill model writes new piano)."""
+    """'I4A8B8A8E4': sections and their lengths in bars. I = intro without melody, E = free ending, W = free warm-up
+    (dropped with --skip_bars), a letter seen before repeats that section bar by bar (plan and melody; the fill model
+    writes new piano). The melody must start on the first bar of the first other section."""
     parts = re.findall(r"([A-Z])(\d+)", form)
     assert "".join(f"{x}{n}" for x, n in parts) == form, f"bad form {form!r}"
     assert sum(int(n) for _, n in parts) == n_bars, f"form {form!r} is not {n_bars} bars"
@@ -178,7 +179,7 @@ def parse_form(form: str, n_bars: int) -> Form:
             copy_from.update({b + i: src + i for i in range(n)})
         else:
             first[letter] = (b, n)
-            start = b if start is None and letter != "E" else start
+            start = b if start is None and letter not in ("E", "W") else start
         b += n
     return Form(copy_from, intro, start)
 
