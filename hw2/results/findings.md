@@ -1,10 +1,10 @@
 # Findings for the report
 
-Measured results only: each heading names the CSV next to this file (or the output folder) and the script that writes it, and numbers are copied from those files. Decisions and plans are in `docs/status.md`. Sections marked **Superseded** describe models or runs that were replaced; they stay because the report compares against them.
+Measured results only: each heading names the CSV next to this file (or the output folder) and the script that writes it, numbers are copied from those files, and "as of" is the date of that data (the last commit of its CSV, or the date in the heading). Decisions and plans are in `docs/status.md`. Results that rest on an assumption found wrong later are listed under "Archived" at the end with the reason; do not reuse them. Cleaned 2026-10-18; the text before the cleanup is in commit `2d826a7` (`git show 2d826a7:hw2/results/findings.md`).
 
 ## Data: POP909 (896 songs in `data/POP909/training`)
 
-### Notes heard longest give the chord (`chord_from_notes.csv`)
+### Notes heard longest give the chord (`chord_from_notes.csv`) · as of 2026-10-16
 
 For each maj/min segment of `chord_midi.txt`, add up how long each pitch class sounds (dur) or how many times it is pressed (count), pick the major or minor triad with the largest total, compare with the label. Weighted by segment time. The true chord boundaries are given, so this is an upper bound for the rule.
 
@@ -19,7 +19,7 @@ For each maj/min segment of `chord_midi.txt`, add up how long each pitch class s
 - Duration weighting beats press counting for every source; the gap is largest for "longest = root" (PIANO 84.6% vs 64.9%).
 - PIANO carries the harmony; MELODY and BRIDGE alone say little about the chord with this rule.
 
-### Notes and mean duration per bar, by track (`track_stats.csv`)
+### Notes and mean duration per bar, by track (`track_stats.csv`) · as of 2026-10-16
 
 Bars are downbeat to downbeat of `beat_midi.txt` (72748 bars). Mean duration = total sounding time / presses, in beats.
 
@@ -29,7 +29,7 @@ Bars are downbeat to downbeat of `beat_midi.txt` (72748 bars). Mean duration = t
 | BRIDGE | 0 / 2 / 8 | 0.33 / 0.84 / 2.29 | 35.1% |
 | MELODY | 0 / 4 / 8 | 0.29 / 0.55 / 1.50 | 24.5% |
 
-### Token budget vs the 2048 context (`token_budget.csv`)
+### Token budget vs the 2048 context (`token_budget.csv`) · as of 2026-10-16
 
 Sections of the `bonus_chd` tokens: plan = `Bar Chd <Pos Chord pairs>`, melody = `Mel` + melody notes, piano = `Acc` + piano notes (BRIDGE not included). Windows are 32 bars, stride 8.
 
@@ -50,7 +50,7 @@ Sections of the `bonus_chd` tokens: plan = `Bar Chd <Pos Chord pairs>`, melody =
 - A whole-song plan fits the context for every song; notes do not, so the fill stage works bar by bar with a sliding window.
 - The basic-task tokens (`data/tokens/ppb16`, all three tracks, with tempo) are about 86 tokens per bar at the median, 6700 per song; the model sees about 24 bars at once.
 
-### Chord label rule in use (`src/hw2/pop909.py`, `chord_token`)
+### Chord label rule in use (`src/hw2/pop909.py`, `chord_token`) · as of 2026-10-16
 
 Root as pitch class (enharmonics merged); quality collapsed to maj / min / dim / aug / sus; inversions and extensions dropped; N or unknown root = `Chord_N`. Share of song time: maj 54.3%, min 36.8%, sus 6.6%, N 1.5%, dim 0.7%, aug 0.1%. Detail dropped: inversions 7.4%, 7ths or extensions 7.8% of song time. So every model sees triads only; a melody note on a labelled 7th counts as off-chord in every harmony measure below, for real and generated pieces alike.
 
@@ -58,7 +58,7 @@ Root as pitch class (enharmonics merged); quality collapsed to maj / min / dim /
 
 The spec says to use the whole training set (896 songs). `train.py` holds out 45 (`--n_val 45`, seed 0) for validation loss, checkpoint selection and the real-music reference; models train on 851. No other data. State this in the report.
 
-### Distributions of the plan features (`figures/data_distributions.png`, `progressions.csv`)
+### Distributions of the plan features (`figures/data_distributions.png`, `progressions.csv`) · as of 2026-10-16
 
 From `scripts/plot_data_stats.py`. Key per song by Krumhansl-Kessler profile match (no key file in this copy of POP909). Chords are degrees in the relative-major frame (a minor key's tonic is vi).
 
@@ -73,7 +73,7 @@ From `scripts/plot_data_stats.py`. Key per song by Krumhansl-Kessler profile mat
 - **Register:** PIANO mean pitch per bar peaks below middle C (about 56), MELODY and BRIDGE overlap around 72.
 - **PIANO notes per bar** has a spike at 16 (steady 16th-note patterns over 4 beats).
 
-### Key changes (`key_changes.csv`, `figures/key_changes.png`)
+### Key changes (`key_changes.csv`, `figures/key_changes.png`) · as of 2026-10-16
 
 From `scripts/key_changes.py`. Local key per bar by Viterbi over the 12 major scales (a minor key counts as its relative major). Bar cost = 1 - share of sounding time on the scale; a change costs a switch penalty.
 
@@ -88,7 +88,7 @@ From `scripts/key_changes.py`. Local key per bar by Viterbi over the 12 major sc
 - Share of chord time whose triad fits the scale: 88.1% with one key per song, 90.9% with the local key.
 - Spot checks match the chord labels: song 010 G to Ab at bar 70, 012 Eb to E at bar 53, 025 A to C at bar 78.
 
-### Melody repeats (`hw2.plan.repeat_label`, `data/tokens/{plan,fill}_rep`)
+### Melody repeats (`hw2.plan.repeat_label`, `data/tokens/{plan,fill}_rep`) · as of 2026-10-16
 
 Melody bars of POP909 (54968), each against the bars 2, 4, 8 and 16 back:
 
@@ -99,7 +99,7 @@ Melody bars of POP909 (54968), each against the bars 2, 4, 8 and 16 back:
 
 Repeat label per bar (plan and fill prefix, right after `Bar`): `Rep_exact_L`, `Rep_var_L`, `Rep_rhythm_L` (L = 2, 4, 8, 16; strongest kind wins, then the shorter lag) or `Rep_none`.
 
-### Theme return and repetition period, real songs (`return.csv`, `return_lags.csv`, `figures/return_lags.png`, `scripts/return_stats.py`)
+### Theme return and repetition period, real songs (`return.csv`, `return_lags.csv`, `figures/return_lags.png`, `scripts/return_stats.py`) · as of 2026-10-16
 
 Intro = bars before the first melody note, outro = bars after the last. Whole POP909 songs: intro median 6-7 bars (p25 4, p75 9, p90 11-12), outro median 4, body median 66 bars.
 
@@ -115,7 +115,7 @@ Intro = bars before the first melody note, outro = bars after the last. Whole PO
 
 Many POP909 songs start with a bar that holds only a pickup at its end, and both models learned it: the first note of a generated piece came 1.5-5.7 s after the start. `hw2.render.midi_to_wav` cuts the WAV to 0.2 s before the first sound above -50 dBFS; the MIDI keeps all 32 bars. 239 existing WAVs were trimmed (325.6 s in total).
 
-### Stem loudness: melody vs piano (`stem_gap.csv`, `scripts/stem_gap.py`)
+### Stem loudness: melody vs piano (`stem_gap.csv`, `scripts/stem_gap.py`) · as of 2026-10-17
 
 Melody stem minus piano stem, integrated LUFS (ffmpeg `ebur128`, gated), real songs seconds 8-72.
 
@@ -129,7 +129,7 @@ Melody stem minus piano stem, integrated LUFS (ffmpeg `ebur128`, gated), real so
 
 The generated sets match the real melody-piano balance; the lift moves plan-fill about 0.8 dB above it.
 
-### Sudden loud notes (`velocity_spikes.csv`, `scripts/velocity_spikes.py`)
+### Sudden loud notes (`velocity_spikes.csv`, `scripts/velocity_spikes.py`) · as of 2026-10-18
 
 Share of notes at least 20 above their bar's median velocity (all tracks merged), first 32 bars, after `one_keyboard`. Real: every tenth training song (90). "map" is the listening build's real-velocity map, "lift" adds the `min_gap` melody lift.
 
@@ -145,7 +145,7 @@ Share of notes at least 20 above their bar's median velocity (all tracks merged)
 
 ## Single-stage model (`gpt2_ppb16`, TASK A and TASK B)
 
-### Loss review (`loss_review.csv`, `scripts/loss_review.py`; 45 held-out songs, teacher forced)
+### Loss review (`loss_review.csv`, `scripts/loss_review.py`; 45 held-out songs, teacher forced) · as of 2026-10-17
 
 | Checkpoint | All | Pitch | Pos | Dur | Vel |
 |---|---|---|---|---|---|
@@ -155,13 +155,13 @@ Share of notes at least 20 above their bar's median velocity (all tracks merged)
 
 The held-out loss at `loss_0.40` is almost twice that of `step_6000`; most of the rise is in duration and velocity, pitch stays at 1.33. Listening picked `loss_0.40` anyway (T1 below).
 
-### Silence and repetition (`silence.csv`, `return_lags.csv`)
+### Silence and repetition (`silence.csv`, `return_lags.csv`) · as of 2026-10-16
 
 - Silent share: `step_6000` 6.0% (1.40 empty bars per piece), `loss_0.40` 1.0% (0.05); real song starts 1.4-1.6% (0.04-0.06).
 - No lag peaks: exact match decays with lag (`loss_0.40`: 0.09 at lag 1 to 0.07 at 24); real songs peak at 4 and 8.
 - The best-matching pair of 8-bar windows in a 32-bar piece scores 0.64-0.70 for the main model and the first plan-fill sets (real crops 0.79-0.81): no near-repeated section.
 
-### TASK A sets (`outputs/cand_a/single_*`, `cand_a_metrics.csv`)
+### TASK A sets (`outputs/cand_a/single_*`, `cand_a_metrics.csv`) · as of 2026-10-17
 
 | Set | H1 | H4 | GS | silent share | empty bars |
 |---|---|---|---|---|---|
@@ -178,14 +178,14 @@ The held-out loss at `loss_0.40` is almost twice that of `step_6000`; most of th
 
 ## Plan-fill system (TASK A extra; `docs/plan_fill.md`)
 
-### Plan adherence (`adherence.csv`, `cand_a_adherence.csv`, `scripts/adherence.py`)
+### Plan adherence (`adherence.csv`, `cand_a_adherence.csv`, `scripts/adherence.py`) · as of 2026-10-18
 
 The written notes of each piece, labelled again by the training rules and compared with the plan, bar by bar. Chord: the triad the piano holds longest in each half bar vs the planned chord; real held-out songs vs their labels give 0.85.
 
 - The piano follows the planned chords at 0.80-0.85 (real 0.85) and the density bins within one step 94-98% of the time, for every fill model.
 - Without help the fill model ignores repeat labels: bars the plan marks as a repeat get the asked kind 4.3% of the time, any repeat at the asked lag 13.5% (`plan_fill_rep/free`); melody bars with an exact repeat 1.6-3.7% vs 21.5% real.
 
-### Teacher-forced repeat probe (`repeat_probe.csv`, `scripts/repeat_probe.py`)
+### Teacher-forced repeat probe (`repeat_probe.csv`, `scripts/repeat_probe.py`) · as of 2026-10-16
 
 Loss on the melody tokens of the 45 held-out songs (bars with at least 16 bars of context), by the bar's true repeat kind:
 
@@ -198,11 +198,11 @@ Loss on the melody tokens of the 45 held-out songs (bars with at least 16 bars o
 
 With the real earlier bar in context, the fill models predict exact repeats well (pitch loss 0.22-0.48 vs about 1.47 for new material); the label helps a little for exact repeats and not for varied or rhythm repeats. The same models write few repeats when sampling (previous section).
 
-### Fill loss reads the plan (`loss_review.csv`)
+### Fill loss reads the plan (`loss_review.csv`) · as of 2026-10-17
 
 `fill_rep/step_6000`: melody loss 1.16 with the true labels, 1.28 with the labels removed, 1.72 with each song's labels shuffled between its bars (piano 1.39 / 1.45 / 1.67). Held-out loss is lowest near `step_6000` and rises by `step_10000`, as for the main model.
 
-### Repeat bias at sampling time (`outputs/plan_fill_rep_fix/*`; `adherence_fix.csv`, `return_stats_fix.csv`)
+### Repeat bias at sampling time (`outputs/plan_fill_rep_fix/*`; `adherence_fix.csv`, `return_stats_fix.csv`) · as of 2026-10-17
 
 `--repeat_bias` β adds a logit bonus toward the source bar's notes on a melody bar labelled `Rep_<kind>_<L>`. The first version stacked up to 32 melody notes on one onset (fixed 2026-10-17); numbers below are from the fixed guide, same plans and seeds as `free`.
 
@@ -218,7 +218,7 @@ With the real earlier bar in context, the fill models predict exact repeats well
 - Larger β writes more repeats and costs density adherence (MDen within one bin 0.96 at β 8, 0.88 at β 16).
 - The plans ask for lag-4 repeats less often than real songs have them: repeat labels on melody bars, plans of `free` vs real first 32 bars: lag 2 13.5% vs 14.3%, lag 4 9.4% vs 15.7%, lag 8 10.8% vs 11.0%, lag 16 3.7% vs 2.9%, none 62.7% vs 56.2%.
 
-### Plan side: `--plan_repeat_bias`
+### Plan side: `--plan_repeat_bias` · as of 2026-10-16
 
 Share of labelled melody bars whose chords / melody bins equal the source bar's (real: held-out first 32 bars; plans: 20 each):
 
@@ -230,16 +230,16 @@ Share of labelled melody bars whose chords / melody bins equal the source bar's 
 
 Plan β 4 brings exact and varied repeats to the real coupling. The plan's chord pairs repeat at lag 4 in 11-15% of bars vs 22% in POP909.
 
-### Form rule (`--form`, `outputs/plan_fill_v2/form_*`)
+### Form rule (`--form`, `outputs/plan_fill_v2/form_*`) · as of 2026-10-17
 
 `I4A8B8A8E4` with the exact melody copy (`--return_as copy`): the theme comes back in 100% of pieces by melody (by construction), 79% by all notes, 58% by piano (real first 32 bars: 39-54%); bar pairs 16 apart: melody exact match 0.62, piano cosine 0.79 with exact match 0.20 (real returns: piano cosine 0.90, exact 35%). At lags 4 and 8 the melody exact match stays at 0.06 (real 0.13 / 0.15): the rule gives one long return, not the short repeats inside sections. With `--return_as var --repeat_bias 8` the melody of A returns in 63% of pieces (table above).
 
-### Silence (`silence.csv`, `cand_a_silence.csv`, `sweep_silence.csv`)
+### Silence (`silence.csv`, `cand_a_silence.csv`, `sweep_silence.csv`) · as of 2026-10-17
 
 - **Superseded first plans (`plan_fill/melody_first`):** 10 of 11 empty bars were planned empty; the plan model wrote fully empty bars in 1.7% of bars vs 0.17% in POP909. `--min_piano_bin 1 --tempo_range 60,125` (sampling limits) removed them (`plan_fill_v2/gaps`: 0 empty bars).
 - **Current sets:** silent share `pf_oldplan_fill040` 0.016, every `fill_rep_60k` checkpoint on the same plans 0.020-0.028; real openings 0.014. With real plans the fill model leaves 0.024 (`real_plan`), so the extra silence comes from the fill model.
 
-### TASK A candidate sets (`outputs/cand_a/pf_*`, `cand_a_*.csv`)
+### TASK A candidate sets (`outputs/cand_a/pf_*`, `cand_a_*.csv`) · as of 2026-10-17
 
 20 pieces of 32 bars, `--form I4A8B8A8E4 --return_as var --repeat_bias 8`. `newplan` = `plan_rep_long/loss_0.60`, `oldplan` = `plan_rep/best`, fill = `fill_rep_long/loss_0.40` or `loss_0.60`.
 
@@ -252,11 +252,11 @@ Plan β 4 brings exact and varied repeats to the real coupling. The plan's chord
 
 Plan-fill pieces are shorter in tokens (2160-2520) than single-stage (3180-3430).
 
-### Longer runs: predicted grade vs loss (`outputs/sweep/*`, `grade_pred_<run>*.csv`, `figures/grade_vs_loss_*.png`)
+### Longer runs: predicted grade vs loss (`outputs/sweep/*`, `grade_pred_<run>*.csv`, `figures/grade_vs_loss_*.png`) · as of 2026-10-17
 
 20 pieces per checkpoint. Fill sweep (`fill_rep_60k`) on the 20 plans of `pf_oldplan_fill040` with the same seeds; plan sweep (`plan_rep_24k`) with fill `fill_rep_long/loss_0.40`. Predicted win vs a real opening: `v1` 0.40-0.48 (fill), 0.40-0.49 (plan); `v3` 0.37-0.46 and 0.38-0.48; per-set standard error about 0.02, no trend with training loss. The listening test went the other way for the fill model (T4: the last checkpoint won 2 of 2).
 
-### Fill model on real plans (`outputs/real_plan/fill_rep_long_loss_0.40`, `real_plan_*.csv`)
+### Fill model on real plans (`outputs/real_plan/fill_rep_long_loss_0.40`, `real_plan_*.csv`) · as of 2026-10-17
 
 The fill checkpoint of `pf_oldplan_fill040` fills the real plans (first 32 bars) of the 45 held-out songs (`--real_plans`, `--return_as var --repeat_bias 8`).
 
@@ -289,16 +289,19 @@ In the C-shifted song, first 32 bars, time-weighted per piece. Real: the 851 tra
 | melody time against a sounding piano note: minor 2nd / major 7th / minor 9th | 0.018 / 0.016 / 0.011 | 0.025 / 0.019 / 0.017 | 0.020 / 0.029 / 0.018 | 0.021 / 0.022 / 0.014 |
 | pieces past the real worst 10% line (minor 2nd + minor 9th) | 0.10 | 0.10 | 0.15 | 0.16 |
 | piano time on chord tones, bars 1-8, median | 0.901 | 0.787 | 0.877 | 0.816 |
+| melody step, semitones: within a chord / across a chord change | 2.19 / 2.72 | 2.13 / 2.81 | 2.08 / 2.39 | 2.19 / 2.62 |
+| melody leaps (a minor 6th or more): within / across | 0.029 / 0.048 | 0.024 / 0.034 | 0.019 / 0.025 | 0.023 / 0.041 |
 
 - No key or transposition fault: generated melodies are as in key as real ones (99.7-99.8%).
 - The gap is melody time on chord tones: 20-35% of generated pieces fall past the line that 10% of real songs fall past. Harsh rubs (minor 2nd, minor 9th) are near the real level; the longer fill has more major-7th time (2.9% vs 1.6%).
 - In bars 1-8 the longer fill's piano is at the real chord-tone level; the earlier fill was lower (0.79).
+- Melody steps (consecutive onsets at most two beats apart, top note per onset): the current fill models move as smoothly as real melodies, within a chord and across a chord change, with fewer leaps. This is the baseline for the chord-relative model, whose risk is larger steps at chord changes.
 
 ### Chord-relative fill pitches (2026-10-18; `data/tokens/fill_rel`)
 
 `Rel_k` (pitch measured from the chord root) = pitch − signed(root of the chord at the note's start), in the C-shifted song; chord tones become the same numbers under every chord. Decoding every `Rel_` note of the 896 songs with its bar's chord gives back all 1,508,522 notes (0 bar blocks differ). The default tokenizer output is unchanged (30 of 30 songs checked). Model `fill_rel_60k` is in training.
 
-## Listening tests (`results/listening/*.csv`, `docs/listening_rubric.md`)
+## Listening tests (`results/listening/*.csv`, `docs/listening_rubric.md`) · as of 2026-10-18
 
 Blind A/B pairs on the phone page; `pref` from −2 (A much better) to +2 (B much better). The four pilot sessions (`candidates`, `ckpt`, `ckpt2`, `planfill`) used a flawed rendering and are a pilot only.
 
@@ -308,7 +311,7 @@ Blind A/B pairs on the phone page; `pref` from −2 (A much better) to +2 (B muc
 - **T4 (`t4_openings`, 2026-10-18):** `fill_rep_60k/last` beat `fill_rep_long/loss_0.40` 2 of 2 on the same plans (once on each side); `plan_rep_24k/last` vs `plan_rep/best` 1-1; single-stage `t0.9 p1` beat `t1 p1` and `t1 p0.95`, `t1 p0.95` beat `t1 p1` (one pair each, all won by side B). Checked against the MIDI: the "too fast, too many notes" piece has tempo 120 vs 60 and 12.2 vs 9.7 notes per second; the "weird chord in the latter 8 bars" piece has the lowest key fit of its set in bars 25-32 (0.938, set mean 0.992).
 - **Order bias:** side B won 6 of 7 in T4 (sign test p 0.125); all four sessions: A 11, B 18 (p 0.26). With one pair per matchup, `listening.py pairs` put the first named system on side A, so T4's config pairs were confounded with the side.
 
-## Listening-grade predictor (`docs/grade_model.md`; `grade_model_cv.csv`, `grade_model_check.csv`)
+## Listening-grade predictor (`docs/grade_model.md`; `grade_model_cv.csv`, `grade_model_check.csv`) · as of 2026-10-18
 
 Logistic model on feature differences, fit on the decisive A/B pairs and the pilot sessions.
 
@@ -321,3 +324,17 @@ Logistic model on feature differences, fit on the decisive A/B pairs and the pil
 - Strongest single features (`grade_single_features.csv`, 29 pairs): the winner has the higher `half_density_change` in 72% of pairs, the higher `key_fit` and `opening_key_fit_min4` in 62%.
 - Tags (`grade_tags.csv`, AUC of the feature for clips with vs without the tag): `silent_gap` vs `longest_onset_gap_beats` 0.87; `wrong_notes` vs `key_fit` 0.28 (lower fit with the tag); `abrupt_start` vs `opening_high_share` 0.58.
 - On T3, 5 of the 9 `v1` predictions sat between 0.46 and 0.54: the pairs share the 8-bar prompt, and whole-piece features dilute the 24-bar difference.
+
+## Archived (do not reuse) · as of 2026-10-18
+
+Removed from this file on 2026-10-18; the numbers are in commit `2d826a7` if the report needs to show the history.
+
+- **Repeat-guide results from before the fix (2026-10-16/17):** the first `RepeatGuide` stacked up to 32 melody notes on one onset at β 8 or more, so every number from those runs (`free_bias4/8/16`, the first `free_pbias4_bias8` and `form_IABAE_var_bias8` tables, their cost and lag bullets) is unusable. The fixed re-run (`plan_fill_rep_fix`) replaces them.
+- **Plan-fill candidate sets of 2026-10-16 night** (`task_a_plan_form_var_bias8`, `task_a_plan_form_var_pbias4_bias8`, `task_b_plan_bias8`, `task_b_plan_pbias4_bias8`): made with that guide. Replaced by `outputs/cand_a/pf_*` (2026-10-17).
+- **Melody-vs-chord numbers quoted in chat on 2026-10-18 before `harmony_stats.py`:** they counted notes instead of time, pooled all pieces, and put every interval of 1 or 11 semitones mod 12 under "semitone rub", which lumps major 7ths and minor 9ths with minor seconds. `harmony.csv` (2026-10-18) replaces them. They were never saved to a file. The predictor's `semitone_clash_share` was not affected: it uses the real pitch distance.
+- **Melody time on chord tones as a target:** the labels are triads, so "chord tone" means root, 3rd and 5th only, and 7ths, 9ths and 6ths count as off-chord. The shortfall against real songs is measured with the same labels on both sides, but it is not a share to push to 71% by force; a sampling bias toward triad tones (`--chord_bias`) was stopped for this reason before any set used it.
+- **Harmony of the plan-fill cut set (`pf_fill60k_skip8`):** its `plans.json` lost a key change made inside the dropped warm-up in piece 04, so per-piece numbers for that set misread the piece. Not reported.
+- **Velocity spikes "6% real":** measured on whole songs; real openings (the right reference for 32-bar pieces) are at 7.7%.
+- **Predictor single features and tags fit on T1-T2 only (13 pairs)**, e.g. `half_pc_sim` winning 11 of 13: replaced by the refit on 29 pairs.
+- **"Sparse intros, bars 1-4: 14.4 notes per bar vs 20.8"** (old `docs/status.md`): not traceable to a tracked CSV; the traceable figure is the bar-1 one under "Theme return and repetition period".
+

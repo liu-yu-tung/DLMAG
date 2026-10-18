@@ -144,7 +144,10 @@ def single_feature_table(pairs: pd.DataFrame, scored: pd.DataFrame, feats: pd.Da
 def tag_table(pairs: pd.DataFrame, scored: pd.DataFrame, feats: pd.DataFrame) -> pd.DataFrame:
     """Per tag and feature: AUC of the feature for clips with the tag against clips without (clips where tags were
     recorded: A/B clips and the pilot session that had tags)."""
-    clips = [(r.a, r.tags_a) for r in pairs.itertuples()] + [(r.b, r.tags_b) for r in pairs.itertuples()]
+    # A/B pages dropped issue tags at t5 (section duel); a session without any tag says nothing about tags
+    tagged = {r.session for r in pairs.itertuples() if isinstance(r.tags_a, str) or isinstance(r.tags_b, str)}
+    clips = [(r.a, r.tags_a) for r in pairs.itertuples() if r.session in tagged]
+    clips += [(r.b, r.tags_b) for r in pairs.itertuples() if r.session in tagged]
     clips += [(r.path, r.tags) for r in scored.itertuples() if r.session == "candidates"]
     tags = pd.DataFrame([{"path": p, "tags": set(str(t).split(";")) if isinstance(t, str) else set()} for p, t in clips])
     rows = []

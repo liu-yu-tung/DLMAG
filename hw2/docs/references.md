@@ -52,7 +52,8 @@ What HW2 uses, what it dropped, and what the course slides name that we do not u
 - **Piano-first fill order:** melody-first is the default; piano-first was only tested with the v1 models.
 - **Exact melody returns (`--return_as copy`):** reference only; the user does not want note-for-note returns.
 - **BONUS chords variant (`abl_chords`):** an ablation only, since it reads the labels chord accuracy is scored against.
-- **`step_6000` as the main checkpoint:** replaced by `loss_0.40` (T1 listening, 2026-10-17); `outputs/task_b` still uses `step_6000` until TASK B is regenerated.
+- **`step_6000` as the main checkpoint:** replaced by `loss_0.40` (T1 listening, 2026-10-17); `outputs/task_b` (old, `step_6000`) is replaced by `outputs/task_b_final` (`loss_0.40`).
+- **`--chord_bias` (2026-10-18):** a chord-tone bonus on strong beats; removed before use, since the triad labels would also push out 7ths and 9ths. Replaced by chord-relative fill pitches (`Rel_k`, `docs/plan_fill.md`).
 - **Mid-song real crops as anchors:** real song openings added (`outputs/ref/heldout_open32`), since intros are sparse.
 - **Category averages in listening:** replaced by A/B preference against same-session real anchors (user decision).
 - **`scripts/trim_wavs.py`:** one-off, removed after use.

@@ -14,12 +14,12 @@ Each stage reads what the stage before wrote. The `Makefile` runs most stages (`
 | Stage | Scripts | Writes |
 |---|---|---|
 | Data | POP909 in `data/POP909/` (`training/`, `prompts/basic-b/`, `prompts/bonus/`) | |
-| Tokens (`make tokens`) | `scripts/ta/tokenization.py`, `tokenize_bonus.py`, `tokenize_plan.py [--repeat]` | `data/tokens/<set>/` |
+| Tokens (`make tokens`) | `scripts/ta/tokenization.py`, `tokenize_bonus.py`, `tokenize_plan.py [--repeat] [--relative]` | `data/tokens/<set>/` |
 | Checks, data stats (`make check stats`) | `check_roundtrip.py`, `baselines.py`, `data_stats.py`, `plot_data_stats.py`, `key_changes.py` | `results/*.csv`, `results/figures/` |
 | Train (`make train-*`) | `train.py` | `checkpoints/<run>/`, `runs/<run>/` (args, loss log, val songs) |
 | Generate | `generate_uncond.py` (TASK A), `generate_cont.py` (TASK B), `generate_plan_fill.py` (TASK A, or TASK B with `--prompt_dir`), `generate_bonus.py` | `outputs/<dir>/`: `NN.mid`, `NN.wav`, `sequences.json`, `gen_info.json` (plan-fill also `plans.json`) |
 | Evaluate (`make eval-*`) | `eval_generated.py` (H1, H4, GS, sampled-token NLL, copy rate), `prompt_fade.py` (TASK B), `scripts/ta/eval_bonus.py`, `bonus_ablation.py`, `bonus_baselines.py` | `results/task_*.csv`, `results/bonus*.csv`, `<bonus dir>/metrics.csv` |
-| Analyze (`make analyze`) | `silence_stats.py`, `return_stats.py`, `adherence.py`, `repeat_probe.py`; not in the Makefile: `loss_review.py` (held-out loss per token type), `stem_gap.py` (melody vs piano stem loudness) | `results/*.csv` |
+| Analyze (`make analyze`) | `silence_stats.py`, `return_stats.py`, `adherence.py`, `repeat_probe.py`; not in the Makefile: `loss_review.py` (held-out loss per token type), `stem_gap.py` (melody vs piano stem loudness), `velocity_spikes.py` (sudden loud notes), `harmony_stats.py` (melody vs chords and piano) | `results/*.csv` |
 | Listen | `render_ref.py` (real anchors), `listening.py` (`prepare`/`pairs`, `web`, `import`, `reveal`) | `outputs/listening/`, `results/listening/` |
 | Grade predictor (`make grade-*`) | `grade_model.py` (`fit`, `check`, `predict`; `docs/grade_model.md`) | `results/grade_*.csv`, `results/figures/grade_vs_loss_*.png`, `outputs/sweep/<run>/` |
 
@@ -80,7 +80,7 @@ TASK A, 20 pieces of 32 bars, single-stage:
 python scripts/generate_uncond.py --ckpt checkpoints/gpt2_ppb16/<checkpoint> --output_dir <dir> --temperature <t> --top_p <p> --wav
 ```
 
-TASK A with plan-fill (the `--tok2idx` default comes from `runs/`, which is not shipped, so pass it):
+TASK A with plan-fill (the `--tok2idx` default comes from `runs/`, which is not shipped, so pass it; the checkpoints in these examples are updated at packaging, current choice in `docs/status.md`):
 
 ```
 python scripts/generate_plan_fill.py --plan_ckpt checkpoints/plan_rep/best --fill_ckpt checkpoints/fill_rep/best --tok2idx data/tokens/fill_rep/tok2idx.json --output_dir <dir> --min_piano_bin 1 --tempo_range 60,125 --cadence --wav
@@ -127,6 +127,8 @@ The analysis scripts read POP909 for the real reference plus any generated folde
 - **`silence_stats.py`:** silence, empty bars, melody gaps, contrast between 8-bar windows, start/end similarity.
 - **`return_stats.py`:** intro and outro length, theme returns, repetition by lag (`results/figures/return_lags.png`).
 - **`adherence.py`:** plan-fill outputs only; how often the written notes match the planned chords, bins and repeat labels.
+- **`harmony_stats.py`:** plan-fill outputs and real songs; melody time on chord tones, in key and against sounding piano notes by real distance, melody steps within a chord and across a chord change; per piece and per set.
+- **`velocity_spikes.py`:** share of notes far above their bar's median velocity, by track, as written and as the listening build plays them.
 - **`grade_model.py`:** listening-grade predictor fit on the graded sessions; `predict --plot` gives predicted grade vs checkpoint loss (`docs/grade_model.md`).
 - **`repeat_probe.py`:** teacher-forced melody loss of the fill models on held-out songs by true repeat kind, with repeat labels kept, set to `Rep_none` or removed (GPU, about 3 min).
 
