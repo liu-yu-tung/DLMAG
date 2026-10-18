@@ -49,6 +49,8 @@ def parse_args():
                    "Rep label (repeat-label models; exact: all note parts, var: half, rhythm: onsets, velocities, durations)")
     p.add_argument("--plan_repeat_bias", type=float, default=0.0, help="logit bonus toward the source bar's chords and melody "
                    "bins when the plan model writes a Rep label (POP909 repeats keep them; exact: chords + melody bins, var: half, rhythm: melody bins)")
+    p.add_argument("--chord_bias", type=float, default=0.0, help="logit bonus for chord tones when a melody note starts on "
+                   "beat 1 or the half-bar beat, and the same penalty on durations over a beat for a melody note off the chord")
     p.add_argument("--plan_temperature", type=float, default=1.0)
     p.add_argument("--plan_top_p", type=float, default=1.0)
     p.add_argument("--temperature", type=float, default=1.0)
@@ -127,9 +129,14 @@ def main():
             t1 = time.time()
             gen = torch.Generator(device=args.device).manual_seed(args.seed + 1000 + i)
             notes, nll = sample_fill(fill_model, tok2idx, idx2tok, plan, cfg, gen, melody_first=args.order == "melody_first",
-                                     drop=drop, given=given, copy_melody=copy_melody, repeat_bias=args.repeat_bias)
+                                     drop=drop, given=given, copy_melody=copy_melody, repeat_bias=args.repeat_bias,
+                                     chord_bias=args.chord_bias)
             if args.skip_bars:
-                plan, notes = dataclasses.replace(plan, bars=plan.bars[args.skip_bars:]), notes[args.skip_bars:]
+                kept = plan.bars[args.skip_bars:]
+                # a key change inside the dropped bars must stay on the first kept bar, or plans.json reads it in the first key
+                if kept[0].key and not any(m.startswith("KeyShift_") for m in kept[0].marks):
+                    kept[0] = dataclasses.replace(kept[0], marks=kept[0].marks + [f"KeyShift_{kept[0].key}"])
+                plan, notes = dataclasses.replace(plan, bars=kept), notes[args.skip_bars:]
             tokens, _ = to_outputs(plan, notes, folder / f"{name}.mid")
             if args.wav:
                 midi_to_wav(folder / f"{name}.mid", folder / f"{name}.wav")
