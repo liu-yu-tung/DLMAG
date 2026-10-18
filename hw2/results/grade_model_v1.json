@@ -11,41 +11,41 @@
   "density_cv"
  ],
  "mean": {
-  "longest_onset_gap_beats": 2.681578947368421,
-  "bass_dropout": 0.029576966610073568,
-  "high_share": 0.031197466171274557,
-  "opening_high_share": 0.05267706884718326,
-  "half_rhythm_sim": 0.785677664690764,
-  "half_register_shift": 1.896478528034738,
-  "loop_run": 0.010526315789473684,
-  "key_fit": 0.9786087192620665,
-  "density_cv": 0.2896644003235608
+  "longest_onset_gap_beats": 2.573394495412844,
+  "bass_dropout": 0.028645062641807238,
+  "high_share": 0.02865810225223548,
+  "opening_high_share": 0.05200061045968204,
+  "half_rhythm_sim": 0.7869288118422124,
+  "half_register_shift": 1.952641810140464,
+  "loop_run": 0.009174311926605505,
+  "key_fit": 0.979274514595648,
+  "density_cv": 0.2827583674885933
  },
  "std": {
-  "longest_onset_gap_beats": 1.5758491907198788,
-  "bass_dropout": 0.06434894388826579,
-  "high_share": 0.04683640622275725,
-  "opening_high_share": 0.09294790796522656,
-  "half_rhythm_sim": 0.20294061548284292,
-  "half_register_shift": 1.7619594557623575,
-  "loop_run": 0.10259783520851541,
-  "key_fit": 0.02711017013804356,
-  "density_cv": 0.0987165288437654
+  "longest_onset_gap_beats": 1.5143231101126573,
+  "bass_dropout": 0.06336856338803856,
+  "high_share": 0.04449749753863371,
+  "opening_high_share": 0.09028217537381288,
+  "half_rhythm_sim": 0.20096543568233619,
+  "half_register_shift": 1.7449684367533642,
+  "loop_run": 0.09578262852211514,
+  "key_fit": 0.026074582028099737,
+  "density_cv": 0.09581896467209042
  },
  "weights": {
-  "longest_onset_gap_beats": -0.028184792281233675,
-  "bass_dropout": -0.16514644229448858,
-  "high_share": -0.16533424815533457,
-  "opening_high_share": -0.11308318674195209,
-  "half_rhythm_sim": 0.062375270111928255,
-  "half_register_shift": -0.1582364392336183,
-  "loop_run": -0.10182439040666884,
-  "key_fit": 0.15704055882872334,
-  "density_cv": 0.05531297811469033
+  "longest_onset_gap_beats": -0.019548779350055678,
+  "bass_dropout": -0.18116285005853322,
+  "high_share": -0.18040226547552796,
+  "opening_high_share": -0.17554056764950018,
+  "half_rhythm_sim": 0.08336117790558843,
+  "half_register_shift": -0.1510321939784196,
+  "loop_run": -0.10442637054628148,
+  "key_fit": 0.16175725790380596,
+  "density_cv": 0.08674353585348599
  },
  "lambda": 10.0,
- "real_score": 0.1879732034072212,
- "n_ab_pairs": 22,
+ "real_score": 0.2068512221407542,
+ "n_ab_pairs": 29,
  "n_scored_clips": 56,
  "sessions": [
   "candidates",
@@ -54,6 +54,7 @@
   "planfill",
   "t1_checkpoint",
   "t2_openings",
-  "t3_continuations"
+  "t3_continuations",
+  "t4_openings"
  ]
 }

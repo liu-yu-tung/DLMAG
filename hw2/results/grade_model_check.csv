@@ -1,3 +1,6 @@
 session,variant,pairs,correct,accuracy,fit_on
 t3_continuations,v1,9,5,0.5555555555555556,candidates;ckpt;ckpt2;planfill;t1_checkpoint;t2_openings
 t3_continuations,v2,9,3,0.3333333333333333,candidates;ckpt;ckpt2;planfill;t1_checkpoint;t2_openings
+t4_openings,v1,7,5,0.7142857142857143,candidates;ckpt;ckpt2;planfill;t1_checkpoint;t2_openings;t3_continuations
+t4_openings,v2,7,4,0.5714285714285714,candidates;ckpt;ckpt2;planfill;t1_checkpoint;t2_openings;t3_continuations
+t4_openings,v3,7,6,0.8571428571428571,candidates;ckpt;ckpt2;planfill;t1_checkpoint;t2_openings;t3_continuations

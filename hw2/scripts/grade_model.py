@@ -303,7 +303,7 @@ def main():
     g = sub.add_parser("predict", help="score every MIDI in the folders with results/grade_model_<variant>.json")
     g.add_argument("folders", nargs="+", type=Path)
     g.add_argument("--out", type=Path, required=True)
-    g.add_argument("--variant", choices=list(VARIANTS), default="v1", help="v1 until a later session shows v2 holds up")
+    g.add_argument("--variant", choices=list(VARIANTS), default="v3", help="v3 since T4 (6 of 7 before refit, v1 5 of 7)")
     g.add_argument("--plot", type=Path, help="figure of predicted grade vs checkpoint step and loss")
     g.add_argument("--ckpt_key", default="fill_ckpt", choices=["fill_ckpt", "plan_ckpt", "ckpt"],
                    help="gen_info.json checkpoint the step and loss columns come from")

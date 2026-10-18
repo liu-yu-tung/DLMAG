@@ -407,7 +407,7 @@ def main():
     e.add_argument("--k", type=int, default=8, help="pairs per two systems")
     e.add_argument("--anchor", type=int, default=2, help="pairs of each system against a real crop")
     e.add_argument("--ref", default="outputs/ref/heldout_crop32")
-    e.add_argument("--matchups", default="", help="x:y,x:y system pairs to compare (default: every two systems)")
+    e.add_argument("--matchups", default="", help="x:y,x:y system pairs to compare (default: every two systems); x plays first in the first pair of each matchup, then the sides alternate")
     e.add_argument("--same_file", default="", help="x:y,x:y matchups whose two clips share the file name (same plan or seed)")
     e.add_argument("--seed", type=int, default=0)
     e.add_argument("systems", nargs="+", help="name=dir[,dir...]")

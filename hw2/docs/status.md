@@ -1,12 +1,12 @@
 # HW2 status
 
-As of 2026-10-17 11:00. Deadline Mon 2026-10-26 23:59; the report (PPT-style PDF, about 10 pages) is 100% of the grade. Evidence: `results/findings.md`. Listening comments: `docs/listening_issues.md`. Pipeline and commands: `README.md`. File map: `CLAUDE.md`.
+As of 2026-10-18. Deadline Mon 2026-10-26 23:59; the report (PPT-style PDF, about 10 pages) is 100% of the grade. Evidence: `results/findings.md`. Listening comments: `docs/listening_issues.md`. Pipeline and commands: `README.md`. File map: `CLAUDE.md`.
 
 ## Systems and checkpoints
 
 - **TASK A, single-stage (`gpt2_ppb16`):** checkpoint `loss_0.40` (T1 2026-10-17: 3 wins, 1 loss, 1 same vs `step_10000`). Sampling fixes: no `Pos_` past the meter (`--max_beats`), one opening tempo.
-- **TASK A, plan-fill:** plan `plan_rep/best` or `plan_rep_long/loss_0.60`, fill `fill_rep_long/loss_0.40` or `loss_0.60`; melody-first, `--form I4A8B8A8E4 --return_as var --repeat_bias 8`. Six candidate sets of 20 are in `outputs/cand_a/` (3 single-stage, 3 plan-fill) with the fixed guide; stats in `results/cand_a_*.csv`.
-- **TASK A decision (T2, 2026-10-17, `results/listening/t2_openings.csv`):** plan-fill won 3 of 6 pairs against single-stage (2 losses, 1 same), below the 5-of-6 rule, so single-stage `loss_0.40` is submitted; plan-fill stays an extra experiment. Best config `t1 p1` (`outputs/cand_a/single_t1_p1`, the other two configs `t1 p0.95`, `t0.9 p1` are in `outputs/cand_a/`).
+- **TASK A, plan-fill:** plan `plan_rep/best`, fill `fill_rep_60k/last` (T4 2026-10-18: 2 of 2 against `fill_rep_long/loss_0.40` on the same plans; `plan_rep_24k/last` tied 1-1 with `plan_rep/best`); melody-first, `--form I4A8B8A8E4 --return_as var --repeat_bias 8`. Set: `outputs/sweep/fill_rep_60k/last` (the 20 plans of `pf_oldplan_fill040`). Six older candidate sets of 20 are in `outputs/cand_a/` (3 single-stage, 3 plan-fill); stats in `results/cand_a_*.csv`.
+- **TASK A decision (T2, 2026-10-17, `results/listening/t2_openings.csv`):** plan-fill won 3 of 6 pairs against single-stage (2 losses, 1 same), below the 5-of-6 rule, so single-stage `loss_0.40` is submitted; plan-fill stays an extra experiment. Config `t1 p1` (`outputs/cand_a/single_t1_p1`, the other two configs `t1 p0.95`, `t0.9 p1` are in `outputs/cand_a/`). T4: `t0.9 p1` won both its pairs, but side B won every config pair (6 of 7 in the session), so `t1 p1` stays until T5 replays the three matchups with the sides swapped; decision on T4 + T5: most wins, tie to the lower temperature.
 - **TASK B:** must use the TASK A checkpoint (spec page 16); final set `outputs/task_b_final` (3 prompts x 3 configs, 8 + 24 bars). **T3 decision (2026-10-17, `results/listening/t3_continuations.csv`):** `t1 p0.95` won both of its pairs on every prompt (6 of 6), so it is the best config for all three prompts (`outputs/task_b_final/t1_k0_p0.95`).
 - **BONUS TASK:** `abl_melody/step_7000`, ablations `abl_lookahead`, `abl_chords`. Done.
 - **Held-out songs:** 45 of 896 are held out; the report must say so.
@@ -41,11 +41,12 @@ As of 2026-10-17 11:00. Deadline Mon 2026-10-26 23:59; the report (PPT-style PDF
 3. Plan-fill matters in the report even though it is not submitted (user, 2026-10-17): keep testing and improving it.
    - Longer training (user, 2026-10-17 15:10): `plan_rep_24k` (24k steps) and `fill_rep_60k` (60k steps, the same length and schedule as `gpt2_ppb16`), done 19:18.
    - Grade sweeps done 21:03 (`make grade-sweep-fill RUN=fill_rep_60k`, `make grade-sweep-plan RUN=plan_rep_24k`); findings section "Predicted grade vs loss for the longer plan-fill runs".
-   - T4: the last checkpoint of each new run against `pf_oldplan_fill040` (2 pairs each; the fill pairs share the plan), and the three single-stage configs against each other (3 pairs).
+   - T4 graded 2026-10-18 03:00 (findings section "T4"): new fill checkpoint `fill_rep_60k/last`, plan stays `plan_rep/best`, config decision moved to T5.
+   - T5: the three config matchups with the sides swapped (3 pairs), and plan-fill with the new fill against single-stage `t1 p1` (6 pairs, sides alternating; the 5-of-6 rule, comparable with T2).
    - Fill model on real held-out plans: done 21:28 (findings section "Fill model on real plans").
    - Cause of the sudden loud notes in plan-fill (see open issues).
    - Melody-repeat following (14-22% of asked repeats written) and bar-end silence.
-4. Listening-grade predictor (user, 2026-10-17; `docs/grade_model.md`): fit on T1, T2 and the pilot; after each graded session run `grade_model.py check` before `fit` (T3: `v1` 5 of 9, `v2` 3 of 9; `v3` built after T3, first tested on T4); score each new set; predicted grade vs loss for `exp2` (main model) and the new plan-fill runs.
+4. Listening-grade predictor (user, 2026-10-17; `docs/grade_model.md`): fit on T1, T2 and the pilot; after each graded session run `grade_model.py check` before `fit` (T3: `v1` 5 of 9, `v2` 3 of 9; T4: `v1` 5 of 7, `v2` 4 of 7, `v3` 6 of 7, so `predict` uses `v3` since 2026-10-18); score each new set; predicted grade vs loss for `exp2` (main model) and the new plan-fill runs.
 5. Extras: NLL matching of sampling settings, loss vs listening figure (partly covered by item 4), SI feasibility.
 6. Packaging: checkpoint defaults in the `Makefile` and `generate_plan_fill.py`, `submission` branch, fresh-venv README test. Code, checkpoints and README go on the cloud drive (the user does this).
 7. Report (PPT-style PDF, about 10 pages; name and ID on the cover).

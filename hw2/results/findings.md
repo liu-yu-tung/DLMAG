@@ -387,3 +387,26 @@ The fill checkpoint of `pf_oldplan_fill040` (`fill_rep_long/loss_0.40`) fills th
 - **Silence is a fill problem:** with real plans the silent share and the longest gap are above the real level (0.024 vs 0.014, 1.43 vs 0.88 beats); the empty bars match the real songs (empty intro bars in the plan).
 - **Density bins** are followed better with real plans (melody exact 0.76 vs 0.66).
 - 12 of the 45 songs are also in `outputs/ref/heldout_open32`, so a later test can pair a real opening with the fill of its own plan.
+
+## T4: longer plan-fill training and the single-stage configs (2026-10-18; `results/listening/t4_openings.csv`, `t4_openings_elements.csv`)
+
+7 pairs, rated 2026-10-18 02:24-03:00. `pref` runs from −2 (A much better) to +2 (B much better).
+
+- **Longer fill training, same plans and seeds:** `fill_rep_60k/last` beat `fill_rep_long/loss_0.40` (`pf_oldplan_fill040`) in 2 of 2 pairs, once on each side (pref −1 on side A, +2 on side B). Deciding reasons: form 2, harmony 2. This goes against the sweep, which predicted no gain and found more silence for every new fill checkpoint (section "Predicted grade vs loss for the longer plan-fill runs").
+- **Longer plan training (fill `fill_rep_long/loss_0.40`):** `plan_rep_24k/last` vs `plan_rep/best` 1-1, each pair won by side B.
+- **Single-stage configs, one pair each:** `t0.9 p1` beat `t1 p1` (+2) and `t1 p0.95` (+2); `t1 p0.95` beat `t1 p1` (+2). Element marks: `t0.9 p1` mean level 0.5 to 1.0 on all six elements, `t1 p1` −1.0 to 0.0.
+- **Order bias:** side B won 6 of 7 (sign test p 0.125); T1-T3 together: A 10, B 12, same 2; all four sessions: A 11, B 18 (p 0.26). All three single-stage pairs were won by side B, and `t0.9 p1` was on side B in both of its pairs: `listening.py pairs` puts the first named system of a matchup on side A in its first pair, so with one pair per matchup the command fixed the sides.
+
+Comments, checked against the MIDI:
+
+- **"A too fast, too many notes, so more wrong notes" (pair 02, `single_t1_p1/04` vs `single_t1_p095/01`):** tempo 120 vs 60, 12.2 vs 9.7 notes per second, semitone-clash share 0.030 vs 0.019, key fit 0.985 vs 0.992 (`grade_features.csv`).
+- **"Weird chord in the latter 8 bars" (pair 07, `single_t09_p1/10`, the winner):** bars 25-32 have the lowest key fit of its 20-piece set (0.938, set mean 0.992) and a clash share of 0.038 (set mean 0.019).
+
+Decisions (rules in `docs/status.md`):
+
+- **Plan-fill fill checkpoint:** `fill_rep_60k/last` (most wins). **Plan checkpoint:** `plan_rep/best` stays (tie).
+- **TASK A config:** `t0.9 p1` has the most wins, but every pair was decided by side B in a session that B won 6 to 1, so it is not a clear result. TASK A stays `t1 p1` until T5 replays the three matchups with the sides swapped; the decision then uses T4 and T5 together (two pairs per matchup, one on each side): most wins, tie to the lower temperature.
+
+### Grade predictor on T4 (second held-out session)
+
+`grade_model.py check` before refitting: `v1` 5 of 7, `v2` 4 of 7, `v3` 6 of 7. `v3` missed pair 03 (`pf_oldplan_fill040/07` vs `plan_rep_24k/last/03`) and got pair 05 right by a score margin of 0.01, so its edge over `v1` is one near-tie pair; "side B wins" would also get 6 of 7. After refitting on 29 decisive pairs, leave-one-out at L2 10 (the penalty in use): `v1` 0.66, `v2` 0.62, `v3` 0.79; "more notes wins" 0.52. By the rule in `docs/grade_model.md`, `predict` now uses `v3`. `grade_pred_*` files written before 2026-10-18 without a variant suffix are `v1`.

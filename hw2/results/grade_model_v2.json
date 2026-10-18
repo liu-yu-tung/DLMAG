@@ -10,38 +10,38 @@
   "density_cv"
  ],
  "mean": {
-  "longest_onset_gap_beats": 2.681578947368421,
-  "bass_dropout": 0.029576966610073568,
-  "high_share": 0.031197466171274557,
-  "half_pc_sim": 0.9292759584539981,
-  "half_register_shift": 1.896478528034738,
-  "one_note_bars": 0.06315789473684211,
-  "key_fit": 0.9786087192620665,
-  "density_cv": 0.2896644003235608
+  "longest_onset_gap_beats": 2.573394495412844,
+  "bass_dropout": 0.028645062641807238,
+  "high_share": 0.02865810225223548,
+  "half_pc_sim": 0.9319113315447382,
+  "half_register_shift": 1.952641810140464,
+  "one_note_bars": 0.05504587155963303,
+  "key_fit": 0.979274514595648,
+  "density_cv": 0.2827583674885933
  },
  "std": {
-  "longest_onset_gap_beats": 1.5758491907198788,
-  "bass_dropout": 0.06434894388826579,
-  "high_share": 0.04683640622275725,
-  "half_pc_sim": 0.05871066018820193,
-  "half_register_shift": 1.7619594557623575,
-  "one_note_bars": 0.5220769959475791,
-  "key_fit": 0.02711017013804356,
-  "density_cv": 0.0987165288437654
+  "longest_onset_gap_beats": 1.5143231101126573,
+  "bass_dropout": 0.06336856338803856,
+  "high_share": 0.04449749753863371,
+  "half_pc_sim": 0.05588681027612157,
+  "half_register_shift": 1.7449684367533642,
+  "one_note_bars": 0.48752706259776546,
+  "key_fit": 0.026074582028099737,
+  "density_cv": 0.09581896467209042
  },
  "weights": {
-  "longest_onset_gap_beats": -0.02859828711507073,
-  "bass_dropout": -0.14634587423451775,
-  "high_share": -0.18110966044705487,
-  "half_pc_sim": 0.16999714037452435,
-  "half_register_shift": -0.1418409114889078,
-  "one_note_bars": -0.08548513097297318,
-  "key_fit": 0.13429153743505032,
-  "density_cv": 0.06523966516816844
+  "longest_onset_gap_beats": -0.02399588563309902,
+  "bass_dropout": -0.17749459242622243,
+  "high_share": -0.2123191664667618,
+  "half_pc_sim": 0.1445273358076443,
+  "half_register_shift": -0.13897533783874882,
+  "one_note_bars": -0.08220643508844777,
+  "key_fit": 0.1447848387039414,
+  "density_cv": 0.10101476196702734
  },
  "lambda": 10.0,
- "real_score": 0.22508206331024486,
- "n_ab_pairs": 22,
+ "real_score": 0.21076614409881334,
+ "n_ab_pairs": 29,
  "n_scored_clips": 56,
  "sessions": [
   "candidates",
@@ -50,6 +50,7 @@
   "planfill",
   "t1_checkpoint",
   "t2_openings",
-  "t3_continuations"
+  "t3_continuations",
+  "t4_openings"
  ]
 }
