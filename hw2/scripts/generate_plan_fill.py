@@ -2,6 +2,7 @@
 labels, the fill model writes the notes bar by bar. Usage in the README."""
 
 import argparse
+import dataclasses
 import json
 import time
 from pathlib import Path
@@ -26,6 +27,8 @@ def parse_args():
     p.add_argument("--tok2idx", type=str, default=None, help="default: the token folder in runs/<fill run>/args.json")
     p.add_argument("--n", type=int, default=20, help="pieces (TASK A)")
     p.add_argument("--bars", type=int, default=32, help="bars per piece, prompt included")
+    p.add_argument("--skip_bars", type=int, default=0, help="TASK A: plan and fill bars + skip_bars (the form covers them all, "
+                   "e.g. W8I4A8B8A8E4), then drop the first skip_bars")
     p.add_argument("--prompt_dir", type=str, default=None, help="TASK B: continue each folder in POP909 layout "
                    "(<name>/<name>.mid, beat_midi.txt, chord_midi.txt), e.g. data/POP909/prompts/basic-b")
     p.add_argument("--prompt_bars", type=int, default=8)
@@ -76,6 +79,8 @@ def prompt_plans(prompt_dir: Path, prompt_bars: int, tok2idx_path: Path, tok2idx
 def main():
     args = parse_args()
     assert sum(map(bool, (args.prompt_dir, args.plans_from, args.real_plans))) <= 1, "pick one plan source"
+    assert not args.skip_bars or not (args.prompt_dir or args.plans_from or args.real_plans), "--skip_bars is for TASK A from scratch"
+    total_bars = args.bars + args.skip_bars
     out = Path(args.output_dir)
     if args.tok2idx is None:
         run_args = HW2_ROOT / "runs" / Path(args.fill_ckpt).parent.name / "args.json"
@@ -90,7 +95,7 @@ def main():
     drop = tuple(g for g in args.drop.split(",") if g)
     rules = PlanRules(args.min_piano_bin, tuple(int(x) for x in args.tempo_range.split(",")) if args.tempo_range else None,
                       args.melody_by_bar, args.cadence, args.form, args.return_as, args.plan_repeat_bias)
-    copy_melody = parse_form(args.form, args.bars).copy_from if args.form and args.return_as == "copy" else None
+    copy_melody = parse_form(args.form, total_bars).copy_from if args.form and args.return_as == "copy" else None
 
     if args.plans_from:
         jobs = [(p["song_name"], parse_plan(p["tokens"]), None) for p in json.loads(Path(args.plans_from).read_text())[: args.n]]
@@ -109,7 +114,7 @@ def main():
         jobs = []
         for i, (name, prompt, given) in enumerate(prompts):
             gen = torch.Generator(device=args.device).manual_seed(args.seed + i)
-            jobs.append((name, sample_plan(plan_model, tok2idx, idx2tok, args.bars, plan_cfg, gen, prompt=prompt, rules=rules), given))
+            jobs.append((name, sample_plan(plan_model, tok2idx, idx2tok, total_bars, plan_cfg, gen, prompt=prompt, rules=rules), given))
         del plan_model
 
     fill_model = load_model(args.fill_ckpt, args.device)
@@ -123,6 +128,8 @@ def main():
             gen = torch.Generator(device=args.device).manual_seed(args.seed + 1000 + i)
             notes, nll = sample_fill(fill_model, tok2idx, idx2tok, plan, cfg, gen, melody_first=args.order == "melody_first",
                                      drop=drop, given=given, copy_melody=copy_melody, repeat_bias=args.repeat_bias)
+            if args.skip_bars:
+                plan, notes = dataclasses.replace(plan, bars=plan.bars[args.skip_bars:]), notes[args.skip_bars:]
             tokens, _ = to_outputs(plan, notes, folder / f"{name}.mid")
             if args.wav:
                 midi_to_wav(folder / f"{name}.mid", folder / f"{name}.wav")
