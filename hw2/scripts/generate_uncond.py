@@ -26,6 +26,7 @@ def parse_args():
     p.add_argument("--max_beats", type=int, default=4, help="ban Pos_ at or past this beat; 0 = off")
     p.add_argument("--n", type=int, default=20)
     p.add_argument("--bars", type=int, default=32)
+    p.add_argument("--skip_bars", type=int, default=0, help="generate bars + skip_bars, then drop the first skip_bars (the tempo is kept)")
     p.add_argument("--temperature", type=float, default=1.0)
     p.add_argument("--top_k", type=int, default=0)
     p.add_argument("--top_p", type=float, default=1.0)
@@ -33,6 +34,14 @@ def parse_args():
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--wav", action="store_true", help="also render WAV with FluidSynth")
     return p.parse_args()
+
+
+def drop_bars(tokens: list[str], k: int) -> list[str]:
+    bars = [i for i, t in enumerate(tokens) if t == "Bar"]
+    assert len(bars) > k, f"{len(bars)} bars, cannot drop {k}"
+    tempo = [t for t in tokens[:bars[k]] if t.startswith("Tempo_")]
+    assert tempo, "no tempo before the cut"
+    return ["<BOS>", "Bar", "Pos_0", tempo[-1]] + tokens[bars[k] + 1:]
 
 
 def main():
@@ -48,11 +57,12 @@ def main():
     for b0 in range(0, args.n, args.batch_size):
         n = min(args.batch_size, args.n - b0)
         prompts = [[tok2idx["<BOS>"], tok2idx["Bar"]] + ([] if args.tempo_changes else [tok2idx["Pos_0"]])] * n
-        ids, nll = generate(model, prompts, args.bars - 1, cfg, tok2idx, seed=args.seed + b0,
+        ids, nll = generate(model, prompts, args.bars + args.skip_bars - 1, cfg, tok2idx, seed=args.seed + b0,
                             max_pos=args.max_beats * args.pos_per_beat or None, one_tempo=not args.tempo_changes)
         for k, (seq, loss) in enumerate(zip(ids, nll)):
             name = f"{b0 + k:02d}"
             tokens = [idx2tok[i] for i in seq] + ["<EOS>"]
+            tokens = drop_bars(tokens, args.skip_bars) if args.skip_bars else tokens
             pieces.append({"song_name": name, "tokens": tokens})
             info.append({"song_name": name, "n_tokens": len(tokens), "n_bars": tokens.count("Bar"), "nll": loss})
             tokens_to_midi(tokens, out / f"{name}.mid", args.pos_per_beat)
