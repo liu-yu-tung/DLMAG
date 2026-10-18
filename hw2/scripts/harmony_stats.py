@@ -28,6 +28,7 @@ CLASHES = {1: "m2", 11: "M7", 13: "m9"}
 KINDS = [*CLASHES.values(), "wider"]
 REAL = "real_train"
 OPENING = 8
+LEAP = 8
 
 
 def bar_counts(meter: int, prefix: list[str], key: int, melody, piano) -> dict:
@@ -62,6 +63,29 @@ def bar_counts(meter: int, prefix: list[str], key: int, melody, piano) -> dict:
     return c
 
 
+def melody_steps(meter: int, prefixes: list[list[str]], bars: list[dict]) -> dict:
+    """Pitch steps between consecutive melody onsets at most two beats apart (top note per onset), split by whether
+    the labelled chord changes between the two notes; a leap is LEAP semitones (a minor 6th) or more."""
+    half, bar_len = max(1, meter // 2) * PPB, meter * PPB
+    line = {}
+    for i, (prefix, notes) in enumerate(zip(prefixes[:BARS], bars[:BARS])):
+        chords = [t for t in prefix if t.startswith("Chord_")]
+        for pos, pitch, _, _ in notes["melody"]:
+            chord = chords[min(int(pos >= half), len(chords) - 1)] if chords else "Chord_N"
+            t = i * bar_len + pos
+            if t not in line or pitch > line[t][0]:
+                line[t] = (pitch, chord)
+    c = {f"{k}_{x}": 0 for k in ("same", "change") for x in ("steps", "step_sum", "leaps")}
+    onsets = sorted(line.items())
+    for (ta, (a, chord_a)), (tb, (b, chord_b)) in zip(onsets, onsets[1:]):
+        if tb - ta <= 2 * PPB:
+            k = "same" if chord_a == chord_b else "change"
+            c[f"{k}_steps"] += 1
+            c[f"{k}_step_sum"] += abs(b - a)
+            c[f"{k}_leaps"] += abs(b - a) >= LEAP
+    return c
+
+
 def piece_counts(source: str, piece: str, meter: int, prefixes: list[list[str]], bars: list[dict]) -> dict:
     total, key, bar_len = {}, 0, meter * PPB
     for i, (prefix, notes) in enumerate(zip(prefixes[:BARS], bars[:BARS])):
@@ -71,7 +95,7 @@ def piece_counts(source: str, piece: str, meter: int, prefixes: list[list[str]],
             total[k] = total.get(k, 0) + v
             if i < OPENING:
                 total[f"open_{k}"] = total.get(f"open_{k}", 0) + v
-    return {"source": source, "piece": piece, **total}
+    return {"source": source, "piece": piece, **total, **melody_steps(meter, prefixes, bars)}
 
 
 def real(tokens_dir: Path, n_val: int) -> list[dict]:
@@ -118,6 +142,9 @@ def shares(d: pd.DataFrame) -> pd.DataFrame:
     out["piano_chord_time"] = d["piano_chord_time"] / d["piano_labelled_time"]
     out["chord_time_open"] = d["open_chord_time"] / d["open_labelled_time"].replace(0, np.nan)
     out["piano_chord_time_open"] = d["open_piano_chord_time"] / d["open_piano_labelled_time"].replace(0, np.nan)
+    for k in ("same", "change"):
+        out[f"step_{k}_chord"] = d[f"{k}_step_sum"] / d[f"{k}_steps"].replace(0, np.nan)
+        out[f"leap_{k}_chord"] = d[f"{k}_leaps"] / d[f"{k}_steps"].replace(0, np.nan)
     return out
 
 
@@ -155,7 +182,8 @@ def main():
     per.to_csv(args.out.with_name(args.out.stem + "_pieces.csv"), index=False)
     cols = ["source", "pieces", "chord_time_median", "chord_time_worst10", "pieces_below_real_chord_worst10", "chord_strong_median",
             "harsh_time_median", "pieces_above_real_harsh_worst10", "M7_time_median", "chord_time_open_median",
-            "piano_chord_time_median", "piano_chord_time_open_median", "in_key_time_pooled"]
+            "piano_chord_time_median", "piano_chord_time_open_median", "in_key_time_pooled", "step_same_chord_pooled",
+            "step_change_chord_pooled", "leap_same_chord_pooled", "leap_change_chord_pooled"]
     print(table[cols].round(3).to_string(index=False))
 
 
