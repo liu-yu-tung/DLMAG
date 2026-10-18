@@ -162,11 +162,14 @@ audio { width: 100%; height: 40px; }
 .anchor:empty::before { content: "Not scored yet"; color: var(--muted); }
 .anchor b { font-family: var(--font-num); }
 
-.elem { display: grid; grid-template-columns: minmax(96px, max-content) 1fr; gap: 4px 10px; align-items: center; padding-top: 6px; }
-.elem-name { font-size: 0.88rem; }
-.elem-where { grid-column: 2; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; font-size: 0.75rem; color: var(--muted); }
-.elem-where[hidden] { display: none; }
-.elem-where .chip { min-height: 28px; padding: 2px 8px; font-size: 0.75rem; }
+.duel { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 10px; align-items: center; padding-top: 8px; }
+.duel-bars { font-family: var(--font-num); font-size: 0.85rem; font-variant-numeric: tabular-nums; color: var(--muted); }
+.duel .seg { display: flex; }
+.duel .seg button { flex: 1; padding: 7px 4px; min-height: 36px; }
+.duel-why { grid-column: 2; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; font-size: 0.75rem; color: var(--muted); }
+.duel-why[hidden] { display: none; }
+.duel-why .chip { min-height: 28px; padding: 2px 8px; font-size: 0.75rem; }
+.cell .side-note { min-height: 72px; font-size: 0.9rem; }
 
 .tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip {
@@ -274,14 +277,6 @@ canvas.pr { width: 100%; height: 168px; display: block; border-radius: 8px; back
 .cell .ab-block { border-top: 0; padding-top: 0; }
 .cell .tags { gap: 4px; }
 .cell .chip { font-size: 0.78rem; padding: 3px 8px; min-height: 30px; }
-.cell .elem { grid-template-columns: minmax(0, 1fr); gap: 3px; padding-top: 4px; }
-.cell .elem-where { grid-column: 1; }
-.cell .elem .seg { display: flex; }
-.cell .elem .seg button { flex: 1; padding: 5px 2px; }
-@container (min-width: 320px) {
-  .cell .elem { grid-template-columns: minmax(96px, max-content) 1fr; gap: 4px 10px; }
-  .cell .elem-where { grid-column: 2; }
-}
 
 @media (prefers-reduced-motion: reduce) {
   .meter i, .chev, .fold, .tab, .cell, .cells, .help-pop { transition: none; }
@@ -303,8 +298,7 @@ canvas.pr { width: 100%; height: 168px; display: block; border-radius: 8px; back
       </div>
       <div class="row-toggles" role="group" aria-label="Sections">
         <button type="button" class="tog" data-row="roll">Roll</button>
-        <button type="button" class="tog" data-row="issues">Issues</button>
-        <button type="button" class="tog" data-row="elements">Elements</button>
+        <button type="button" class="tog" data-row="notes">Comment</button>
       </div>
     </div>
   </header>
@@ -351,6 +345,7 @@ let sessions = [];
 let current = null;
 let criteria = [];
 let tagList = [];
+let flawList = [];
 const ratings = {};
 const writers = {};
 const noteTimers = {};
@@ -447,10 +442,13 @@ function renderRules(rubric) {
   const box = document.getElementById("rules-body");
   box.innerHTML = "";
   for (const r of rubric.rules) box.appendChild(el("p", null, r));
-  if (rubric.tags.length) {
-    box.appendChild(el("p", null, "Issue tags (tick any that apply):"));
+  const [title, items] = isAb()
+    ? ["For each 8-bar section, pick the better piece (or same), then what was wrong with the worse one:", rubric.flaws || []]
+    : ["Issue tags (tick any that apply):", rubric.tags];
+  if (items.length) {
+    box.appendChild(el("p", null, title));
     const dl = el("dl");
-    for (const t of rubric.tags) dl.append(el("dt", null, t.label), el("dd", null, t.desc));
+    for (const t of items) dl.append(el("dt", null, t.label), el("dd", null, t.desc));
     box.appendChild(dl);
   }
 }
@@ -642,74 +640,84 @@ function chipRow(label, items, cur, field, persistClip) {
   return box;
 }
 
-const BAR_RANGES = ["bars 1-8", "9-16", "17-24", "25-32"];
-const LEVELS = [[-1, "weak"], [0, "ok"], [1, "strong"]];
+const SECTIONS = ["1-8", "9-16", "17-24", "25-32"];
+const DUEL = [[-1, "A"], [0, "same"], [1, "B"]];
 
-function elementStrips(label, field, cur, persistClip) {
-  const box = el("div", "ab-block elems");
+function sectionDuel(cur, persistClip) {
+  const box = el("div", "duel");
   const rows = [];
-  for (const c of criteria.filter(c => c.key !== "overall")) {
-    const name = el("span", "elem-name", c.label);
-    if (c.desc) name.title = c.desc;
+  SECTIONS.forEach((bars, i) => {
     const seg = el("div", "seg");
     seg.setAttribute("role", "group");
-    seg.setAttribute("aria-label", `${label} ${c.label}`);
-    const where = el("div", "elem-where");
-    where.append(el("span", null, "where:"));
+    seg.setAttribute("aria-label", `Bars ${bars}: which is better`);
+    const why = el("div", "duel-why");
+    const whyLabel = el("span");
+    why.appendChild(whyLabel);
+    const entry = () => (cur().sections || [])[i];
     const update = () => {
-      const e = (cur()[field] || {})[c.key];
-      seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", e && Number(b.dataset.level) === e.v ? "true" : "false"));
-      where.hidden = !e;
-      where.querySelectorAll(".chip").forEach(ch => ch.setAttribute("aria-pressed", e && (e.bars || []).includes(Number(ch.dataset.bar)) ? "true" : "false"));
+      const e = entry();
+      seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", e && Number(b.dataset.w) === e.w ? "true" : "false"));
+      why.hidden = !e;
+      whyLabel.textContent = `wrong in ${e && e.w === 0 ? "both" : e && e.w < 0 ? "B" : "A"}:`;
+      why.querySelectorAll(".chip").forEach(ch => ch.setAttribute("aria-pressed", e && (e.why || []).includes(ch.dataset.flaw) ? "true" : "false"));
     };
-    for (const [v, word] of LEVELS) {
+    const edit = fn => {
+      const r = cur();
+      r.sections = SECTIONS.map((_, k) => (r.sections || [])[k] || null);
+      fn(r.sections);
+      update();
+      persistClip();
+    };
+    for (const [w, word] of DUEL) {
       const b = el("button", null, word);
       b.type = "button";
-      b.dataset.level = v;
-      b.addEventListener("click", () => {
-        const r = cur();
-        const all = r[field] = { ...(r[field] || {}) };
-        if (all[c.key] && all[c.key].v === v) delete all[c.key];
-        else all[c.key] = { v, bars: (all[c.key] && all[c.key].bars) || [] };
-        update();
-        persistClip();
-      });
+      b.dataset.w = w;
+      b.addEventListener("click", () => edit(s => { s[i] = s[i] && s[i].w === w ? null : { w, why: (s[i] && s[i].why) || [] }; }));
       seg.appendChild(b);
     }
-    BAR_RANGES.forEach((text, i) => {
-      const ch = el("button", "chip", text);
+    for (const f of flawList) {
+      const ch = el("button", "chip", f.label);
       ch.type = "button";
-      ch.dataset.bar = i;
-      ch.addEventListener("click", () => {
-        const r = cur();
-        const e = r[field] && r[field][c.key];
-        if (!e) return;
-        const set = new Set(e.bars || []);
-        set.has(i) ? set.delete(i) : set.add(i);
-        e.bars = [...set].sort();
-        update();
-        persistClip();
-      });
-      where.appendChild(ch);
-    });
-    const row = el("div", "elem");
-    row.append(name, seg, where);
-    box.appendChild(row);
+      ch.title = f.desc;
+      ch.dataset.flaw = f.key;
+      ch.addEventListener("click", () => edit(s => {
+        if (!s[i]) return;
+        const set = new Set(s[i].why);
+        set.has(f.key) ? set.delete(f.key) : set.add(f.key);
+        s[i].why = flawList.map(x => x.key).filter(k => set.has(k));
+      }));
+      why.appendChild(ch);
+    }
+    box.append(el("span", "duel-bars", bars), seg, why);
     rows.push(update);
-  }
+  });
   box._show = () => rows.forEach(f => f());
   return box;
 }
 
+function sideNote(field, label, id, cur, persistClip) {
+  const note = el("textarea", "side-note");
+  note.id = `${field}-${id}`;
+  note.setAttribute("aria-label", `Comment on ${label}`);
+  note.placeholder = `What you heard in ${label}, and where (bar number from the roll)`;
+  note.value = cur()[field] || "";
+  const key = `${id}-${field}`;
+  const flush = () => { clearTimeout(noteTimers[key]); const r = cur(); if ((r[field] || "") !== note.value) { r[field] = note.value; persistClip(); } };
+  note.addEventListener("input", () => { clearTimeout(noteTimers[key]); noteTimers[key] = setTimeout(flush, 900); });
+  note.addEventListener("blur", flush);
+  note._flush = flush;
+  return note;
+}
+
 const PREFS = [[-2, "A", "clearly"], [-1, "A", "a bit"], [0, "=", "same"], [1, "B", "a bit"], [2, "B", "clearly"]];
 
-const ROWS = [["roll", "Piano roll"], ["issues", "Issues"], ["elements", "Elements (optional)"]];
+const ROWS = [["roll", "Piano roll"], ["notes", "Comment"]];
 
 function loadLayout() {
-  const d = { A: true, B: true, rows: { roll: true, issues: true, elements: false }, choice: true, comment: true };
+  const d = { A: true, B: true, rows: { roll: true, notes: true }, choice: true, sections: true };
   try {
     const s = JSON.parse(localStorage.getItem(LAYOUT_KEY) || "{}");
-    return { A: s.A ?? d.A, B: s.B ?? d.B, rows: { ...d.rows, ...(s.rows || {}) }, choice: s.choice ?? d.choice, comment: s.comment ?? d.comment };
+    return { A: s.A ?? d.A, B: s.B ?? d.B, rows: { ...d.rows, ...(s.rows || {}) }, choice: s.choice ?? d.choice, sections: s.sections ?? d.sections };
   } catch (e) { return d; }
 }
 let layout = loadLayout();
@@ -736,7 +744,7 @@ function applyLayout(slide) {
   }
   for (const [key] of ROWS) setFold(slide._frows[key], layout.rows[key]);
   setFold(slide._choice, layout.choice);
-  setFold(slide._comment, layout.comment);
+  setFold(slide._sections, layout.sections);
 }
 
 function changeLayout(fn) {
@@ -783,19 +791,11 @@ function pairCard(session, pair) {
   const choiceBody = el("div", "fold-pad");
   choiceBody.append(prefs, reasons);
   const choice = foldRow("choice", "Which is better, and why", choiceBody);
-
-  const note = el("textarea");
-  note.id = `note-${id}`;
-  note.setAttribute("aria-label", "Comment");
-  note.placeholder = "Why, and where (A or B, bar number from the roll)";
-  note.value = cur().note || "";
-  const flush = () => { clearTimeout(noteTimers[id]); const r = cur(); if ((r.note || "") !== note.value) { r.note = note.value; persistClip(); } };
-  note.addEventListener("input", () => { clearTimeout(noteTimers[id]); noteTimers[id] = setTimeout(flush, 900); });
-  note.addEventListener("blur", flush);
-  const noteBody = el("div", "fold-pad");
-  noteBody.appendChild(note);
-  const comment = foldRow("comment", "Comment", noteBody);
-  top.append(head, choice.row, comment.row);
+  const duel = sectionDuel(cur, persistClip);
+  const duelBody = el("div", "fold-pad");
+  duelBody.appendChild(duel);
+  const sections = foldRow("sections", "Section by section (bars)", duelBody);
+  top.append(head, choice.row, sections.row);
 
   const ab = el("section", "clip ab-card");
   const tabs = el("div", "tabs");
@@ -803,9 +803,8 @@ function pairCard(session, pair) {
   tabs.append(tab.A.tab, tab.B.tab);
   ab.appendChild(tabs);
   const roll = { A: rollCell("A"), B: rollCell("B") };
-  const tags = { A: chipRow(null, tagList, cur, "tags_a", persistClip), B: chipRow(null, tagList, cur, "tags_b", persistClip) };
-  const strips = { A: elementStrips("A", "elem_a", cur, persistClip), B: elementStrips("B", "elem_b", cur, persistClip) };
-  const content = { roll, issues: tags, elements: strips };
+  const notes = { A: sideNote("note_a", "A", id, cur, persistClip), B: sideNote("note_b", "B", id, cur, persistClip) };
+  const content = { roll, notes };
   const rows = {};
   for (const [key, title] of ROWS) {
     rows[key] = foldRow(key, title, cellPair(content[key].A, content[key].B));
@@ -813,7 +812,7 @@ function pairCard(session, pair) {
     ab.appendChild(rows[key].row);
   }
   choice.head.addEventListener("click", () => changeLayout(l => { l.choice = !l.choice; }));
-  comment.head.addEventListener("click", () => changeLayout(l => { l.comment = !l.comment; }));
+  sections.head.addEventListener("click", () => changeLayout(l => { l.sections = !l.sections; }));
   for (const side of ["A", "B"]) tab[side].toggle.addEventListener("click", () => changeLayout(l => { l[side] = !l[side]; }));
   const parts = side => ({ audio: tab[side].audio, canvas: roll[side].querySelector("canvas.pr"), where: tab[side].where,
                            buttons: roll[side].querySelectorAll(".roll-seg button") });
@@ -824,15 +823,12 @@ function pairCard(session, pair) {
   slide._tabs = tab;
   slide._frows = rows;
   slide._choice = choice;
-  slide._comment = comment;
-  slide._flush = flush;
+  slide._sections = sections;
+  slide._flush = () => { notes.A._flush(); notes.B._flush(); };
   slide._sync = b => {
     showPref(b.pref);
     reasons._show(b.reasons);
-    tags.A._show(b.tags_a);
-    tags.B._show(b.tags_b);
-    strips.A._show();
-    strips.B._show();
+    duel._show();
   };
   slide._sync(cur());
   cards.set(id, slide);
@@ -1044,6 +1040,7 @@ function renderSession() {
   const rubric = current.rubric || { rules: [], criteria: [], tags: [] };
   criteria = rubric.criteria;
   tagList = rubric.tags;
+  flawList = rubric.flaws || [];
   renderRules(isAb() ? { ...rubric, rules: current.rules || rubric.rules } : rubric);
   if (current.intro) {
     const intro = document.querySelector("#help-pop .intro");
@@ -1076,7 +1073,7 @@ function renderSession() {
 function applyRemote(id, data) {
   const w = writers[id];
   if (w && (w.busy || w.next)) return;
-  if (document.activeElement && document.activeElement.id === `note-${id}`) return;
+  if (document.activeElement && ["note", "note_a", "note_b"].some(f => document.activeElement.id === `${f}-${id}`)) return;
   const local = ratings[id];
   if (local && local.updatedAt && data.updatedAt && local.updatedAt > data.updatedAt) return;
   ratings[id] = { ...data };
@@ -1332,8 +1329,10 @@ function renderSessionValues() {
       const set = new Set(body.tags || []);
       card._tags.querySelectorAll(".chip").forEach(ch => ch.setAttribute("aria-pressed", set.has(ch.dataset.tag) ? "true" : "false"));
     }
-    const note = document.getElementById(`note-${id}`);
-    if (note && document.activeElement !== note) note.value = body.note || "";
+    for (const field of ["note", "note_a", "note_b"]) {
+      const note = document.getElementById(`${field}-${id}`);
+      if (note && document.activeElement !== note) note.value = body[field] || "";
+    }
     if (isRated(body) && !(writers[id] && writers[id].busy)) setStatus(id, "Saved", "ok");
     renderCount(id);
   }

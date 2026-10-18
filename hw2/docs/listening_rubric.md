@@ -108,8 +108,24 @@ Tick any that apply; they are counted per source in the report.
 - **Melody missing:** no melody for 4 bars or more.
 - **Timing off:** melody and piano not aligned in time.
 
-## A/B pages: cards and element strips (from `t3_continuations`)
+## Section flaws
 
-Sections after "Issue tags" are notes; `parse_rubric` stops there. The A/B page shows one pair at a time; Back, Next, the dots and the rated count sit in a footer (arrow keys also work). Each pair has a top card (which is better, what decided it, comment) and an A/B card below it with A and B as tabs. Tapping a tab letter folds that column sideways; the piano roll, issues and elements rows fold for both columns at once. A toolbar under the title sets the columns (A, A+B, B) and the rows; the fold state is kept on the device and carries over to the next pair. Help text sits behind the `?` button.
+On A/B pages, for each 8-bar section: what was wrong with the worse piece (both pieces when "same").
 
-In the elements section, each piece has the six elements above, each marked weak, ok or strong. Choosing a level opens four bar ranges (1-8, 9-16, 17-24, 25-32) for where it applies; none selected means the whole piece. `listening.py reveal` writes `results/listening/<session>_elements.csv` (system, element, level, bars) and prints the mean level per system and element. In TASK B sessions (`listening.py prompt_pairs`) bars 1-8 are the prompt, and `reveal` also prints the wins per prompt and config.
+- **Messy:** random or scattered notes; no clear idea.
+- **Wrong notes:** notes or chords that clash or leave the key.
+- **Empty:** too thin, or the music drops out.
+- **Off-vibe:** does not belong with the rest of the piece (style, key or texture changes).
+- **Repetitive:** the same bar or pattern with no change.
+- **Timing:** notes off the beat, melody and piano apart, or the pace feels wrong.
+
+## A/B pages: cards and section duel (from `t5_openings`, 2026-10-18)
+
+Sections after "Section flaws" are notes; `parse_rubric` stops there. The A/B page shows one pair at a time; Back, Next, the dots and the rated count sit in a footer (arrow keys also work). Each pair has a top card and an A/B card below it with A and B as tabs:
+
+- **Top card:** which is better (A clearly, A a bit, same, B a bit, B clearly), what decided it (the six elements above), and the section duel: for each 8-bar section (1-8, 9-16, 17-24, 25-32) A, same or B, and once chosen, the flaws of the worse piece from the list above. Tap a selected choice again to clear it.
+- **A/B card:** the piano roll and a comment for each piece. Tapping a tab letter folds that column sideways; the toolbar under the title sets the columns (A, A+B, B) and the rows. The fold state is kept on the device and carries over to the next pair. Help text sits behind the `?` button.
+
+`listening.py reveal` writes `results/listening/<session>_sections.csv` (pair, section, better and worse system, flaws) and prints section wins and flaw counts per system. In TASK B sessions (`listening.py prompt_pairs`) bars 1-8 are the prompt, and `reveal` also prints the wins per prompt and config.
+
+Before `t5_openings`, A/B pages had issue tags and element strips (weak, ok or strong per element, with optional bar ranges) per piece and one comment per pair; `reveal` still reads those into `<session>_elements.csv`. The listener found the bar ranges unclear, and whole-piece tags stopped telling pieces apart once wrong notes became rare, so the section duel replaced both.

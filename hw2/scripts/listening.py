@@ -38,23 +38,27 @@ def slug(text: str) -> str:
     return re.sub(r"[^a-z0-9]+", "_", text.lower()).strip("_")
 
 
+RUBRIC_LISTS = {"Issue tags": "tags", "Section flaws": "flaws"}
+
+
 def parse_rubric(path=RUBRIC) -> dict:
-    """docs/listening_rubric.md -> {"rules": [...], "criteria": [...], "tags": [...]} for the page and the sheet."""
-    rules, criteria, tags, cur = [], [], [], None
+    """docs/listening_rubric.md -> {"rules", "criteria", "tags", "flaws"} for the page and the sheet."""
+    rules, criteria, lists, cur, items = [], [], {v: [] for v in RUBRIC_LISTS.values()}, None, None
     for line in path.read_text().splitlines():
-        if line.startswith("## ") and criteria and cur is None:
+        if line.startswith("## ") and line[3:].strip() in RUBRIC_LISTS:
+            cur, items = None, lists[RUBRIC_LISTS[line[3:].strip()]]
+            continue
+        if line.startswith("## ") and items is not None:
             break
         if line.startswith("## "):
-            cur = None if line[3:].strip() == "Issue tags" else {"key": slug(line[3:]), "label": line[3:].strip(), "question": "",
-                                                                  "scope": "", "listen": "", "not": "", "anchors": {}}
-            if cur:
-                criteria.append(cur)
+            cur = {"key": slug(line[3:]), "label": line[3:].strip(), "question": "", "scope": "", "listen": "", "not": "", "anchors": {}}
+            criteria.append(cur)
             continue
         m = re.match(r"- \*\*(.+?):\*\* (.*)", line)
         if not criteria and not line.startswith(("#", "-")) and line.strip():
             rules.append(line.strip())
-        elif m and cur is None and criteria:
-            tags.append({"key": slug(m[1]), "label": m[1], "desc": m[2]})
+        elif m and items is not None:
+            items.append({"key": slug(m[1]), "label": m[1], "desc": m[2]})
         elif m and cur is not None:
             field = {"Scope": "scope", "Listen for": "listen", "Not here": "not"}.get(m[1])
             if field:
@@ -63,11 +67,12 @@ def parse_rubric(path=RUBRIC) -> dict:
                 cur["anchors"][m[1]] = m[2]
         elif cur is not None and line.strip() and not line.startswith("-") and not cur["question"]:
             cur["question"] = line.strip()
-    return {"rules": rules, "criteria": criteria, "tags": tags}
+    return {"rules": rules, "criteria": criteria, **lists}
 
 
 ASPECTS_V2 = [c["key"] for c in parse_rubric()["criteria"]]
-AB_FIELDS = ["session", "pair", "pref", "reasons", "tags_a", "tags_b", "elem_a", "elem_b", "note"]
+AB_FIELDS = ["session", "pair", "pref", "reasons", "sections", "note_a", "note_b", "tags_a", "tags_b", "elem_a", "elem_b", "note"]
+SECTIONS = ["1-8", "9-16", "17-24", "25-32"]
 FIELDS = ["session", "clip"] + ASPECTS_V1 + [a for a in ASPECTS_V2 if a not in ASPECTS_V1] + ["tags", "note"]
 
 
@@ -225,7 +230,7 @@ SITE_HEAD = ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
 
 AB_INTRO = [
     "One pair at a time: Back and Next at the bottom (or the arrow keys); the dots show which pairs are picked.",
-    "Top card: which piece is better, what decided it, and a comment. Below it, A and B are tabs: tap a letter to fold that column. The bar at the top switches the columns (A, A+B, B) and the sections (Roll, Issues, Elements) for both at once.",
+    "Top card: which piece is better, what decided it, and section by section (bars 1-8, 9-16, 17-24, 25-32) which is better and what was wrong with the worse one. Below it, A and B are tabs with a piano roll and a comment each: tap a letter to fold that column. The bar at the top switches the columns (A, A+B, B) and the rows (Roll, Comment).",
     "Clips are full length; tap a piano roll to jump. Every tap saves to this page.",
 ]
 AB_RULES = [
@@ -307,7 +312,8 @@ def import_ratings(args):
         new = pd.DataFrame([{"session": d["session"], "pair": d["clip"], "pref": d.get("pref"), "reasons": ";".join(d.get("reasons") or []),
                              "tags_a": ";".join(d.get("tags_a") or []), "tags_b": ";".join(d.get("tags_b") or []),
                              "elem_a": json.dumps(d.get("elem_a") or {}), "elem_b": json.dumps(d.get("elem_b") or {}),
-                             "note": d.get("note") or ""} for d in pair_docs])
+                             "note": d.get("note") or "", "sections": json.dumps(d["sections"]) if d.get("sections") else "",
+                             "note_a": d.get("note_a") or "", "note_b": d.get("note_b") or ""} for d in pair_docs])
         keep = ~old.set_index(["session", "pair"]).index.isin(new.set_index(["session", "pair"]).index)
         pd.concat([old[keep], new]).reindex(columns=AB_FIELDS).sort_values(["session", "pair"]).to_csv(AB_SHEET, index=False)
         print(f"{len(new)} rated pairs written to {AB_SHEET}")
@@ -370,6 +376,26 @@ def reveal_ab(session: str, key: dict):
         print("element levels per system (-1 weak, 0 ok, 1 strong; mean and count):")
         print(e.groupby(["system", "element"])["level"].agg(["mean", "size"]).round(2).unstack("system").to_string())
         e.to_csv(RESULTS / f"{session}_elements.csv", index=False)
+    secs = []
+    for _, r in df.iterrows():
+        raw = r.get("sections")
+        for bars, e in zip(SECTIONS, json.loads(raw) if isinstance(raw, str) else []):
+            if e:
+                secs.append({"pair": r["pair"], "section": bars, "system_a": r["system_a"], "system_b": r["system_b"],
+                             "better": {-1: r["system_a"], 1: r["system_b"]}.get(e["w"], "same"),
+                             "worse": {-1: r["system_b"], 1: r["system_a"]}.get(e["w"], "both"), "flaws": ";".join(e.get("why") or [])})
+    if secs:
+        s = pd.DataFrame(secs)
+        s.to_csv(RESULTS / f"{session}_sections.csv", index=False)
+        per = pd.concat([s.assign(system=s[f"system_{x}"]) for x in "ab"], ignore_index=True)
+        per["result"] = np.where(per["better"] == per["system"], "won", np.where(per["worse"] == per["system"], "lost", "same"))
+        print("sections won / same / lost per system:")
+        print(per.groupby(["system", "section"], sort=False)["result"].value_counts().unstack(fill_value=0)
+              .reindex(columns=["won", "same", "lost"], fill_value=0).unstack("section", fill_value=0).to_string())
+        flaws = per[per["result"] != "won"].assign(flaw=lambda d: d["flaws"].str.split(";")).explode("flaw", ignore_index=True).query("flaw != ''")
+        if len(flaws):
+            print("flaws of the worse piece (both when same), per system and section:")
+            print(pd.crosstab([flaws["system"], flaws["section"]], flaws["flaw"]).to_string())
     print(f"-> {out}")
 
 
