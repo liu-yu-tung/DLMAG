@@ -87,6 +87,29 @@ def melody_steps(meter: int, prefixes: list[list[str]], bars: list[dict]) -> dic
     return c
 
 
+def m2_split(meter: int, prefixes: list[list[str]], bars: list[dict]) -> dict:
+    """Minor-2nd melody time (as in bar_counts) split by whether the melody and piano notes started under the same chord label."""
+    half, bar_len = max(1, meter // 2) * PPB, meter * PPB
+    labels = [[t for t in prefix if t.startswith("Chord_")] for prefix in prefixes[:BARS]]
+
+    def chord_at(t):
+        c = labels[t // bar_len] if t // bar_len < len(labels) else []
+        return c[min(int(t % bar_len >= half), len(c) - 1)] if c else "Chord_N"
+
+    piano = [(i * bar_len + p, q, max(d, 1)) for i, notes in enumerate(bars[:BARS]) for p, q, _, d in notes["piano"]]
+    c = {"m2_same_chord_time": 0, "m2_change_chord_time": 0}
+    for i, notes in enumerate(bars[:BARS]):
+        lo, hi = i * bar_len, (i + 1) * bar_len
+        here = [(s, q, d) for s, q, d in piano if s < hi and s + d > lo]
+        for pos, pitch, _, dur in notes["melody"]:
+            start = lo + pos
+            for t in range(start, lo + min(pos + max(dur, 1), bar_len)):
+                rubs = [s for s, q, d in here if s <= t < s + d and abs(pitch - q) == 1]
+                if rubs:
+                    c["m2_same_chord_time" if chord_at(rubs[0]) == chord_at(start) else "m2_change_chord_time"] += 1
+    return c
+
+
 def piano_chords(meter: int, piano) -> list[str]:
     """Per half bar, the major or minor triad with the most piano sounding time; Chord_N without piano."""
     half, end = max(1, meter // 2) * PPB, meter * PPB
@@ -117,7 +140,7 @@ def piece_counts(source: str, piece: str, meter: int, prefixes: list[list[str]],
             total[k] = total.get(k, 0) + v
             if i < OPENING:
                 total[f"open_{k}"] = total.get(f"open_{k}", 0) + v
-    return {"source": source, "piece": piece, **total, **melody_steps(meter, prefixes, bars)}
+    return {"source": source, "piece": piece, **total, **melody_steps(meter, prefixes, bars), **m2_split(meter, prefixes, bars)}
 
 
 def real(tokens_dir: Path, n_val: int, chords_from_piano=False) -> list[dict]:
@@ -162,6 +185,8 @@ def shares(d: pd.DataFrame) -> pd.DataFrame:
     for k in KINDS:
         out[f"{k}_time"] = d[f"{k}_time"] / d["time"]
     out["harsh_time"] = (d["m2_time"] + d["m9_time"]) / d["time"]
+    for k in ("same", "change"):
+        out[f"m2_{k}_chord_time"] = d[f"m2_{k}_chord_time"] / d["time"]
     out["piano_chord_time"] = d["piano_chord_time"] / d["piano_labelled_time"]
     out["chord_time_open"] = d["open_chord_time"] / d["open_labelled_time"].replace(0, np.nan)
     out["piano_chord_time_open"] = d["open_piano_chord_time"] / d["open_piano_labelled_time"].replace(0, np.nan)

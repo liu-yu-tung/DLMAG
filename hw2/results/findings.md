@@ -325,7 +325,7 @@ Same 20 plans and seeds as `fill_rep_60k/last` (`outputs/sweep/fill_rep_60k/last
 
 - Melody on chord tones is at the real level (pooled, median, worst 10%); the share of pieces past the real worst-10% line drops from 0.35 to 0.10, the real share.
 - No jump at chord changes: the step across a chord change is 2.80 semitones (real 2.72), leaps 4.0% (real 4.8%). The early-checkpoint jumpiness (5.2 semitones, 17% leaps on 3 pieces) is gone.
-- Cost: more minor-2nd time against the piano (0.034 vs 0.018 real), 25% of pieces past the real harsh line, and 1.4% of melody time out of key (real 0.5%). Bars 1-8 melody is less on chord tones than the whole piece.
+- Cost: more minor-2nd time against the piano (0.034 vs 0.018 real), 25% of pieces past the real harsh line, and 1.4% of melody time out of key (real 0.5%). Bars 1-8 melody is less on chord tones than the whole piece. Split of the minor-2nd time (`m2_same_chord_time`, `m2_change_chord_time`): 0.029 between notes started under the same chord label vs 0.016 real, 0.005 across a chord change vs 0.002, so held notes over a chord change are the smaller part.
 - Silence moves toward real (1.9% vs 2.6%; real 1.6%). Predicted grade: no difference (0.40 vs 0.42, sd 0.11).
 
 ### Melody-lead tests (2026-10-20; `outputs/cand_a/pf_fill60k_nochord`; `harmony.csv`, `harmony_piano_chords.csv`)
