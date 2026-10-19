@@ -341,6 +341,26 @@ Same 20 plans and seeds as `fill_rep_60k/last` (`outputs/sweep/fill_rep_60k/last
 - Without chord labels the current fill model's melody and piano do not agree (85% of pieces past the line). The model saw chords in 85% of its training crops (`--drop_p 0.15`), so this tests the dropout, not a model trained without chords (`fill_nochord_60k`, in training).
 - With chords read from the piano the chord-relative set is still closer to real than the current one (0.20 vs 0.35 of pieces past the line).
 
+### Melody model plus BONUS piano (2026-10-20; `outputs/cand_a/pf_melody20k`; `harmony*.csv`, `melody_lead_*.csv`, `grade_pred_melody_lead.csv`)
+
+`melody_20k/best` (step 5000, lowest val 0.90; val rose to 1.85 by step 13000) writes the whole melody without chord labels, then `abl_melody/step_7000` (BONUS TASK model, melody input only) writes the piano. Same 20 plans and seed as `fill_rep_60k/last`.
+
+| | real | `fill_rep_60k/last` | melody + BONUS piano |
+|---|---|---|---|
+| chords from the piano: melody time on chord tones, median; pieces past the real worst 10% line | 0.719; 0.10 | 0.622; 0.35 | 0.480; 0.80 |
+| chords from the piano: piano time on chord tones, median | 0.926 | 0.931 | 0.988 |
+| minor 2nd / major 7th / minor 9th time | 0.018 / 0.016 / 0.011 | 0.020 / 0.029 / 0.018 | 0.034 / 0.032 / 0.022 |
+| minor 2nd + minor 9th: median; pieces past the real worst 10% line | 0.023; 0.10 | 0.030; 0.15 | 0.035; 0.20 |
+| plan chord match (`melody_lead_adherence.csv`) | 0.852 | 0.790 | 0.115 |
+| melody returns of the plan's repeats (`melody_returns_ge1`) | 0.475 | 0.053 | 0.737 |
+| silent share / `gaps_1beat` | 0.016 / 0.48 | 0.026 / 0.95 | 0.040 / 0.20 |
+| predicted win rate vs real, v3, mean (sd) | | 0.420 (0.114) | 0.325 (0.146) |
+
+- The piano does not follow the melody: with chords read from the piano, 80% of pieces have the melody off those chords past the real line. The piano itself is plain triads (0.988 on its own triads, real 0.926).
+- The plan's chords are ignored (match 0.115), as expected: neither model gets them.
+- The melody repeats the plan's sections (0.74 of pieces, real 0.48, current fill 0.05), so the melody model does follow the plan's repeat structure.
+- Not a listening candidate. The minor-2nd penalty (`--rub_penalty`) was not tested: harsh rubs are at 20% of pieces, but the main gap is melody vs piano chords, which a rub penalty does not fix.
+
 ## Listening tests (`results/listening/*.csv`, `docs/listening_rubric.md`) · as of 2026-10-18
 
 Blind A/B pairs on the phone page; `pref` from −2 (A much better) to +2 (B much better). The four pilot sessions (`candidates`, `ckpt`, `ckpt2`, `planfill`) used a flawed rendering and are a pilot only.
