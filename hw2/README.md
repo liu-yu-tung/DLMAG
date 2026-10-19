@@ -127,7 +127,7 @@ The analysis scripts read POP909 for the real reference plus any generated folde
 - **`silence_stats.py`:** silence, empty bars, melody gaps, contrast between 8-bar windows, start/end similarity.
 - **`return_stats.py`:** intro and outro length, theme returns, repetition by lag (`results/figures/return_lags.png`).
 - **`adherence.py`:** plan-fill outputs only; how often the written notes match the planned chords, bins and repeat labels.
-- **`harmony_stats.py`:** plan-fill outputs and real songs; melody time on chord tones, in key and against sounding piano notes by real distance, melody steps within a chord and across a chord change; per piece and per set.
+- **`harmony_stats.py`:** plan-fill outputs and real songs; melody time on chord tones, in key and against sounding piano notes by real distance, melody steps within a chord and across a chord change; per piece and per set. `--chords_from_piano` labels chords from the piano instead of the plan.
 - **`velocity_spikes.py`:** share of notes far above their bar's median velocity, by track, as written and as the listening build plays them.
 - **`grade_model.py`:** listening-grade predictor fit on the graded sessions; `predict --plot` gives predicted grade vs checkpoint loss (`docs/grade_model.md`).
 - **`repeat_probe.py`:** teacher-forced melody loss of the fill models on held-out songs by true repeat kind, with repeat labels kept, set to `Rep_none` or removed (GPU, about 3 min).

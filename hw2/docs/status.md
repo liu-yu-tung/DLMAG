@@ -8,17 +8,18 @@ As of 2026-10-18 evening. Deadline Mon 2026-10-26 23:59; the report (PPT-style P
 - **TASK A cut, under test:** 40 bars generated, the first 8 dropped (`generate_uncond.py --skip_bars 8`), sets `outputs/cand_a/single_*_skip8`. Allowed by the spec if the inference code does it and the report says so.
 - **TASK B:** must use the TASK A checkpoint (spec page 16); set `outputs/task_b_final` (3 prompts x 3 configs, 8 + 24 bars); best config `t1 p0.95` for all three prompts (T3, 6 of 6).
 - **Plan-fill (extra system for the report):** plan `plan_rep/best`, fill `fill_rep_60k/last` (T4: 2 of 2 against `fill_rep_long/loss_0.40`), melody first, `--form I4A8B8A8E4 --return_as var --repeat_bias 8`; set `outputs/sweep/fill_rep_60k/last` (the 20 plans of `pf_oldplan_fill040`).
-- **Plan-fill, in training:** `fill_rel_60k`, pitches as `Rel_k` (semitones from the chord root; `docs/plan_fill.md`), same settings and length as `fill_rep_60k`. Started 18:48, ETA about 23:00 (0.25 s per step), `runs/train_rel.sh`.
+- **Plan-fill, chord-relative:** `fill_rel_60k/last` (pitches as `Rel_k`, semitones from the chord root; `docs/plan_fill.md`), set `outputs/cand_a/pf_fillrel60k`: melody on chord tones at the real level, more minor-2nd rubs (findings "Chord-relative fill, trained"). In T5.
+- **Plan-fill, melody-lead, in training (2026-10-20, `runs/train_melody_lead.sh`):** `melody_20k` (melody model; piano from the BONUS model) start 00:32, ETA 01:44; then `fill_nochord_60k` (fill without chord labels), ETA 05:25. The no-training test (`--drop chords`) failed (findings "Melody-lead tests").
 - **BONUS TASK:** `abl_melody/step_7000`, ablations `abl_lookahead`, `abl_chords`. Done.
 - **Held-out songs:** 45 of 896 are held out; the report must say so.
 
 ## Next
 
-1. When `fill_rel_60k` finishes: generate on the `pf_oldplan_fill040` plans with the same seeds (`--plans_from`, `--wav`) into `outputs/cand_a/pf_fillrel60k`; run `harmony_stats.py`, metrics, silence, return, adherence, predicted grade. First check: melody steps across chord changes (early checkpoint, 3 pieces: 5.2 semitones vs 2.7 real, leaps 17% vs 5%). If the trained model stays jumpy there, an option is chord-relative pitches for the piano only.
-2. **T5** (user 2026-10-18: waits for the new fill), new A/B form with the section duel, sides balanced. Rules fixed before rating:
+1. T5 grades (`t5_sections`, built 2026-10-20 00:20): import, reveal, `grade_model.py check --session t5_sections` before `fit`, then apply the rules below. Melody-lead sets: generate on the same plans, `harmony_stats.py --chords_from_piano` plus the usual stats; a listening test only if one comes near real.
+2. **T5 rules** (session `t5_sections`, 12 pairs, section-duel form, sides balanced), fixed before rating:
    - single-stage `t1 p1` cut vs uncut, same seeds, 4 pairs: the cut is submitted if it wins more than it loses (tie: uncut)
    - chord-relative vs current plan-fill on the same plans (`sweep/fill_rep_60k/last`), 2 pairs: kept for plan-fill if it wins more (tie: current)
-   - plan-fill (whichever the harmony check favours) vs single-stage, 3 against cut and 3 against uncut: plan-fill is submitted only with at least 5 of 6
+   - chord-relative plan-fill vs single-stage, 3 against cut and 3 against uncut: plan-fill is submitted only with at least 5 of 6
 3. Packaging: checkpoint defaults in the `Makefile` and `generate_plan_fill.py` (and the README examples), a `--plan_tok2idx` option (without `runs/` the plan vocabulary falls back to the fill one, which breaks with a `Rel_` fill model), final TASK A and TASK B WAVs at −18 LUFS (now −38 to −30; velocities as written), `submission` branch, fresh-venv README test. Code, checkpoints and README go on the cloud drive (the user does this).
 4. Report.
 
