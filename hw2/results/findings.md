@@ -299,7 +299,34 @@ In the C-shifted song, first 32 bars, time-weighted per piece. Real: the 851 tra
 
 ### Chord-relative fill pitches (2026-10-18; `data/tokens/fill_rel`)
 
-`Rel_k` (pitch measured from the chord root) = pitch − signed(root of the chord at the note's start), in the C-shifted song; chord tones become the same numbers under every chord. Decoding every `Rel_` note of the 896 songs with its bar's chord gives back all 1,508,522 notes (0 bar blocks differ). The default tokenizer output is unchanged (30 of 30 songs checked). Model `fill_rel_60k` is in training.
+`Rel_k` (pitch measured from the chord root) = pitch − signed(root of the chord at the note's start), in the C-shifted song; chord tones become the same numbers under every chord. Decoding every `Rel_` note of the 896 songs with its bar's chord gives back all 1,508,522 notes (0 bar blocks differ). The default tokenizer output is unchanged (30 of 30 songs checked). Model `fill_rel_60k`: same settings and length as `fill_rep_60k` (60k steps, done 2026-10-18 22:23; final train loss 0.121 vs 0.115, val 3.79 vs 3.81).
+
+### Chord-relative fill, trained (2026-10-20; `outputs/cand_a/pf_fillrel60k`; `harmony.csv`, `fill_rel_*.csv`, `grade_pred_fill_rel.csv`)
+
+Same 20 plans and seeds as `fill_rep_60k/last` (`outputs/sweep/fill_rep_60k/last`), so piece i pairs by file name. Real = the 851 training songs (silence: song starts).
+
+| | real | `fill_rep_60k/last` | `fill_rel_60k/last` |
+|---|---|---|---|
+| melody time on chord tones, pooled / per-piece median / worst 10% | 0.708 / 0.712 / 0.574 | 0.622 / 0.646 / 0.531 | 0.705 / 0.707 / 0.586 |
+| pieces past the real worst 10% line (chord tones) | 0.10 | 0.35 | 0.10 |
+| strong-beat melody onsets on chord tones, median | 0.765 | 0.686 | 0.800 |
+| melody time in the local key | 0.995 | 0.998 | 0.986 |
+| melody time against a sounding piano note: minor 2nd / major 7th / minor 9th | 0.018 / 0.016 / 0.011 | 0.020 / 0.029 / 0.018 | 0.034 / 0.020 / 0.016 |
+| minor 2nd + minor 9th, per-piece median / worst 10% | 0.023 / 0.065 | 0.030 / 0.069 | 0.037 / 0.098 |
+| pieces past the real worst 10% line (minor 2nd + minor 9th) | 0.10 | 0.15 | 0.25 |
+| melody time on chord tones, bars 1-8, per-piece median | 0.721 | 0.702 | 0.625 |
+| piano time on chord tones, median | 0.922 | 0.870 | 0.930 |
+| melody step, semitones: within a chord / across a chord change | 2.19 / 2.72 | 2.08 / 2.39 | 2.06 / 2.80 |
+| melody leaps (a minor 6th or more): within / across | 0.029 / 0.048 | 0.019 / 0.025 | 0.019 / 0.040 |
+| plan chord match (`fill_rel_adherence.csv`; real held-out 0.852) | | 0.790 | 0.890 |
+| silent share / `gaps_1beat` (`fill_rel_silence.csv`) | 0.016 / 0.48 | 0.026 / 0.95 | 0.019 / 0.70 |
+| H1 / H4 / GS (`fill_rel_metrics.csv`) | | 2.09 / 2.61 / 0.973 | 2.09 / 2.66 / 0.968 |
+| predicted win rate vs real, v3, mean (sd) | | 0.420 (0.114) | 0.402 (0.107) |
+
+- Melody on chord tones is at the real level (pooled, median, worst 10%); the share of pieces past the real worst-10% line drops from 0.35 to 0.10, the real share.
+- No jump at chord changes: the step across a chord change is 2.80 semitones (real 2.72), leaps 4.0% (real 4.8%). The early-checkpoint jumpiness (5.2 semitones, 17% leaps on 3 pieces) is gone.
+- Cost: more minor-2nd time against the piano (0.034 vs 0.018 real), 25% of pieces past the real harsh line, and 1.4% of melody time out of key (real 0.5%). Bars 1-8 melody is less on chord tones than the whole piece.
+- Silence moves toward real (1.9% vs 2.6%; real 1.6%). Predicted grade: no difference (0.40 vs 0.42, sd 0.11).
 
 ## Listening tests (`results/listening/*.csv`, `docs/listening_rubric.md`) · as of 2026-10-18
 
