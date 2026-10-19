@@ -47,6 +47,8 @@ def parse_args():
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--fill", action="store_true", help="plan-fill songs (tokens_dir/songs.json, hw2.data.FillDataset)")
     p.add_argument("--drop_p", type=float, default=0.15, help="with --fill: chance to drop each attribute group per crop")
+    p.add_argument("--always_drop", type=str, default="", help="with --fill: attribute groups never shown, e.g. chords,piano_stats")
+    p.add_argument("--melody_only", action="store_true", help="with --fill: leave out the piano blocks (melody model)")
     return p.parse_args()
 
 
@@ -85,8 +87,9 @@ def main():
     (run_dir / "val_songs.json").write_text(json.dumps(sorted(s["song_name"] for s in val_songs)))
 
     if args.fill:
-        train_ds = FillDataset(train_songs, tok2idx, args.ctx, args.drop_p, args.seed)
-        val_ds = FillDataset(val_songs, tok2idx, args.ctx, 0.0, args.seed + 1)
+        fixed = dict(always_drop=[g for g in args.always_drop.split(",") if g], melody_only=args.melody_only)
+        train_ds = FillDataset(train_songs, tok2idx, args.ctx, args.drop_p, args.seed, **fixed)
+        val_ds = FillDataset(val_songs, tok2idx, args.ctx, 0.0, args.seed + 1, **fixed)
     else:
         train_ds = CropDataset(train_songs, tok2idx, args.ctx, args.max_shift, args.seed)
         val_ds = CropDataset(val_songs, tok2idx, args.ctx, 0, args.seed + 1)

@@ -14,7 +14,9 @@ from hw2 import code_version
 from hw2.data import split_songs
 from hw2.generate import SampleConfig, load_model
 from hw2.plan import song_raw, song_tokens
-from hw2.plan_generate import PlanRules, parse_form, parse_plan, sample_fill, sample_plan, to_outputs
+from hw2.bonus import accompany
+from hw2.plan_generate import PlanRules, parse_form, parse_plan, sample_fill, sample_plan, signed, to_outputs
+from hw2.pop909 import note_tokens
 from hw2.remi import DATA_ROOT, HW2_ROOT, load_sequences, load_vocab
 from hw2.render import midi_to_wav
 
@@ -57,6 +59,10 @@ def parse_args():
     p.add_argument("--config", action="append", default=None, help="fill temperature,top_k,top_p (repeatable): one subfolder "
                    "per config, all filling the same plans; replaces --temperature/--top_k/--top_p")
     p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--piano_ckpt", type=str, default=None, help="melody-only fill model (train.py --melody_only): the BONUS "
+                   "model that writes the piano under the finished melody, e.g. checkpoints/abl_melody/step_7000")
+    p.add_argument("--piano_tok2idx", type=str, default="data/tokens/bonus_ppb16/tok2idx.json")
+    p.add_argument("--piano_top_p", type=float, default=0.95, help="BONUS TASK setting")
     p.add_argument("--device", type=str, default="cuda")
     p.add_argument("--wav", action="store_true", help="also render WAV with FluidSynth")
     return p.parse_args()
@@ -76,6 +82,16 @@ def prompt_plans(prompt_dir: Path, prompt_bars: int, tok2idx_path: Path, tok2idx
     return out
 
 
+def add_piano(model, tok2idx, idx2tok, plan, notes, cfg, gen):
+    """Piano for the whole melody from the BONUS model, which reads pitches in the played key (as to_outputs plays them)."""
+    shift = signed(plan.key)
+    melody = [note_tokens([(pos, min(108, max(21, p + shift)), v, d) for pos, p, v, d in bar["melody"]]) for bar in notes]
+    assert all(t in tok2idx for bar in melody for t in bar), "melody token missing from the BONUS vocabulary"
+    piano, _ = accompany(model, tok2idx, idx2tok, melody, None, {}, [plan.meter] * len(notes), cfg, gen)
+    for bar, events in zip(notes, piano):
+        bar["piano"] = [(pos, p - shift, v, d) for pos, p, v, d in events]
+
+
 def main():
     args = parse_args()
     assert sum(map(bool, (args.prompt_dir, args.plans_from, args.real_plans))) <= 1, "pick one plan source"
@@ -92,7 +108,11 @@ def main():
     plan_cfg = SampleConfig(args.plan_temperature, 0, args.plan_top_p)
     configs = ([SampleConfig(float(t), int(k), float(p)) for t, k, p in (c.split(",") for c in args.config)] if args.config
                else [SampleConfig(args.temperature, args.top_k, args.top_p)])
-    drop = tuple(g for g in args.drop.split(",") if g)
+    fill_run = HW2_ROOT / "runs" / Path(args.fill_ckpt).parent.name / "args.json"
+    fill_run = json.loads(fill_run.read_text()) if fill_run.exists() else {}
+    melody_only = fill_run.get("melody_only", False)
+    assert melody_only == bool(args.piano_ckpt), "a melody-only fill model needs --piano_ckpt, and only it takes one"
+    drop = tuple(dict.fromkeys([g for g in args.drop.split(",") if g] + [g for g in fill_run.get("always_drop", "").split(",") if g]))
     rules = PlanRules(args.min_piano_bin, tuple(int(x) for x in args.tempo_range.split(",")) if args.tempo_range else None,
                       args.melody_by_bar, args.cadence, args.form, args.return_as, args.plan_repeat_bias)
     copy_melody = parse_form(args.form, total_bars).copy_from if args.form and args.return_as == "copy" else None
@@ -123,6 +143,8 @@ def main():
         del plan_model
 
     fill_model = load_model(args.fill_ckpt, args.device)
+    if melody_only:
+        piano_model, piano_vocab = load_model(args.piano_ckpt, args.device), load_vocab(args.piano_tok2idx)
     for cfg in configs:
         folder = out / cfg.name if args.config else out
         folder.mkdir(parents=True, exist_ok=True)
@@ -132,7 +154,10 @@ def main():
             t1 = time.time()
             gen = torch.Generator(device=args.device).manual_seed(args.seed + 1000 + i)
             notes, nll = sample_fill(fill_model, tok2idx, idx2tok, plan, cfg, gen, melody_first=args.order == "melody_first",
-                                     drop=drop, given=given, copy_melody=copy_melody, repeat_bias=args.repeat_bias)
+                                     drop=drop, given=given, copy_melody=copy_melody, repeat_bias=args.repeat_bias,
+                                     melody_only=melody_only)
+            if melody_only:
+                add_piano(piano_model, *piano_vocab, plan, notes, SampleConfig(1.0, 0, args.piano_top_p), gen)
             if args.skip_bars:
                 kept = plan.bars[args.skip_bars:]
                 # a key change inside the dropped bars must stay on the first kept bar, or plans.json reads it in the first key

@@ -18,8 +18,8 @@ import pretty_midi
 import torch
 
 from hw2 import code_version
-from hw2.bonus import bar_prefix, piano_notes_to_seconds, prelude, tokenize_prompt
-from hw2.generate import SampleConfig, filter_logits, load_model
+from hw2.bonus import accompany, piano_notes_to_seconds, tokenize_prompt
+from hw2.generate import SampleConfig, load_model
 from hw2.remi import DATA_ROOT, load_vocab
 from hw2.render import midi_to_wav
 
@@ -41,92 +41,6 @@ def parse_args():
     return p.parse_args()
 
 
-class Grammar:
-    """Allowed next tokens for the accompaniment part of a bar."""
-
-    def __init__(self, tok2idx, vocab_size, device):
-        def ids(prefix):
-            return [i for t, i in tok2idx.items() if t.startswith(prefix)]
-
-        self.pos_id = {int(t[4:]): i for t, i in tok2idx.items() if t.startswith("Pos_")}
-        self.masks = {}
-        for name, allowed in {"pitch": ids("Pitch_"), "vel": ids("Vel_"), "dur": ids("Dur_")}.items():
-            m = torch.zeros(vocab_size, dtype=torch.bool, device=device)
-            m[allowed] = True
-            self.masks[name] = m
-        self.bar = tok2idx["Bar"]
-        self.vocab_size, self.device = vocab_size, device
-
-    def pos_or_bar(self, min_pos, max_pos):
-        m = torch.zeros(self.vocab_size, dtype=torch.bool, device=self.device)
-        m[[self.pos_id[p] for p in range(min_pos, max_pos)]] = True
-        m[self.bar] = True
-        return m
-
-
-@torch.no_grad()
-def accompany(model, tok2idx, idx2tok, melody_bars, chord_bars, variant, bar_beats, cfg, args, gen):
-    device = next(model.parameters()).device
-    grammar = Grammar(tok2idx, len(idx2tok), device) if args.grammar else None
-    free_ok = torch.zeros(len(idx2tok), dtype=torch.bool, device=device)
-    for t, i in tok2idx.items():
-        if t == "Bar" or t.startswith(("Pos_", "Pitch_", "Vel_", "Dur_")):
-            free_ok[i] = True
-
-    past, n_seen = None, 0
-    seq = [tok2idx[t] for t in ["<BOS>"] + prelude(melody_bars, variant)]
-    ctx = model.config.n_positions
-
-    def feed(new_ids):
-        """Run new_ids (already appended to seq) through the model. Past the context, re-encode from the
-        first Bar in the last ctx//2 tokens, as training crops start at a Bar."""
-        nonlocal past, n_seen
-        if n_seen + len(new_ids) > ctx:
-            tail = len(seq) - ctx // 2
-            start = next((i for i in range(tail, len(seq)) if seq[i] == tok2idx["Bar"]), tail)
-            past, n_seen, new_ids = None, 0, seq[start:]
-        x = torch.tensor([new_ids], device=device)
-        pos = torch.arange(n_seen, n_seen + len(new_ids), device=device)[None]
-        out = model(input_ids=x, position_ids=pos, past_key_values=past, use_cache=True)
-        past, n_seen = out.past_key_values, n_seen + len(new_ids)
-        return out.logits[0, -1].float()
-
-    logits = feed(seq)
-    piano = []
-    for b in range(len(melody_bars)):
-        forced = [tok2idx[t] for t in bar_prefix(b, melody_bars, chord_bars, variant)]
-        seq += forced
-        logits = feed(forced)
-        notes, state, last_pos, cur = [], "pos", 0, {}
-        max_pos = bar_beats[b] * args.pos_per_beat
-        for _ in range(4 * args.max_notes_per_bar + 1):
-            if grammar is None:
-                allowed = free_ok
-            elif state == "pos":
-                allowed = grammar.pos_or_bar(last_pos, max_pos) if len(notes) < args.max_notes_per_bar else grammar.pos_or_bar(0, 0)
-            else:
-                allowed = grammar.masks[state]
-            masked = logits.masked_fill(~allowed, float("-inf"))[None]
-            t = torch.multinomial(torch.softmax(filter_logits(masked, cfg), -1), 1, generator=gen).item()
-            if t == tok2idx["Bar"]:
-                break
-            tok = idx2tok[t]
-            seq.append(t)
-            logits = feed([t])
-            kind = tok.split("_")[0]
-            if kind == "Pos":
-                last_pos, cur, state = int(tok[4:]), {"pos": int(tok[4:])}, "pitch"
-            elif kind == "Pitch" and "pos" in cur:
-                cur["pitch"], state = int(tok[6:]), "vel"
-            elif kind == "Vel" and "pitch" in cur:
-                cur["vel"], state = int(tok[4:]), "dur"
-            elif kind == "Dur" and "vel" in cur:
-                notes.append((cur["pos"], cur["pitch"], cur["vel"], int(tok[4:])))
-                cur, state = {}, "pos"
-        piano.append(notes)
-    return piano, seq
-
-
 def main():
     args = parse_args()
     out = Path(args.output_dir)
@@ -144,7 +58,8 @@ def main():
         chord_path = d / "chord_midi.txt" if variant.get("chords") else None
         melody_bars, chord_bars, beat_times, down = tokenize_prompt(d / "melody.mid", d / "beat_midi.txt", args.pos_per_beat, chord_path)
         bar_beats = [down[i + 1] - down[i] for i in range(len(down) - 1)]
-        piano, seq = accompany(model, tok2idx, idx2tok, melody_bars, chord_bars, variant, bar_beats, cfg, args, gen)
+        piano, seq = accompany(model, tok2idx, idx2tok, melody_bars, chord_bars, variant, bar_beats, cfg, gen,
+                               args.grammar, args.pos_per_beat, args.max_notes_per_bar)
 
         midi = pretty_midi.PrettyMIDI(initial_tempo=120)
         melody = pretty_midi.PrettyMIDI(str(d / "melody.mid")).instruments[0]

@@ -327,10 +327,11 @@ def note_events(tokens):
 
 @torch.no_grad()
 def sample_fill(model, tok2idx, idx2tok, plan: Plan, cfg, gen, melody_first=True, drop=(), given=None, max_notes=(32, 64),
-                copy_melody: dict[int, int] | None = None, repeat_bias: float = 0.0):
+                copy_melody: dict[int, int] | None = None, repeat_bias: float = 0.0, melody_only=False):
     """Notes for every plan bar, in the C-based song (add signed(plan.key) to play), and the NLL of each sampled token.
     given[b] forces streams of bar b (prompts); copy_melody[b] = an earlier bar whose melody bar b repeats, moved to b's key;
-    repeat_bias > 0 guides melody bars with a Rep label toward their source bar (RepeatGuide). A fill model on Rel_ tokens
+    repeat_bias > 0 guides melody bars with a Rep label toward their source bar (RepeatGuide). melody_only: a melody model
+    (train.py --melody_only) writes no piano blocks, so piano stays empty. A fill model on Rel_ tokens
     (hw2.plan.REL_RANGE) writes pitches from the chord root; they are decoded with the bar's chords, so the returned
     notes, given and copy_melody are absolute pitches either way."""
     st, mk = Stepper(model, tok2idx, gen, keep=0.8), Masks(tok2idx, next(model.parameters()).device)
@@ -344,8 +345,8 @@ def sample_fill(model, tok2idx, idx2tok, plan: Plan, cfg, gen, melody_first=True
         st.feed([tok2idx[t] for t in fill_prefix(bar, drop)])
         chords = [t for t in fill_prefix(bar) if t.startswith("Chord_")]
         shift_at = (lambda pos: signed(chord_root(chords, pos, half))) if tag == "Rel" else (lambda pos: 0)
-        order = ("melody", "piano") if melody_first else ("piano", "melody")
-        res = {}
+        order = ("melody",) if melody_only else ("melody", "piano") if melody_first else ("piano", "melody")
+        res = {"piano": []}
         for i, stream in enumerate(order):
             st.feed([tok2idx["Mel" if stream == "melody" else "Acc"]])
             forced = (given or {}).get(b, {}).get(stream)
@@ -359,7 +360,7 @@ def sample_fill(model, tok2idx, idx2tok, plan: Plan, cfg, gen, melody_first=True
                 if forced:
                     st.feed([tok2idx[t] for t in note_tokens([(p, x - shift_at(p), v, d) for p, x, v, d in res[stream]], tag)])
                 continue
-            end = mk.of(exact=["Acc" if stream == "melody" else "Mel"]) if i == 0 else ends
+            end = mk.of(exact=["Acc" if stream == "melody" else "Mel"]) if i < len(order) - 1 else ends
             toks, state, last = [], "pos", 0
             cap = max_notes[0] if stream == "melody" else max_notes[1]
             guide = None
