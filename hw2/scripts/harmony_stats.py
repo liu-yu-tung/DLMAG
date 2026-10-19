@@ -4,6 +4,7 @@ beats, in-key share, and the share of melody time that rubs against a sounding p
 (1 = minor second, 11 = major seventh, 13 = minor ninth). Summaries per set: pooled, the per-piece median and the
 worst 10%, and the share of pieces past the real songs' worst 10%, since a few rough pieces sound unlike every
 piece being slightly rough. Real songs come from the fill token set (held out and training).
+--chords_from_piano: labels from the piano (longest-sounding major or minor triad per half bar), real and generated alike.
 
 uv run python scripts/harmony_stats.py outputs/cand_a/pf_* --out results/harmony.csv
 """
@@ -86,8 +87,29 @@ def melody_steps(meter: int, prefixes: list[list[str]], bars: list[dict]) -> dic
     return c
 
 
-def piece_counts(source: str, piece: str, meter: int, prefixes: list[list[str]], bars: list[dict]) -> dict:
+def piano_chords(meter: int, piano) -> list[str]:
+    """Per half bar, the major or minor triad with the most piano sounding time; Chord_N without piano."""
+    half, end = max(1, meter // 2) * PPB, meter * PPB
+    out = []
+    for lo, hi in ((0, half), (half, end)):
+        weight = np.zeros(12)
+        for pos, pitch, _, dur in piano:
+            weight[pitch % 12] += max(0, min(pos + max(dur, 1), hi) - max(pos, lo))
+        if not weight.any():
+            out.append("Chord_N")
+            continue
+        score = {(r, q): sum(weight[(r + i) % 12] for i in chord_tones(f"Chord_0_{q}")) for r in range(12) for q in ("maj", "min")}
+        r, q = max(score, key=score.get)
+        out.append(f"Chord_{r}_{q}")
+    return out
+
+
+def piece_counts(source: str, piece: str, meter: int, prefixes: list[list[str]], bars: list[dict], chords_from_piano=False) -> dict:
     total, key, bar_len = {}, 0, meter * PPB
+    if chords_from_piano:
+        prefixes = [[t for t in prefix if not t.startswith("Chord_")]
+                    + piano_chords(meter, notes["piano"] + ([(p - bar_len, q, v, d) for p, q, v, d in bars[i - 1]["piano"] if p + d > bar_len] if i else []))
+                    for i, (prefix, notes) in enumerate(zip(prefixes[:BARS], bars[:BARS]))]
     for i, (prefix, notes) in enumerate(zip(prefixes[:BARS], bars[:BARS])):
         key = next((int(t.split("_")[1]) for t in reversed(prefix) if t.startswith("KeyShift_")), key)
         held = [(p - bar_len, q, v, d) for p, q, v, d in bars[i - 1]["piano"] if p + d > bar_len] if i else []
@@ -98,14 +120,14 @@ def piece_counts(source: str, piece: str, meter: int, prefixes: list[list[str]],
     return {"source": source, "piece": piece, **total, **melody_steps(meter, prefixes, bars)}
 
 
-def real(tokens_dir: Path, n_val: int) -> list[dict]:
+def real(tokens_dir: Path, n_val: int, chords_from_piano=False) -> list[dict]:
     train, val = split_songs(json.loads((tokens_dir / "songs.json").read_text()), n_val)
     rows = []
     for name, songs in (("real_heldout", val), (REAL, train)):
         for song in songs:
             meter = int(song["header"][0].split("_")[1])
             bars = [{s: note_events(b[s]) for s in ("melody", "piano")} for b in song["blocks"]]
-            rows.append(piece_counts(name, song["song_name"], meter, [b["prefix"] for b in song["blocks"]], bars))
+            rows.append(piece_counts(name, song["song_name"], meter, [b["prefix"] for b in song["blocks"]], bars, chords_from_piano))
     return rows
 
 
@@ -114,7 +136,7 @@ def source_of(folder: Path) -> str:
     return str(folder.relative_to(HW2_ROOT)) if folder.is_relative_to(HW2_ROOT) else str(folder)
 
 
-def generated(folder: Path) -> list[dict]:
+def generated(folder: Path, chords_from_piano=False) -> list[dict]:
     rows = []
     for entry in json.loads((folder / "plans.json").read_text()):
         plan = parse_plan(entry["tokens"])
@@ -128,7 +150,8 @@ def generated(folder: Path) -> list[dict]:
                 edge += n.pitch in (21, 108)
                 if stream in ("melody", "piano") and b < len(bars):
                     bars[b][stream].append(((n.start - b * bar_ticks) // STEP, n.pitch - shift, n.velocity, (n.end - n.start) // STEP))
-        rows.append({**piece_counts(source_of(folder), entry["song_name"], plan.meter, [fill_prefix(b) for b in plan.bars], bars),
+        rows.append({**piece_counts(source_of(folder), entry["song_name"], plan.meter, [fill_prefix(b) for b in plan.bars], bars,
+                                    chords_from_piano),
                      "range_edge_notes": edge})
     return rows
 
@@ -173,10 +196,11 @@ def main():
     p.add_argument("--tokens_dir", type=Path, default=HW2_ROOT / "data" / "tokens" / "fill_rep")
     p.add_argument("--n_val", type=int, default=45, help="must match train.py")
     p.add_argument("--out", type=Path, default=HW2_ROOT / "results" / "harmony.csv")
+    p.add_argument("--chords_from_piano", action="store_true", help="label chords from the piano, not the plan (see above)")
     args = p.parse_args()
-    rows = real(args.tokens_dir, args.n_val)
+    rows = real(args.tokens_dir, args.n_val, args.chords_from_piano)
     for folder in args.folders:
-        rows += generated(folder)
+        rows += generated(folder, args.chords_from_piano)
     table, per = summary(pd.DataFrame(rows))
     table.to_csv(args.out, index=False)
     per.to_csv(args.out.with_name(args.out.stem + "_pieces.csv"), index=False)

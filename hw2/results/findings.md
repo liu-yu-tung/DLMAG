@@ -328,6 +328,19 @@ Same 20 plans and seeds as `fill_rep_60k/last` (`outputs/sweep/fill_rep_60k/last
 - Cost: more minor-2nd time against the piano (0.034 vs 0.018 real), 25% of pieces past the real harsh line, and 1.4% of melody time out of key (real 0.5%). Bars 1-8 melody is less on chord tones than the whole piece.
 - Silence moves toward real (1.9% vs 2.6%; real 1.6%). Predicted grade: no difference (0.40 vs 0.42, sd 0.11).
 
+### Melody-lead tests (2026-10-20; `outputs/cand_a/pf_fill60k_nochord`; `harmony.csv`, `harmony_piano_chords.csv`)
+
+`harmony_stats.py --chords_from_piano` labels each half bar with the major or minor triad the piano sounds longest, for real and generated pieces alike; on 200 training songs it matches 86.8% of the major/minor labels. Same 20 plans and seeds as above; `pf_fill60k_nochord` = `fill_rep_60k/last` with `--drop chords` (no training).
+
+| chords from the piano | real | `fill_rep_60k/last` | `fill_rel_60k/last` | `--drop chords` |
+|---|---|---|---|---|
+| melody time on chord tones, pooled / median | 0.715 / 0.719 | 0.611 / 0.622 | 0.678 / 0.662 | 0.525 / 0.527 |
+| pieces past the real worst 10% line (chord tones) | 0.10 | 0.35 | 0.20 | 0.85 |
+| minor 2nd + minor 9th, median; pieces past the real worst 10% line | 0.023; 0.10 | 0.030; 0.15 | 0.037; 0.25 | 0.058; 0.45 |
+
+- Without chord labels the current fill model's melody and piano do not agree (85% of pieces past the line). The model saw chords in 85% of its training crops (`--drop_p 0.15`), so this tests the dropout, not a model trained without chords (`fill_nochord_60k`, in training).
+- With chords read from the piano the chord-relative set is still closer to real than the current one (0.20 vs 0.35 of pieces past the line).
+
 ## Listening tests (`results/listening/*.csv`, `docs/listening_rubric.md`) · as of 2026-10-18
 
 Blind A/B pairs on the phone page; `pref` from −2 (A much better) to +2 (B much better). The four pilot sessions (`candidates`, `ckpt`, `ckpt2`, `planfill`) used a flawed rendering and are a pilot only.
