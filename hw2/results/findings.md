@@ -361,6 +361,24 @@ Same 20 plans and seeds as `fill_rep_60k/last` (`outputs/sweep/fill_rep_60k/last
 - The melody repeats the plan's sections (0.74 of pieces, real 0.48, current fill 0.05), so the melody model does follow the plan's repeat structure.
 - Not a listening candidate. The minor-2nd penalty (`--rub_penalty`) was not tested: harsh rubs are at 20% of pieces, but the main gap is melody vs piano chords, which a rub penalty does not fix.
 
+### Fill trained without chord labels (2026-10-20; `outputs/cand_a/pf_fillnochord60k`; same files)
+
+`fill_nochord_60k/last` (60k steps, `--always_drop chords`; train loss 0.109, val 4.00; lowest val 1.38 at step 5500): melody and piano from one fill model, no chord labels in training or generation. `last`, as for `fill_rep_60k`. Same plans and seed.
+
+| | real | `fill_rep_60k/last` | no-chord fill |
+|---|---|---|---|
+| chords from the piano: melody time on chord tones, median; pieces past the real worst 10% line | 0.719; 0.10 | 0.622; 0.35 | 0.547; 0.80 |
+| chords from the piano: piano time on chord tones, median | 0.926 | 0.931 | 0.944 |
+| minor 2nd / major 7th / minor 9th time | 0.018 / 0.016 / 0.011 | 0.020 / 0.029 / 0.018 | 0.034 / 0.025 / 0.017 |
+| minor 2nd + minor 9th: median; pieces past the real worst 10% line | 0.023; 0.10 | 0.030; 0.15 | 0.042; 0.25 |
+| melody time in the local key | 0.995 | 0.998 | 0.981 |
+| plan chord match | 0.852 | 0.790 | 0.167 |
+| silent share / `gaps_1beat` | 0.016 / 0.48 | 0.026 / 0.95 | 0.025 / 0.65 |
+| predicted win rate vs real, v3, mean (sd) | | 0.420 (0.114) | 0.375 (0.130) |
+
+- Better than `--drop chords` without training (median 0.547 vs 0.527, harsh-rub share 0.25 vs 0.45), but 80% of pieces are still past the real line: without labels the fill model does not keep melody and piano on one chord.
+- All three melody-lead options fail the harmony check (`--drop chords`, melody + BONUS piano, no-chord fill). The chord labels are what keeps the two parts together; the current fill and the chord-relative fill stay the candidates.
+
 ## Listening tests (`results/listening/*.csv`, `docs/listening_rubric.md`) · as of 2026-10-18
 
 Blind A/B pairs on the phone page; `pref` from −2 (A much better) to +2 (B much better). The four pilot sessions (`candidates`, `ckpt`, `ckpt2`, `planfill`) used a flawed rendering and are a pilot only.
