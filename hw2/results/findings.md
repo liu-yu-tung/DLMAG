@@ -379,6 +379,24 @@ Same 20 plans and seeds as `fill_rep_60k/last` (`outputs/sweep/fill_rep_60k/last
 - Better than `--drop chords` without training (median 0.547 vs 0.527, harsh-rub share 0.25 vs 0.45), but 80% of pieces are still past the real line: without labels the fill model does not keep melody and piano on one chord.
 - All three melody-lead options fail the harmony check (`--drop chords`, melody + BONUS piano, no-chord fill). The chord labels are what keeps the two parts together; the current fill and the chord-relative fill stay the candidates.
 
+### BONUS piano against the melody (2026-10-20; `bonus_harmony.csv`, `scripts/bonus_harmony.py`, `scripts/check_piano_hookup.py`)
+
+Two checks on the melody + BONUS piano result above: is the BONUS model weak, or is the new hookup (`generate_plan_fill.py --piano_ckpt`) broken?
+
+- **Hookup:** `check_piano_hookup.py` runs the same model, melody and seed through `generate_bonus.py`'s path and through the hookup, with the melody also moved to F: prompts 001-003, every bar identical (16 of 16, 251 / 251 / 475 piano notes). The hookup is not the cause.
+- **Model, on the 10 BONUS prompts (real melodies, prompt beat grid), chords read from the piano:**
+
+| piano under the real melody | pieces | melody on the piano's chords, median | below the real worst-10% line | piano on its own triads, median |
+|---|---|---|---|---|
+| real piano | 10 | 0.719 | 0.40 | 0.813 |
+| `abl_melody` free (the hookup's setting) | 30 (3 seeds) | 0.507 | 0.67 | 0.828 |
+| `abl_melody` grammar | 30 | 0.459 | 0.83 | 0.810 |
+| `abl_chords` free (gets the chord labels) | 30 | 0.486 | 0.80 | 0.847 |
+
+- The BONUS piano fits the melody much less than the real piano (0.46-0.51 vs 0.72), about the level of the melody-first set (0.48). It matches the low TA chord accuracy (`bonus_ablation.csv`: 0.16-0.23, ceiling 0.76).
+- The line comes from 32-bar training openings; on these 16-bar prompts the real piano is below it in 4 of 10, so compare the columns, not the line.
+- Open: the variant given the chord labels is no better (0.486). Whether its piano follows the labels it is given is not measured yet.
+
 ## Listening tests (`results/listening/*.csv`, `docs/listening_rubric.md`) · as of 2026-10-18
 
 Blind A/B pairs on the phone page; `pref` from −2 (A much better) to +2 (B much better). The four pilot sessions (`candidates`, `ckpt`, `ckpt2`, `planfill`) used a flawed rendering and are a pilot only.
