@@ -395,7 +395,8 @@ Two checks on the melody + BONUS piano result above: is the BONUS model weak, or
 
 - The BONUS piano fits the melody much less than the real piano (0.46-0.51 vs 0.72), about the level of the melody-first set (0.48). It matches the low TA chord accuracy (`bonus_ablation.csv`: 0.16-0.23, ceiling 0.76).
 - The line comes from 32-bar training openings; on these 16-bar prompts the real piano is below it in 4 of 10, so compare the columns, not the line.
-- Open: the variant given the chord labels is no better (0.486). Whether its piano follows the labels it is given is not measured yet.
+- The variant given the chord labels is no better (0.486), because it does not follow its labels (`bonus_label_follow.csv`, `scripts/bonus_label_follow.py`; piano note time on the tones of the label sounding at each slot): real piano 0.971 (200 training songs) and 0.988 (the 10 prompts), `abl_chords` 0.527.
+- **Cause, a training bug:** `CropDataset` (`src/hw2/data.py`) transposes `Pitch_` tokens by up to ±5 semitones but leaves `Chord_<root>` tokens alone, so in most crops the labels name the wrong root and the model learns to ignore them. Only `abl_chords` has chord tokens and `max_shift` 5; `abl_melody` and `abl_lookahead` (no chord tokens), the TASK A model (no chord tokens) and the plan-fill models (`max_shift` 0) are not affected. The `chords` row of the BONUS ablation (`bonus_ablation.csv`) is therefore invalid until retrained with the roots shifted too.
 
 ## Listening tests (`results/listening/*.csv`, `docs/listening_rubric.md`) · as of 2026-10-18
 
