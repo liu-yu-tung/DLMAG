@@ -412,6 +412,24 @@ A clash = melody time against a sounding piano note a minor 2nd or minor 9th awa
 - In real songs a clash is mostly a melody note passing over the chord; the excess in plan-fill is mostly on the piano side, which is written after the melody in each bar and could avoid it. This is why `--rub_penalty` acts on the piano only (`docs/plan_fill.md`).
 - T5's two "bad harmony" chord-relative pieces split: piece 18, 70% of its clash time with the piano off the chord (23% both); piece 16, 65% with the melody off (`listening_issues.md` section 13).
 
+### T6 sets: semitone penalty and cut (2026-10-25; `t6_clash_sides.csv`, `t6_harmony.csv`, `t6_silence.csv`, `t6_metrics.csv`)
+
+30 new plans with an 8-bar warm-up (seed 200, `--skip_bars 8`, form `W8I4A8B8A8E4`), the same plans for every set below; the uncut sets use 20 other new plans (seed 100). Real: clash time 0.0266, piano side 0.0046 (300 training songs); melody chord-tone median 0.712; silent share 0.016.
+
+| set | clash time | piano off / melody off | melody on chord tones, median; past the real line | piano on chord tones | silent |
+|---|---|---|---|---|---|
+| chord-relative, cut, penalty 0 | 0.0251 | 0.0056 / 0.0186 | 0.746; 0.10 | 0.950 | 0.026 |
+| **chord-relative, cut, penalty 2 (T6 challenger)** | 0.0240 | 0.0022 / 0.0211 | 0.767; 0.03 | 0.958 | 0.028 |
+| chord-relative, cut, penalty 4 | 0.0236 | 0.0022 / 0.0209 | 0.760; 0.07 | 0.957 | 0.026 |
+| chord-relative, cut, penalty 8 | 0.0191 | 0.0026 / 0.0159 | 0.748; 0.03 | 0.954 | 0.027 |
+| current fill, cut, penalty 2 | 0.0284 | 0.0051 / 0.0221 | 0.659; 0.07 | 0.906 | 0.035 |
+| chord-relative, uncut (seed 100) | 0.0372 | 0.0063 / 0.0291 | 0.710; 0.20 | 0.932 | 0.025 |
+| current fill, uncut (seed 100) | 0.0449 | 0.0083 / 0.0341 | 0.602; 0.25 | 0.854 | 0.018 |
+
+- Penalty strength by the rule in `docs/status.md` (fixed before generating): 2 is the smallest value with piano-side clash time within 1.25x real, chord-tone time within 0.01 of penalty 0 and silence within 0.005. It cuts piano-side clash time from 0.0056 to 0.0022 (below real); melody-side clashes and chord tones do not move beyond the spread between strengths.
+- The cut sets clash less and sit more on chord tones than the uncut ones, but on different plans, and plan-to-plan spread is large (the chord-relative fill: 0.0505 on the T5 plans, 0.0372 on the seed-100 plans), so the cut's share is not measured.
+- The chord-relative cut sets have lower pitch-class entropy (H1 1.95 vs 2.08-2.14): more time on chord tones, less variety. No copied bars or n-grams in any set.
+
 ## Listening tests (`results/listening/*.csv`, `docs/listening_rubric.md`) · as of 2026-10-25
 
 Blind A/B pairs on the phone page; `pref` from −2 (A much better) to +2 (B much better). The four pilot sessions (`candidates`, `ckpt`, `ckpt2`, `planfill`) used a flawed rendering and are a pilot only.
