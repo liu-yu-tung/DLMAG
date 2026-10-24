@@ -82,3 +82,22 @@ Result: `loss_0.40` 3 wins, `step_10000` 1, same 1. Both lost to their real anch
 ## 12. Sessions `t2_openings` to `t4_openings` (2026-10-17/18)
 
 Comments that were checked against the MIDI are in findings "Listening tests". On 2026-10-18 the user also asked how "a bit" and "clearly" count: both count as one win; strength is reported, not used in decisions (page hint added).
+
+## 13. Session `t5_sections` (rated 2026-10-23 to 25; 12 pairs)
+
+Comments as written, with what the MIDI shows (bar numbers on the page are MIDI bars; harmony numbers from `harmony_pieces.csv`; summary in findings "Listening tests").
+
+| Pair | Piece | Comment | MIDI |
+|---|---|---|---|
+| 04 | single cut 13 | "13 bar has a strange high note" | bars 12-13 reach pitch 94; piece median top note 70 |
+| 05 | chord-relative 14 | "quite a strange start but get on it's back very quickly" | key fit 0.957 in bars 1-8, 0.99-1.00 after |
+| 06 | chord-relative 17 / current 17 | "some empty" / "too many empty" | both have gaps; the current one has more bars with a near-silent second half (bars 4, 6, 10, 18, 19) |
+| 07 | chord-relative 02 | "empty in 21 is weird"; "melody call back in first and last bar is a good touch" | bar 21: second half 19% sounding; call-back not measured |
+| 08 | chord-relative 16 | "bad harmony and kinda random" | key fit 0.884 in bars 1-8; pitch 96 in bars 5-6; minor-2nd + minor-9th time 0.074 (above the real line 0.065) |
+| 08 | single uncut 06 | "very bad harmony? what happened in transpose? very random last section" | key D in bars 1-16, G from bar 17; bars 25-32 key fit 0.922, the lowest of the piece |
+| 09 | chord-relative 19 | "bar 11 don't have melody" | no melody onset in bar 11 (also bar 26) |
+| 10 | chord-relative 18 | "bad harmony in all section" | key fit 0.96-1.00, but minor-2nd + minor-9th time 0.083, 4th highest of the set: rubs, not key |
+| 11 | single uncut 02 | best melody in bars 1-8; ending boring; halves do not feel alike | top notes 80-91 in bars 2-11, 65-72 from bar 13: the register drops about an octave halfway |
+| 12 | single uncut 09 / single cut 09 | "empty in last half 16th bar ... like a breath" / "as the song goes on it actually get more interesting" | second half of bar 16 silent |
+
+Open from these: plan-fill openings (bars 1-8 lost 5 of 8), silent half bars in plan-fill, minor-2nd rubs in the chord-relative fill (pieces 16, 18), single-stage key moves late in the piece (uncut 06).

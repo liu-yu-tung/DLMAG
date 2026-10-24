@@ -398,7 +398,7 @@ Two checks on the melody + BONUS piano result above: is the BONUS model weak, or
 - The variant given the chord labels is no better (0.486), because it does not follow its labels (`bonus_label_follow.csv`, `scripts/bonus_label_follow.py`; piano note time on the tones of the label sounding at each slot): real piano 0.971 (200 training songs) and 0.988 (the 10 prompts), `abl_chords` 0.527.
 - **Cause, a training bug:** `CropDataset` (`src/hw2/data.py`) transposes `Pitch_` tokens by up to ±5 semitones but leaves `Chord_<root>` tokens alone, so in most crops the labels name the wrong root and the model learns to ignore them. Only `abl_chords` has chord tokens and `max_shift` 5; `abl_melody` and `abl_lookahead` (no chord tokens), the TASK A model (no chord tokens) and the plan-fill models (`max_shift` 0) are not affected. The `chords` row of the BONUS ablation (`bonus_ablation.csv`) is therefore invalid until retrained with the roots shifted too.
 
-## Listening tests (`results/listening/*.csv`, `docs/listening_rubric.md`) · as of 2026-10-18
+## Listening tests (`results/listening/*.csv`, `docs/listening_rubric.md`) · as of 2026-10-25
 
 Blind A/B pairs on the phone page; `pref` from −2 (A much better) to +2 (B much better). The four pilot sessions (`candidates`, `ckpt`, `ckpt2`, `planfill`) used a flawed rendering and are a pilot only.
 
@@ -406,9 +406,10 @@ Blind A/B pairs on the phone page; `pref` from −2 (A much better) to +2 (B muc
 - **T2 (`t2_openings`, 2026-10-17):** plan-fill (`pf_oldplan_fill040`) vs single-stage (`single_t1_p1`) 3 wins, 2 losses, 1 same, below the 5-of-6 rule; real openings won both anchor pairs.
 - **T3 (`t3_continuations`, 2026-10-17):** TASK B, 3 prompts x 3 configs: `t1 p0.95` won 6 of 6 of its pairs, `t1 p1` beat `t0.9 p1` 2 of 3. Checked against the MIDI: the "weird key change in the last 8 bars" piece (prompt 3, `t0.9 p1`) moves to C# in bars 29-32 (fit of the prompt's A key 0.48 in that window; every other piece stays at 0.8 or more); the "sounds broken" piece (prompt 2, `t0.9 p1`) has 2.1% of onsets with two sounding notes a semitone apart vs 0.4% for the `t1 p0.95` piece.
 - **T4 (`t4_openings`, 2026-10-18):** `fill_rep_60k/last` beat `fill_rep_long/loss_0.40` 2 of 2 on the same plans (once on each side); `plan_rep_24k/last` vs `plan_rep/best` 1-1; single-stage `t0.9 p1` beat `t1 p1` and `t1 p0.95`, `t1 p0.95` beat `t1 p1` (one pair each, all won by side B). Checked against the MIDI: the "too fast, too many notes" piece has tempo 120 vs 60 and 12.2 vs 9.7 notes per second; the "weird chord in the latter 8 bars" piece has the lowest key fit of its set in bars 25-32 (0.938, set mean 0.992).
-- **Order bias:** side B won 6 of 7 in T4 (sign test p 0.125); all four sessions: A 11, B 18 (p 0.26). With one pair per matchup, `listening.py pairs` put the first named system on side A, so T4's config pairs were confounded with the side.
+- **T5 (`t5_sections`, rated 2026-10-23 to 25, 12 pairs, sides balanced; rules fixed before rating in `docs/status.md`):** single-stage `t1 p1` cut (`--skip_bars 8`) beat uncut 4 of 4 on the same seeds (sign test p 0.125); chord-relative plan-fill vs current 1-1; chord-relative plan-fill vs single-stage 4 wins, 1 loss, 1 same (2-1 against the cut, 2-0-1 against the uncut), below the 5-of-6 rule. Per section (`t5_sections_sections.csv`): the uncut single-stage lost bars 1-8 in 4 of 5 rated pairs and the cut won them in 4 of 5; chord-relative plan-fill lost bars 1-8 in 5 of 8 (flaws: wrong notes 5, empty 4, messy 4) and won bars 9-32 in 14 of 24. Checked against the MIDI (`listening_issues.md` section 13): every bar-level comment matches (high notes, pitch 94 vs median 70, in bars 12-13; little sound in bar 21; no melody in bar 11; the second half of bar 16 silent; more gaps in the current-fill piece 17 than the chord-relative one); "what happened in transpose?" is a move from D to G at bar 17 with the lowest key fit in bars 25-32 (0.922); the two "bad harmony" chord-relative pieces have the 4th and 5th most minor-2nd + minor-9th time of their set (0.083, 0.074; real worst-10% line 0.065).
+- **Order bias:** side B won 6 of 7 in T4 (sign test p 0.125); T5 A 6, B 5; all five sessions A 17, B 23 (p 0.43). With one pair per matchup, `listening.py pairs` put the first named system on side A, so T4's config pairs were confounded with the side.
 
-## Listening-grade predictor (`docs/grade_model.md`; `grade_model_cv.csv`, `grade_model_check.csv`) · as of 2026-10-18
+## Listening-grade predictor (`docs/grade_model.md`; `grade_model_cv.csv`, `grade_model_check.csv`) · as of 2026-10-25
 
 Logistic model on feature differences, fit on the decisive A/B pairs and the pilot sessions.
 
@@ -416,9 +417,11 @@ Logistic model on feature differences, fit on the decisive A/B pairs and the pil
 |---|---|---|---|
 | T3 (9 pairs) | 5 | 3 | (built after T3) |
 | T4 (7 pairs) | 5 | 4 | 6 |
+| T5 (11 decisive pairs) | 6 | 6 | 5 |
 
-- Leave-one-out on all 29 decisive pairs at L2 10: `v1` 0.66, `v2` 0.62, `v3` 0.79; "more notes wins" 0.52. On T4, "side B wins" would also get 6 of 7.
-- Strongest single features (`grade_single_features.csv`, 29 pairs): the winner has the higher `half_density_change` in 72% of pairs, the higher `key_fit` and `opening_key_fit_min4` in 62%.
+- Leave-one-out on all 29 decisive pairs at L2 10 (T1-T4): `v1` 0.66, `v2` 0.62, `v3` 0.79; "more notes wins" 0.52. On T4, "side B wins" would also get 6 of 7.
+- After T5 (40 decisive pairs, refit 2026-10-25), at L2 10: `v1` 0.55, `v2` 0.55, `v3` 0.70; "more notes wins" 0.60. T5 scored before the refit: 5-6 of 11, a coin flip, so the predictor ranks sets only roughly and is not evidence on its own.
+- Strongest single features (`grade_single_features.csv`, 40 pairs, ties left out): the winner has the lower `semitone_clash_share` in 69% of pairs and the higher `half_density_change` in 65% (on 29 pairs: `half_density_change` 72%, `key_fit` and `opening_key_fit_min4` 62%).
 - Tags (`grade_tags.csv`, AUC of the feature for clips with vs without the tag): `silent_gap` vs `longest_onset_gap_beats` 0.87; `wrong_notes` vs `key_fit` 0.28 (lower fit with the tag); `abrupt_start` vs `opening_high_share` 0.58.
 - On T3, 5 of the 9 `v1` predictions sat between 0.46 and 0.54: the pairs share the 8-bar prompt, and whole-piece features dilute the 24-bar difference.
 
