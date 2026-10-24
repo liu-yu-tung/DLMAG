@@ -1,6 +1,6 @@
 # HW2 status
 
-As of 2026-10-25 05:00. Deadline Mon 2026-10-26 23:59; the report (PPT-style PDF, about 10 pages, name and ID on the cover) is 100% of the grade. Measured results: `results/findings.md`. Listening comments: `docs/listening_issues.md`. Pipeline and commands: `README.md`. File map: `CLAUDE.md`.
+As of 2026-10-25 04:20. Deadline Mon 2026-10-26 23:59; the report (PPT-style PDF, about 10 pages, name and ID on the cover) is 100% of the grade. Measured results: `results/findings.md`. Listening comments: `docs/listening_issues.md`. Pipeline and commands: `README.md`. File map: `CLAUDE.md`.
 
 ## Systems and checkpoints
 
@@ -12,12 +12,12 @@ As of 2026-10-25 05:00. Deadline Mon 2026-10-26 23:59; the report (PPT-style PDF
 - **BONUS TASK:** `abl_melody/step_7000`, ablations `abl_lookahead`, `abl_chords`. The `abl_chords` row is invalid: training transposed the notes but not the chord roots (findings "BONUS piano against the melody"); fix and retrain (about 45 min GPU) or report the bug: user to decide.
 - **Held-out songs:** 45 of 896 are held out; the report must say so.
 
-## Schedule (draft 2026-10-25 05:00; deadline Mon 2026-10-26 23:59)
+## Schedule (draft 2026-10-25 04:20; deadline Mon 2026-10-26 23:59)
 
-1. **Done 05:00:** T5 graded (findings "Listening tests", `listening_issues.md` section 13), predictor refit.
-2. **Sun 05:00-06:15, packaging code:** checkpoint defaults in the `Makefile`, `generate_uncond.py` (cut on), `generate_plan_fill.py` and the README examples; `--plan_tok2idx` (without `runs/` the plan vocabulary falls back to the fill one, which breaks with a `Rel_` fill model); final TASK A (cut) and TASK B (`t1 p0.95`) WAVs at −18 LUFS (now −38 to −30).
-3. **Sun 06:15-07:00, final listening check (T6):** the 20 TASK A pieces and 3 TASK B continuations as submitted, flag broken ones only; optional second set: 4 more chord-relative vs current plan-fill pairs (breaks the 1-1).
-4. **Sun 07:00-11:00, report:** slide outline (about 10 pages) and the figure and table list from findings, then drafts.
+1. **Done 04:20:** T5 graded (findings "Listening tests", `listening_issues.md` section 13), predictor refit.
+2. **Sun 04:30-05:45, packaging code:** checkpoint defaults in the `Makefile`, `generate_uncond.py` (cut on), `generate_plan_fill.py` and the README examples; `--plan_tok2idx` (without `runs/` the plan vocabulary falls back to the fill one, which breaks with a `Rel_` fill model); final TASK A (cut) and TASK B (`t1 p0.95`) WAVs at −18 LUFS (now −38 to −30).
+3. **Sun 05:45-06:30, final listening check (T6):** the 20 TASK A pieces and 3 TASK B continuations as submitted, flag broken ones only; optional second set: 4 more chord-relative vs current plan-fill pairs (breaks the 1-1).
+4. **Sun 06:30-11:00, report:** slide outline (about 10 pages) and the figure and table list from findings, then drafts.
 5. **Sun after 11:00 to Mon evening:** finish slides, `submission` branch, fresh-venv README test, code, checkpoints and README to the cloud drive (user), PDF with name and ID on the cover; Mon 20:00 buffer.
 
 ## Open issues
