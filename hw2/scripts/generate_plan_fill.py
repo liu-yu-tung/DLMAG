@@ -36,7 +36,8 @@ def parse_args():
     p.add_argument("--prompt_bars", type=int, default=8)
     p.add_argument("--order", choices=("melody_first", "piano_first"), default="melody_first")
     p.add_argument("--drop", type=str, default="", help="label groups left out of the fill prefix: repeat,chords,piano_stats,melody_stats")
-    p.add_argument("--plans_from", type=str, default=None, help="plans.json of an earlier TASK A run: fill the same plans")
+    p.add_argument("--plans_from", type=str, default=None, help="plans.json of an earlier TASK A run: fill the same plans "
+                   "(with --skip_bars, the full plans that run saved, warm-up included)")
     p.add_argument("--real_plans", action="store_true", help="fill the real plans of the first --bars bars of --n songs "
                    "held out from the plan run (separates plan errors from fill errors)")
     p.add_argument("--min_piano_bin", type=int, default=0, help="1 = no bar without piano notes (POP909: 0.4%% of bars)")
@@ -58,6 +59,8 @@ def parse_args():
     p.add_argument("--top_p", type=float, default=1.0)
     p.add_argument("--config", action="append", default=None, help="fill temperature,top_k,top_p (repeatable): one subfolder "
                    "per config, all filling the same plans; replaces --temperature/--top_k/--top_p")
+    p.add_argument("--rub_penalty", type=float, default=0.0, help="logit penalty for piano pitches a minor 2nd or 9th from a "
+                   "sounding melody note (melody first only; 0 = off)")
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--piano_ckpt", type=str, default=None, help="melody-only fill model (train.py --melody_only): the BONUS "
                    "model that writes the piano under the finished melody, e.g. checkpoints/abl_melody/step_7000")
@@ -95,7 +98,7 @@ def add_piano(model, tok2idx, idx2tok, plan, notes, cfg, gen):
 def main():
     args = parse_args()
     assert sum(map(bool, (args.prompt_dir, args.plans_from, args.real_plans))) <= 1, "pick one plan source"
-    assert not args.skip_bars or not (args.prompt_dir or args.plans_from or args.real_plans), "--skip_bars is for TASK A from scratch"
+    assert not args.skip_bars or not (args.prompt_dir or args.real_plans), "--skip_bars is for TASK A"
     total_bars = args.bars + args.skip_bars
     out = Path(args.output_dir)
     if args.tok2idx is None:
@@ -118,7 +121,10 @@ def main():
     copy_melody = parse_form(args.form, total_bars).copy_from if args.form and args.return_as == "copy" else None
 
     if args.plans_from:
-        jobs = [(p["song_name"], parse_plan(p["tokens"]), None) for p in json.loads(Path(args.plans_from).read_text())[: args.n]]
+        field = "full_tokens" if args.skip_bars else "tokens"
+        rows = json.loads(Path(args.plans_from).read_text())[: args.n]
+        assert all(field in p for p in rows), "--skip_bars with --plans_from needs plans.json from a --skip_bars run"
+        jobs = [(p["song_name"], parse_plan(p[field]), None) for p in rows]
     elif args.real_plans:
         plan_run = json.loads((HW2_ROOT / "runs" / Path(args.plan_ckpt).parent.name / "args.json").read_text())
         _, held_out = split_songs(load_sequences(HW2_ROOT / plan_run["tokens_dir"] / "sequences.json"), plan_run["n_val"], plan_run["seed"])
@@ -155,10 +161,12 @@ def main():
             gen = torch.Generator(device=args.device).manual_seed(args.seed + 1000 + i)
             notes, nll = sample_fill(fill_model, tok2idx, idx2tok, plan, cfg, gen, melody_first=args.order == "melody_first",
                                      drop=drop, given=given, copy_melody=copy_melody, repeat_bias=args.repeat_bias,
-                                     melody_only=melody_only)
+                                     melody_only=melody_only, rub_penalty=args.rub_penalty)
             if melody_only:
                 add_piano(piano_model, *piano_vocab, plan, notes, SampleConfig(1.0, 0, args.piano_top_p), gen)
+            full = plan
             if args.skip_bars:
+                assert len(plan.bars) == total_bars, f"{name}: plan has {len(plan.bars)} bars, needs {total_bars}"
                 kept = plan.bars[args.skip_bars:]
                 # a key change inside the dropped bars must stay on the first kept bar, or plans.json reads it in the first key
                 if kept[0].key and not any(m.startswith("KeyShift_") for m in kept[0].marks):
@@ -171,7 +179,7 @@ def main():
             if given:
                 piece["prompt_len"] = [j for j, t in enumerate(tokens) if t == "Bar"][args.prompt_bars]
             pieces.append(piece)
-            plan_rows.append({"song_name": name, "tokens": plan.tokens()})
+            plan_rows.append({"song_name": name, "tokens": plan.tokens(), **({"full_tokens": full.tokens()} if args.skip_bars else {})})
             info.append({"song_name": name, "n_tokens": len(tokens), "n_bars": tokens.count("Bar"), "nll": float(np.mean(nll)),
                          "plan_nll": float(np.mean(plan.nll)) if plan.nll else None, "tempo": plan.tempo, "key": plan.key,
                          "n_melody": sum(len(b["melody"]) for b in notes), "n_piano": sum(len(b["piano"]) for b in notes),

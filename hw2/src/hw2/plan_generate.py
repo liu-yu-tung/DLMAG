@@ -325,15 +325,22 @@ def note_events(tokens):
     return out
 
 
+def rub_pitches(melody, pos: int) -> set[int]:
+    """Pitches a minor 2nd or a minor 9th from a melody note sounding at slot pos."""
+    return {p + k for start, p, _, d in melody if start <= pos < start + max(d, 1) for k in (-13, -1, 1, 13)}
+
+
 @torch.no_grad()
 def sample_fill(model, tok2idx, idx2tok, plan: Plan, cfg, gen, melody_first=True, drop=(), given=None, max_notes=(32, 64),
-                copy_melody: dict[int, int] | None = None, repeat_bias: float = 0.0, melody_only=False):
+                copy_melody: dict[int, int] | None = None, repeat_bias: float = 0.0, melody_only=False, rub_penalty: float = 0.0):
     """Notes for every plan bar, in the C-based song (add signed(plan.key) to play), and the NLL of each sampled token.
     given[b] forces streams of bar b (prompts); copy_melody[b] = an earlier bar whose melody bar b repeats, moved to b's key;
     repeat_bias > 0 guides melody bars with a Rep label toward their source bar (RepeatGuide). melody_only: a melody model
     (train.py --melody_only) writes no piano blocks, so piano stays empty. A fill model on Rel_ tokens
     (hw2.plan.REL_RANGE) writes pitches from the chord root; they are decoded with the bar's chords, so the returned
-    notes, given and copy_melody are absolute pitches either way."""
+    notes, given and copy_melody are absolute pitches either way. rub_penalty > 0 (melody first only) lowers the logit
+    of piano pitches a minor 2nd or 9th from a sounding melody note."""
+    assert not rub_penalty or melody_first, "rub_penalty needs the melody written first"
     st, mk = Stepper(model, tok2idx, gen, keep=0.8), Masks(tok2idx, next(model.parameters()).device)
     st.feed([tok2idx["<BOS>"], tok2idx[f"Meter_{plan.meter}"]])
     ends = mk.of("KeyShift_", exact=["Bar", "Sec", "<EOS>"])
@@ -371,6 +378,12 @@ def sample_fill(model, tok2idx, idx2tok, plan: Plan, cfg, gen, melody_first=True
                     guide = RepeatGuide(out[a]["melody"], signed(bar.key - plan.bars[a].key), kind, repeat_bias, tok2idx, end,
                                         pitch_token=lambda pos, pitch: f"{tag}_{pitch - shift_at(pos)}")
             struck = set()
+            # piano-side minor 2nds and 9ths are 2.2x the real rate in plan-fill, the melody side 1.3x (findings "Semitone clashes")
+            heard = []
+            if rub_penalty and stream == "piano":
+                bar_len = plan.meter * PPB
+                held = [(s - bar_len, p, v, d) for s, p, v, d in out[b - 1]["melody"] if s + d > bar_len] if b else []
+                heard = res["melody"] + held
             while True:
                 if state == "pos":
                     allowed = mk.pos_range(last, max_pos) | end if len(toks) < 4 * cap else end
@@ -380,7 +393,11 @@ def sample_fill(model, tok2idx, idx2tok, plan: Plan, cfg, gen, melody_first=True
                     # one key cannot be struck twice at once (POP909 melodies: 0.39% of notes)
                     allowed = allowed.clone()
                     allowed[[tok2idx[f"{tag}_{p}"] for pos, p in struck if pos == last]] = False
-                t = st.sample(allowed, cfg, guide.bonus(state) if guide else None)
+                bonus = guide.bonus(state) if guide else None
+                if heard and state == "pitch":
+                    near = (f"{tag}_{q - shift_at(last)}" for q in rub_pitches(heard, last))
+                    bonus = {tok2idx[name]: -rub_penalty for name in near if name in tok2idx}
+                t = st.sample(allowed, cfg, bonus)
                 if end[t]:
                     break
                 tok = idx2tok[t]
