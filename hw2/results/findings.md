@@ -398,6 +398,20 @@ Two checks on the melody + BONUS piano result above: is the BONUS model weak, or
 - The variant given the chord labels is no better (0.486), because it does not follow its labels (`bonus_label_follow.csv`, `scripts/bonus_label_follow.py`; piano note time on the tones of the label sounding at each slot): real piano 0.971 (200 training songs) and 0.988 (the 10 prompts), `abl_chords` 0.527.
 - **Cause, a training bug:** `CropDataset` (`src/hw2/data.py`) transposes `Pitch_` tokens by up to ±5 semitones but leaves `Chord_<root>` tokens alone, so in most crops the labels name the wrong root and the model learns to ignore them. Only `abl_chords` has chord tokens and `max_shift` 5; `abl_melody` and `abl_lookahead` (no chord tokens), the TASK A model (no chord tokens) and the plan-fill models (`max_shift` 0) are not affected. The `chords` row of the BONUS ablation (`bonus_ablation.csv`) is therefore invalid until retrained with the roots shifted too.
 
+### Semitone clashes: which note is off the chord (2026-10-25; `clash_sides.csv`, `scripts/clash_sides.py`)
+
+A clash = melody time against a sounding piano note a minor 2nd or minor 9th away (major 7ths not counted). With triad labels two chord tones are never a semitone apart, so every clash has the melody, the piano or both off the label. Shares of melody time, first 32 bars; real = 300 training songs.
+
+| | real | `fill_rep_60k/last` | `fill_rel_60k/last` |
+|---|---|---|---|
+| clash time | 0.0266 | 0.0387 | 0.0505 |
+| melody off the chord | 0.0209 | 0.0268 (1.3x) | 0.0335 (1.6x) |
+| piano off the chord | 0.0046 | 0.0104 (2.3x) | 0.0138 (3.0x) |
+| both off | 0.0011 | 0.0015 | 0.0033 |
+
+- In real songs a clash is mostly a melody note passing over the chord; the excess in plan-fill is mostly on the piano side, which is written after the melody in each bar and could avoid it. This is why `--rub_penalty` acts on the piano only (`docs/plan_fill.md`).
+- T5's two "bad harmony" chord-relative pieces split: piece 18, 70% of its clash time with the piano off the chord (23% both); piece 16, 65% with the melody off (`listening_issues.md` section 13).
+
 ## Listening tests (`results/listening/*.csv`, `docs/listening_rubric.md`) · as of 2026-10-25
 
 Blind A/B pairs on the phone page; `pref` from −2 (A much better) to +2 (B much better). The four pilot sessions (`candidates`, `ckpt`, `ckpt2`, `planfill`) used a flawed rendering and are a pilot only.
