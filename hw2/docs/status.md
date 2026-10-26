@@ -12,14 +12,22 @@ As of 2026-10-25 04:20. Deadline Mon 2026-10-26 23:59; the report (PPT-style PDF
 - **BONUS TASK:** `abl_melody/step_7000`, ablations `abl_lookahead`, `abl_chords`. The `abl_chords` row is invalid: training transposed the notes but not the chord roots (findings "BONUS piano against the melody"); fix and retrain (about 45 min GPU) or report the bug: user to decide.
 - **Held-out songs:** 45 of 896 are held out; the report must say so.
 
-## Schedule (deadline Mon 2026-10-26 23:59; state at 18:45)
+## Schedule (deadline Mon 2026-10-26 23:59; plan at 19:05)
 
-Decided: TASK A = single-stage cut (T5 4-0, T6 challenger 6-4 < 8 of 10); TASK B `t1 p0.95`; BONUS = `bonus_ppb16/last`, `--grammar --top_p 0.95` (`outputs/bonus/t1_p0.95_grammar`; user 2026-10-26); `abl_chords` bug stated in the report, not retrained; publish like HW1 (user 2026-10-26).
+Decided: TASK A = single-stage cut (T5 4-0, T6 challenger 6-4 < 8 of 10); TASK B `t1 p0.95`; BONUS = `bonus_ppb16/last`, `--grammar --top_p 0.95` (`outputs/bonus/t1_p0.95_grammar`; user 2026-10-26); `abl_chords` bug stated in the report, not retrained; publish like HW1 (user 2026-10-26); plan-model listening test skipped, stays a limitation (user 19:00); the report states plan-fill vs cut single-stage as close (T5 + T6 8-5, below the rule) and releases chord-relative fill + `plan_rep_24k/loss_0.40` samples for others to try (user 19:00).
 
-1. **Packaging (in progress):** done: README and Makefile final commands (`fba4d32`), `--plan_tok2idx`, `tokens_to_midi` time signatures (`782580f`); `dist/release/*.tar` (5 checkpoints) and `dist/checkpoints.sha256`; `dist/results/hw2_generation_results/` (TASK A 20, TASK B 3 prompts x 3 configs, BONUS 10; WAV copies at -18 LUFS). To do: zip the results and add a note naming the best TASK B config per prompt; branch `hw2-submission` (HW2 inference files only at the root plus `data/tokens/*` vocabularies, prompts and bins; the `submission` branch stays HW1's); release `hw2` (the tars, the results zip); fresh-clone test from the release.
-2. **Report:** Slides artifact type as HW1 (`hw1/report/deck/`, same look); outline `docs/report_outline.md`; cover "Liu, Yu-Tung · b10901114", links `github.com/liu-yu-tung/DLMAG/tree/hw2-submission` and `.../releases/tag/hw2`; PDF to `dist/cool/b10901114_report.pdf`.
-3. **Optional, user to decide:** plan-model listening test (findings "Plan model length"), only if the user listens while slides are written.
-4. User review, PDF upload to NTU COOL.
+Required by the spec: code, README, `requirements.txt`, the checkpoints behind the submitted files (`gpt2_ppb16/loss_0.40`, `bonus_ppb16/last`), the generation results; not training data, preprocessed data (so the TASK B prompts are tokenized by the README step, not shipped), other people's models or caches. The plan-fill checkpoints are extras.
+
+| # | Step | ETA |
+|---|---|---|
+| 1 | Done: results zip with `README.txt` (best TASK B config `t1_k0_p0.95` for prompts 001-003); `plan_rep_24k_loss_0.40.tar` + checksum; README (TASK B tokenize step, models table, plan-fill "try" command) | 19:05 |
+| 2 | Generate chord-relative + cut + penalty 2 under `plan_rep_24k/loss_0.40` (`outputs/cand_a/pf_fillrel60k_cut_pen2_plan24k040_s200`, 20 pieces); zip it with 20 challenger pieces as `hw2_extra_plan_fill.zip` | 19:15 |
+| 3 | Commit main; orphan branch `hw2-submission` in a temp worktree (all HW2 code, docs, results, `data/tokens` vocab and bins, `checkpoints.sha256`; no `CLAUDE.md`, `outputs/`, MIDI, audio); show the file list; push | 19:25 |
+| 4 | Release `hw2`: 6 tars + 2 zips (about 1.8 GB; upload time unknown until measured) | 19:25-20:00 |
+| 5 | Fresh-clone test from the release: TASK A n=1, TASK B, BONUS | 20:15 |
+| 6 | Report deck, 13 slides (`docs/report_outline.md`), Slides type with HW1's look; written while steps 4-5 run | 19:30-21:45 |
+| 7 | User review and fixes | 21:45-23:00 |
+| 8 | PDF to `dist/cool/b10901114_report.pdf`, upload to NTU COOL with the link in the comment | by 23:30 (buffer 30 min) |
 
 ## Open issues
 

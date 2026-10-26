@@ -34,7 +34,16 @@ PPT-style, 16:9, about 12 pages plus an appendix (spec: about 10 pages, not stri
    Plus the sampling sweep (`results/task_a_sampling.csv`) and the checkpoint rows. Point: the metrics barely separate configurations that listening separates; all are near real.
 6. **TASK A choices by listening.** The blind A/B page (pref −2..+2, section duel per 8 bars, flaws); T5: cut beat uncut 4 of 4, and the per-section duel puts the gain in bars 1-8 (uncut lost bars 1-8 in 4 of 5). Sampling fixes: no position past the meter, one opening tempo. Real openings won every anchor pair (T1, T2: 4 of 4).
 7. **TASK B.** 3 prompts x 3 configurations (`t1 p1`, `t1 p0.95`, `t0.9 p1`), 8 + 24 bars, same checkpoint as TASK A. Best for every prompt: `t1 p0.95` (T3: 6 of 6 pairs, sign test p 0.031). Example of the failure it avoids: `t0.9 p1` on prompt 3 moves to C# in bars 29-32.
-8. **Extra system: plan-fill.** Diagram: plan model writes bar labels (sections, chords, density, repeats; form `I4A8B8A8E4`), fill model writes melody then piano per bar; repeat guide; chord-relative pitches (`Rel_k`); semitone penalty on the piano side. Results: T2 3-2-1 and T5 4-1-1 against single-stage (never 5 of 6); T6 challenger result (T6). Lessons: the fill trained far past its lowest held-out loss sounded better (T4 2-0).
+8. **Extra system: plan-fill.** Diagram: plan model writes bar labels (sections, chords, density, repeats; form `I4A8B8A8E4`), fill model writes melody then piano per bar; repeat guide; chord-relative pitches (`Rel_k`); semitone penalty on the piano side. Results: T2 3-2-1 and T5 4-1-1 against single-stage (never 5 of 6). Against the cut single-stage (the submitted TASK A), from `results/listening/t5_sections.csv`, `t6_select.csv`:
+
+   | Session | Plan-fill side | vs cut single-stage |
+   |---|---|---|
+   | T5 | chord-relative fill, uncut, no penalty | 2-1 |
+   | T6 | chord-relative fill, cut, penalty 2 (challenger, rule 8 of 10) | 6-4 (clear only 3-4) |
+   | T5 + T6 | chord-relative fill | 8-5 |
+   | none | current fill | never paired |
+
+   Fill choice: chord-relative vs current 1-1 (T5) and 3-1 (T6). State plainly: close, a slight lean to plan-fill, below the rule, so TASK A stays single-stage; the 8-5 pools two set-ups; time ran out for more pairs. Open lead: chord-relative fill under a longer-trained plan model (`plan_rep_24k/loss_0.40`), generated and released for others to try, not listened to (`hw2_extra_plan_fill.zip`). Lessons: the fill trained far past its lowest held-out loss sounded better (T4 2-0).
 9. **Harmony analysis.** Melody on chord tones and semitone clashes, real vs systems (`results/harmony.csv`, `clash_sides.csv`, `t6_*.csv`): current fill 0.646 chord-tone median vs real 0.712; chord-relative fixes it (0.707) but clashes double; the excess clashes are on the piano side (2.3-3.0x real vs melody 1.3-1.6x), which motivates a piano-only penalty; penalty 2 cuts piano-side clash time from 0.0056 to 0.0022. Listener comments that matched the MIDI (pieces 16, 18).
 10. **BONUS TASK.** Bar-interleaved melody/piano tokens, decoder-only (option A), inference forces `Bar Mel <melody> Acc` per bar. CA and OA table vs baselines (`results/bonus.csv`, `bonus_baselines.csv`: ground truth CA 0.7625; melody an octave down 0.30). Ablation (`bonus_ablation.csv`): look-ahead and chords variants; the chords row with its transposition bug stated, or retrained (open). Melody vs piano chords: BONUS piano 0.46-0.51 vs real 0.72 (`bonus_harmony.csv`).
 11. **How the listening tests were run.** Blind, sides balanced and alternated, rules written before rating (`docs/status.md` history), one listener (the author), 2-10 pairs per decision; order bias check (A 17, B 23, p 0.43); a feature-based grade predictor scored 59-61% out of sample, so decisions rest on listening only.
@@ -43,7 +52,7 @@ PPT-style, 16:9, about 12 pages plus an appendix (spec: about 10 pages, not stri
 
 ## Open before writing slides
 
-- **Slide tool:** PowerPoint (.pptx) exported to PDF, or HTML slides printed to PDF (user).
-- **BONUS submission model:** `docs/status.md` names `abl_melody/step_7000`; `results/bonus.csv` (CA 0.275, `t1_p0.95_grammar`) is `bonus_ppb16/last`. Pick one, then regenerate the 10 submission pieces from it.
-- **`abl_chords`:** retrain with chord roots shifted, or state the bug (user).
-- **T6 grades** (slides 2, 5, 6, 8) and the T7 final check.
+- **Slide tool:** decided: the claude.ai Slides type, same look as HW1, PDF downloaded by the user.
+- **BONUS submission model:** decided: `bonus_ppb16/last`, `--top_p 0.95 --grammar`.
+- **`abl_chords`:** state the bug (no reply; default).
+- **T6:** done (slides 2, 6, 8). T7 final check only if time allows.

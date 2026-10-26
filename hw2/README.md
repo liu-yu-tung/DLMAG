@@ -30,8 +30,9 @@ Models (`runs/<run>/args.json` has every setting):
 | Run | Tokens | Use | Size |
 |---|---|---|---|
 | `gpt2_ppb16` | `ppb16` | TASK A single-stage, TASK B | 12 layers, 8 heads, 512 wide, 2048 context, 39.2M parameters |
-| `abl_melody` | `bonus_ppb16` | BONUS TASK (`abl_lookahead`, `abl_chords`: ablations) | same as `gpt2_ppb16` |
-| `plan_rep`, `fill_rep` (longer runs: `plan_rep_long`, `fill_rep_long`) | `plan_rep`, `fill_rep` | plan-fill with melody repeat labels | plan: 6 layers, 6 heads, 384 wide, 1024 context, 11.3M; fill: same as `gpt2_ppb16` |
+| `bonus_ppb16` | `bonus_ppb16` | BONUS TASK, 30k steps (`abl_melody`, `abl_lookahead`, `abl_chords`: 12k-step ablation runs) | same as `gpt2_ppb16` |
+| `plan_rep` (4k steps), `plan_rep_24k` (24k steps) | `plan_rep` | plan-fill plan model, with melody repeat labels | 6 layers, 6 heads, 384 wide, 1024 context, 11.3M |
+| `fill_rep_60k`, `fill_rel_60k` (chord-relative pitches) | `fill_rep`, `fill_rel` | plan-fill fill model, 60k steps (earlier runs: `fill_rep`, `fill_rep_long`) | same as `gpt2_ppb16` |
 | `plan_v1`, `fill_v1` | `plan`, `fill` | first plan-fill version, no repeat labels | as above |
 
 ## Setup
@@ -56,10 +57,10 @@ WAV output (`--wav`) runs the `fluidsynth` command with the FluidR3 General MIDI
 
 ## Checkpoints and token files
 
-Token files (vocabularies, the tokenized TASK B prompts, plan-fill bin edges) are in `data/tokens/` on this branch. The checkpoints are larger than GitHub's 100 MiB file limit, so they are assets of the release `hw2` (one `.tar` per checkpoint folder, SHA-256 in `checkpoints.sha256`):
+Token files (vocabularies, plan-fill bin edges) are in `data/tokens/` on this branch. The checkpoints are larger than GitHub's 100 MiB file limit, so they are assets of the release `hw2` (one `.tar` per checkpoint folder, SHA-256 in `checkpoints.sha256`):
 
 ```
-for f in gpt2_ppb16_loss_0.40 bonus_ppb16_last plan_rep_best fill_rep_60k_last fill_rel_60k_last; do
+for f in gpt2_ppb16_loss_0.40 bonus_ppb16_last plan_rep_best fill_rep_60k_last fill_rel_60k_last plan_rep_24k_loss_0.40; do
   curl -L --fail -O https://github.com/liu-yu-tung/DLMAG/releases/download/hw2/$f.tar
 done
 sha256sum -c checkpoints.sha256
@@ -74,6 +75,7 @@ checkpoints/bonus_ppb16/last/        BONUS TASK model
 checkpoints/plan_rep/best/           plan-fill: plan model
 checkpoints/fill_rep_60k/last/       plan-fill: fill model
 checkpoints/fill_rel_60k/last/       plan-fill: chord-relative fill model
+checkpoints/plan_rep_24k/loss_0.40/  plan-fill: plan model trained longer (to try with the chord-relative fill)
 ```
 
 ## Inference
@@ -88,16 +90,11 @@ python scripts/generate_uncond.py --ckpt checkpoints/gpt2_ppb16/loss_0.40 --outp
 
 The other TASK A configurations in the report: `--temperature 1.0 --top_p 0.95` and `--temperature 0.9 --top_p 1.0`, each with and without `--skip_bars 8`.
 
-TASK B, 24 bars after each 8-bar prompt, one folder per configuration (`temperature,top_k,top_p`; best for all three prompts: `1.0,0,0.95`):
+TASK B, 24 bars after each 8-bar prompt, one folder per configuration (`temperature,top_k,top_p`; best for all three prompts: `1.0,0,0.95`). First tokenize the TA's prompt folder `prompts/basic-b` (same layout as POP909: `<name>/<name>.mid`, `beat_midi.txt`, `chord_midi.txt`; any other prompt folder works the same way):
 
 ```
-python scripts/generate_cont.py --ckpt checkpoints/gpt2_ppb16/loss_0.40 --prompts data/tokens/ppb16/prompts_basic_b.json --output_dir <dir> --max_beats 4 --config 0.9,0,1.0 --config 1.0,0,0.95 --config 1.0,0,1.0 --wav
-```
-
-To continue other prompts, tokenize their folders (same layout as POP909: `<name>/<name>.mid`, `beat_midi.txt`, `chord_midi.txt`) and pass `--prompts`:
-
-```
-python scripts/ta/tokenization.py --dataset_path <prompt_folder> --tok2idx_output /tmp/tok2idx.json --sequences_output <prompts.json>
+python scripts/ta/tokenization.py --dataset_path <basic-b folder> --tok2idx_output /tmp/tok2idx_prompts.json --sequences_output prompts_basic_b.json
+python scripts/generate_cont.py --ckpt checkpoints/gpt2_ppb16/loss_0.40 --prompts prompts_basic_b.json --output_dir <dir> --max_beats 4 --config 0.9,0,1.0 --config 1.0,0,0.95 --config 1.0,0,1.0 --wav
 ```
 
 BONUS TASK, a PIANO track for each 16-bar MELODY prompt (folders with `melody.mid` and `beat_midi.txt`, as the TA's `prompts/bonus`):
@@ -113,6 +110,14 @@ python scripts/generate_plan_fill.py --plan_ckpt checkpoints/plan_rep/best --pla
 ```
 
 The T6 challenger (chord-relative fill, cut, semitone penalty): `--fill_ckpt checkpoints/fill_rel_60k/last --tok2idx data/tokens/fill_rel/tok2idx.json --skip_bars 8 --form W8I4A8B8A8E4 --rub_penalty 2`, other options as above.
+
+Not tested by listening, worth trying: the same chord-relative fill under the plan model trained 6 times longer (`plan_rep_24k`, the checkpoint at training loss 0.40):
+
+```
+python scripts/generate_plan_fill.py --plan_ckpt checkpoints/plan_rep_24k/loss_0.40 --plan_tok2idx data/tokens/plan_rep/tok2idx.json --fill_ckpt checkpoints/fill_rel_60k/last --tok2idx data/tokens/fill_rel/tok2idx.json --output_dir <dir> --n 20 --bars 32 --skip_bars 8 --form W8I4A8B8A8E4 --min_piano_bin 1 --tempo_range 60,125 --cadence --order melody_first --return_as var --repeat_bias 8 --rub_penalty 2 --seed 200 --wav
+```
+
+Sample outputs of both (20 pieces each, MIDI and WAV) are in the release asset `hw2_extra_plan_fill.zip`.
 
 ## Training and experiments
 
