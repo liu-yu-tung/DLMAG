@@ -18,7 +18,7 @@ Decided: TASK A = single-stage cut (T5 4-0, T6 challenger 6-4 < 8 of 10); TASK B
 
 Required by the spec: code, README, `requirements.txt`, the checkpoints behind the submitted files (`gpt2_ppb16/loss_0.40`, `bonus_ppb16/last`), the generation results; not training data, preprocessed data (so the TASK B prompts are tokenized by the README step, not shipped), other people's models or caches. The plan-fill checkpoints are extras.
 
-State at 19:50:
+State at 20:27:
 
 | # | Step | State / ETA |
 |---|---|---|
@@ -27,9 +27,9 @@ State at 19:50:
 | 3 | Orphan branch `hw2-submission` pushed (`e98c404`, `7de14d0`; 210 files; worktree in the session scratchpad `hw2-submission/`); listening page screenshots, blank state (`results/figures/listening_page_*.png`, `78e8ab0`) | done |
 | 4 | Release `hw2` is a **draft** (only the owner sees it). 8 assets uploading direct, about 0.26 MB/s in total (route cap, not stream count): 6 tars, `hw2_generation_results.zip`, `hw2_extra_plan_fill.zip`. When all 8 are up: `gh release edit hw2 --repo liu-yu-tung/DLMAG --draft=false`, then check logged out (`curl -sI .../releases/download/hw2/plan_rep_best.tar` gives 302) | uploads ETA 20:50 |
 | 5 | Fresh-clone test from the published release: TASK A n=1, TASK B (tokenize step), BONUS | 21:10 |
-| 6 | Report deck, 16 slides, Slides type with HW1's look: https://claude.ai/artifact/YLnJeXb6ftHLLR33zgCFqm (scratch copy in the session scratchpad `deck_hw2/`) | first draft done 19:47 |
-| 7 | User review and fixes | from 19:50, done by 21:30 |
-| 8 | PDF to `dist/cool/b10901114_report.pdf`, first (safe) upload to NTU COOL with the link in the comment; later re-upload only if COOL allows it | safe upload by 22:15, last by 23:30 |
+| 6 | Report deck, 17 slides, Slides type with HW1's look: https://claude.ai/artifact/YLnJeXb6ftHLLR33zgCFqm (scratch copy in the session scratchpad `deck_hw2/`); no session labels (T1-T6) on slides, page number bottom right, code in mono blocks, Reproduce slide | done 20:16 (user: "slide is good") |
+| 7 | User review and fixes | done 20:20 |
+| 8 | PDF `dist/cool/b10901114_report.pdf` (17 pages, rendered locally) submitted to NTU COOL by the user; also a release asset `b10901114_report.pdf` (user's choice) | done 20:27 |
 
 Upload notes: `gh` token had expired (user re-logged in 19:09). Measured: direct 0.26 MB/s whatever the stream count; WARP full tunnel 0.22; direct + WARP proxy 0.51 (worked once, then the proxy timed out after switching modes). WARP is back as it was: proxy mode, disconnected; `warp-svc` left running (started by the user).
 
