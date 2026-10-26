@@ -442,6 +442,26 @@ Blind A/B pairs on the phone page; `pref` from −2 (A much better) to +2 (B muc
 - **T6 (`t6_select`, rated by 2026-10-26 18:20, 22 pairs, fresh pieces; challenger named and rules fixed before building, `docs/status.md`):** challenger (chord-relative fill + cut + semitone penalty 2) vs cut single-stage 6 wins, 4 losses (sign test p 0.75): below the 8-of-10 rule, so TASK A stays the cut single-stage. Report only: challenger vs penalty 0 on the same plans 1 win, 2 losses, 1 same (the penalty is not supported by listening; with one seed the two pieces stay identical until the first penalised pitch, and one pair was heard as "exactly the same"); challenger vs current fill with the same penalty and plans 3-1; real openings beat the cut 2-0 and the challenger 2-0. Dropped on checking the samples (user: drop wrong samples): pair 12, whose real clip is 192 beats (a 6-beat meter shown as 48 bars of 4/4, first note in bar 2) against 128 for the generated one; pair 09, the same piece on both sides (penalty 2 left 11 of the 30 pieces unchanged). After the drops: challenger vs cut still 6-4; penalty 1-2; real vs cut 1-0, real vs challenger 2-0. Generated pieces sit on the 16th-note grid (0.0-0.4% of onsets off it vs 2.8% real), so the "misaligned melody and piano" comments are not off-grid notes; not measured further. Many pieces end with a 33rd bar holding only the last notes' release. Comments: "long empty" bars and "very long notes in early bars" on plan-fill, "misaligned melody and piano", "long semitone clash", "random jump to a high note" on single-stage.
 - **Order bias:** side B won 6 of 7 in T4 (sign test p 0.125); T5 A 6, B 5; T6 A 11, B 10; all six sessions A 28, B 33. With one pair per matchup, `listening.py pairs` put the first named system on side A, so T4's config pairs were confounded with the side.
 
+## Why the listening results are close (2026-10-26; recount of `results/listening/t1-t6*.csv`, T6 pairs 09 and 12 dropped)
+
+Of 63 rated pairs, 36 were "clearly", 24 "a bit" and 3 "same". Counting only "clearly" wins:
+
+| matchup | all wins | clear wins only |
+|---|---|---|
+| real vs any system (T1, T2, T6) | 6-0 | 5-0 |
+| TASK B `t1 p0.95` vs the other two configs (T3) | 6-0 | 5-0 |
+| single-stage cut vs uncut (T5) | 4-0 | 3-0 |
+| plan-fill vs single-stage (T2, T5, T6) | 13-7 | 7-6 |
+| T6 challenger vs cut single-stage | 6-4 | 3-4 |
+| chord-relative vs current fill (T5, T6) | 4-2 | 1-0 |
+| semitone penalty vs none (T6) | 1-2 | 0-1 |
+
+- The clear-only count keeps every result that was clear before (real, TASK B sampling, the cut) and turns plan-fill vs single-stage into an even split (7-6); plan-fill's lead came from "a bit" wins.
+- Every system is far below real (real won all 5 clear pairs), so most comparisons are between two pieces with the same kinds of flaws (wrong notes, empty bars, messy openings in every system's flaw table), which makes close calls likely.
+- The candidates share the data, the tokenizer grid and the model family and differ in one factor each (sampling, cut, fill tokens, penalty); the spread between pieces of one system is larger than the difference between systems (clash time of one chord-relative model: 0.0505, 0.0372 and 0.0251 on three plan sets).
+- Plan-fill's strengths and weaknesses cancel within a piece: it wins later sections and loses openings (T5 section duel).
+- The decision rules were hard to pass on purpose: with a true 70/30 preference, 5 of 6 happens 42% of the time and 8 of 10 38%, so a close result was the expected outcome unless one system was clearly better.
+
 ## Listening-grade predictor (`docs/grade_model.md`; `grade_model_cv.csv`, `grade_model_check.csv`) · as of 2026-10-25
 
 Logistic model on feature differences, fit on the decisive A/B pairs and the pilot sessions.
