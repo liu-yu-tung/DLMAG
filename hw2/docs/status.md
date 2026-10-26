@@ -18,16 +18,20 @@ Decided: TASK A = single-stage cut (T5 4-0, T6 challenger 6-4 < 8 of 10); TASK B
 
 Required by the spec: code, README, `requirements.txt`, the checkpoints behind the submitted files (`gpt2_ppb16/loss_0.40`, `bonus_ppb16/last`), the generation results; not training data, preprocessed data (so the TASK B prompts are tokenized by the README step, not shipped), other people's models or caches. The plan-fill checkpoints are extras.
 
-| # | Step | ETA |
+State at 19:25:
+
+| # | Step | State / ETA |
 |---|---|---|
-| 1 | Done: results zip with `README.txt` (best TASK B config `t1_k0_p0.95` for prompts 001-003); `plan_rep_24k_loss_0.40.tar` + checksum; README (TASK B tokenize step, models table, plan-fill "try" command) | 19:05 |
-| 2 | Generate chord-relative + cut + penalty 2 under `plan_rep_24k/loss_0.40` (`outputs/cand_a/pf_fillrel60k_cut_pen2_plan24k040_s200`, 20 pieces); zip it with 20 challenger pieces as `hw2_extra_plan_fill.zip` | 19:15 |
-| 3 | Commit main; orphan branch `hw2-submission` in a temp worktree (all HW2 code, docs, results, `data/tokens` vocab and bins, `checkpoints.sha256`; no `CLAUDE.md`, `outputs/`, MIDI, audio); show the file list; push | 19:25 |
-| 4 | Release `hw2`: 6 tars + 2 zips (about 1.8 GB; upload time unknown until measured) | 19:25-20:00 |
-| 5 | Fresh-clone test from the release: TASK A n=1, TASK B, BONUS | 20:15 |
-| 6 | Report deck, 13 slides (`docs/report_outline.md`), Slides type with HW1's look; written while steps 4-5 run | 19:30-21:45 |
+| 1 | Results zip with `README.txt`; `plan_rep_24k_loss_0.40.tar` + checksum; README (TASK B tokenize step, models table, plan-fill "try" command, extras MIDI + MP3) | done (`e889ac4`, `ed37876`) |
+| 2 | Chord-relative + cut + penalty 2 under `plan_rep_24k/loss_0.40` (`outputs/cand_a/pf_fillrel60k_cut_pen2_plan24k040_s200`, 20 pieces, not listened to); `dist/release/hw2_extra_plan_fill.zip` (that set + 20 challenger pieces, MIDI + MP3 at -18 LUFS, 97 MB) | done |
+| 3 | Orphan branch `hw2-submission` pushed (`e98c404`, `7de14d0`; 210 files; worktree in the session scratchpad `hw2-submission/`); listening page screenshots, blank state (`results/figures/listening_page_*.png`, `78e8ab0`) | done |
+| 4 | Release `hw2` is a **draft** (only the owner sees it). 8 assets uploading direct, about 0.26 MB/s in total (route cap, not stream count): 6 tars, `hw2_generation_results.zip`, `hw2_extra_plan_fill.zip`. When all 8 are up: `gh release edit hw2 --repo liu-yu-tung/DLMAG --draft=false`, then check logged out (`curl -sI .../releases/download/hw2/plan_rep_best.tar` gives 302) | uploads ETA 20:50 |
+| 5 | Fresh-clone test from the published release: TASK A n=1, TASK B (tokenize step), BONUS | 21:10 |
+| 6 | Report deck, 13 slides (`docs/report_outline.md`: slide 8 plan-fill vs cut table, slide 11 screenshots), Slides type with HW1's look; written while steps 4-5 run | 19:30-21:45 |
 | 7 | User review and fixes | 21:45-23:00 |
 | 8 | PDF to `dist/cool/b10901114_report.pdf`, upload to NTU COOL with the link in the comment | by 23:30 (buffer 30 min) |
+
+Upload notes: `gh` token had expired (user re-logged in 19:09). Measured: direct 0.26 MB/s whatever the stream count; WARP full tunnel 0.22; direct + WARP proxy 0.51 (worked once, then the proxy timed out after switching modes). WARP is back as it was: proxy mode, disconnected; `warp-svc` left running (started by the user).
 
 ## Open issues
 
