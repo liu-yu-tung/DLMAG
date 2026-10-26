@@ -10,38 +10,38 @@
   "density_cv"
  ],
  "mean": {
-  "longest_onset_gap_beats": 2.4586466165413534,
-  "bass_dropout": 0.025590690435766835,
-  "high_share": 0.026769553597474256,
-  "half_pc_sim": 0.9322912772161789,
-  "half_register_shift": 1.996024370489804,
-  "one_note_bars": 0.045112781954887216,
-  "key_fit": 0.9776278449254651,
-  "density_cv": 0.27694369315248485
+  "longest_onset_gap_beats": 2.3799435028248586,
+  "bass_dropout": 0.02612045136990462,
+  "high_share": 0.02603293239271787,
+  "half_pc_sim": 0.9348081172105849,
+  "half_register_shift": 1.8751754844336967,
+  "one_note_bars": 0.03389830508474576,
+  "key_fit": 0.980606309157808,
+  "density_cv": 0.26774745195673594
  },
  "std": {
-  "longest_onset_gap_beats": 1.4444186111283916,
-  "bass_dropout": 0.05855733815737206,
-  "high_share": 0.04262894303751333,
-  "half_pc_sim": 0.0575908184311786,
-  "half_register_shift": 1.7329298193328933,
-  "one_note_bars": 0.44149645068986404,
-  "key_fit": 0.028747467191059074,
-  "density_cv": 0.09799158126111843
+  "longest_onset_gap_beats": 1.3729557105579078,
+  "bass_dropout": 0.07748601750330107,
+  "high_share": 0.04150870957798654,
+  "half_pc_sim": 0.05675462844648857,
+  "half_register_shift": 1.6437609289276345,
+  "one_note_bars": 0.38284676920445965,
+  "key_fit": 0.026599211811194765,
+  "density_cv": 0.09348461150615824
  },
  "weights": {
-  "longest_onset_gap_beats": -0.031029640428025872,
-  "bass_dropout": -0.14505581063955592,
-  "high_share": -0.17887434647122943,
-  "half_pc_sim": 0.13495928954907602,
-  "half_register_shift": -0.12896174141950545,
-  "one_note_bars": -0.08781016753899047,
-  "key_fit": 0.14459863615529087,
-  "density_cv": 0.06878431553233912
+  "longest_onset_gap_beats": -0.03656097788147423,
+  "bass_dropout": -0.12513442657278157,
+  "high_share": -0.13281179390879252,
+  "half_pc_sim": 0.1694861820913185,
+  "half_register_shift": -0.09639511512462653,
+  "one_note_bars": -0.11497488813242811,
+  "key_fit": 0.20063909082750644,
+  "density_cv": 0.08322609293599995
  },
  "lambda": 10.0,
- "real_score": 0.18930124370307916,
- "n_ab_pairs": 40,
+ "real_score": 0.19863151862655937,
+ "n_ab_pairs": 61,
  "n_scored_clips": 56,
  "sessions": [
   "candidates",
@@ -52,6 +52,7 @@
   "t2_openings",
   "t3_continuations",
   "t4_openings",
-  "t5_sections"
+  "t5_sections",
+  "t6_select"
  ]
 }

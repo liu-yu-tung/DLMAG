@@ -55,3 +55,43 @@ t5_sections,pair_11,-1,flow;form,,,"in this case the best melody is probably the
 the whole song doesn't feel similar in first and the the second half",,,{},{},
 t5_sections,pair_12,2,flow;phrasing;form;accompaniment,"[null, null, null, {""w"": 1, ""why"": [""repetitive""]}]","empty in last half 16th bar
 but in here it's like a breath so it feel a little bit natural the song still continues ",as the song goes on it actually get more interesting ,,,{},{},
+t6_select,pair_01,1,melody;form,,more interesting piano and a good piece ,very good melody and had a better structure and progression ,,,{},{},
+t6_select,pair_02,-1,harmony;melody;flow,"[{""w"": -1, ""why"": [""timing""]}, {""w"": -1, ""why"": []}, {""w"": 0, ""why"": [""repetitive""]}, {""w"": -1, ""why"": []}]",,timing is off in the first 8 bar,,,{},{},
+t6_select,pair_03,-2,harmony;melody;flow;accompaniment,"[{""w"": -1, ""why"": [""messy"", ""wrong_notes"", ""empty"", ""off_vibe""]}, {""w"": -1, ""why"": [""wrong_notes""]}, {""w"": -1, ""why"": []}, {""w"": -1, ""why"": [""empty""]}]",,,,,{},{},
+t6_select,pair_04,-2,phrasing;form;accompaniment,,"more interesting
+more little timing misalignment ","a safe song 
+pretty good in general but not much variation in different segments ",,,{},{},
+t6_select,pair_05,-1,melody;flow;phrasing;form;accompaniment,,"great composition and no quick beat misalignment! 
+really like the melody switch from higher key to lower and back to higher(not necessarily a best music choose in every song so don't forced it)
+good ending like a closure, not sure if this is just coincidence of a transformer model",basically the same quality but somewhat weaker melody progressions(just a little bit,,,{},{},
+t6_select,pair_06,2,harmony;melody;phrasing;accompaniment,,too much empty,,,,{},{},
+t6_select,pair_07,2,harmony;melody;flow;phrasing;form;accompaniment,,overall a good piece but due to weak melody progression it don't fit our pop piano vibe that much,beautiful and great to listen to ,,,{},{},
+t6_select,pair_08,1,harmony,"[{""w"": 1, ""why"": [""wrong_notes""]}, {""w"": 1, ""why"": [""wrong_notes""]}, {""w"": 1, ""why"": [""wrong_notes""]}, {""w"": -1, ""why"": [""wrong_notes""]}]","too many wrong note(long semitones clash)
+unpleasant to listen to for first 24 bars",too much empty in first 4 bar and repeat throughout the whole song,,,{},{},
+t6_select,pair_09,0,,"[{""w"": 0, ""why"": [""repetitive""]}, {""w"": 0, ""why"": [""repetitive""]}, {""w"": 0, ""why"": [""repetitive""]}, {""w"": 0, ""why"": [""repetitive""]}]",repeatative,aren't this 2 exactly the same?,,,{},{},
+t6_select,pair_10,-1,flow,"[{""w"": 1, ""why"": [""messy""]}, {""w"": -1, ""why"": [""messy"", ""empty"", ""off_vibe"", ""timing""]}, {""w"": 0, ""why"": []}, {""w"": 1, ""why"": [""wrong_notes"", ""repetitive""]}]","messy start
+repeatative further on in melody and piano","super high melody notes only in the start  is kinda weird
+weird tempo and strange choices here and there in note length  and start timing in first 16 bars
+",,,{},{},
+t6_select,pair_11,-2,harmony;melody;flow;phrasing;accompaniment,,good quality and interesting piano progression arrangement,"misaligned melody and piano beats and strange press and release notes timing 
+sound like 2 ppl play together without practice properly first and some weird chord too(maybe it's the misalignment
+could've been much better song",,,{},{},
+t6_select,pair_12,-2,harmony;melody;flow;phrasing;form;accompaniment,"[{""w"": 1, ""why"": [""messy"", ""empty"", ""off_vibe""]}, null, null, null]","why it start at 2nd bar mid way? it also has some semitones clashing but each time it's short and fit the vibe so it's fine
+it end at 48 th bars? if I adjust my starting bar at 9th bar and end at 40th it's better and if I shift to from 17th to 48th it perfect and has amazing progression and has a good climax too
+the score is from 17th but the 3 are much better than B still 
+very strong after 9th bar",,,,{},{},
+t6_select,pair_13,2,harmony;melody;flow;phrasing;form;accompaniment,"[{""w"": 0, ""why"": [""messy"", ""wrong_notes"", ""empty"", ""off_vibe""]}, {""w"": -1, ""why"": [""messy"", ""wrong_notes"", ""off_vibe""]}, {""w"": -1, ""why"": [""empty"", ""off_vibe"", ""repetitive""]}, {""w"": -1, ""why"": [""wrong_notes"", ""off_vibe"", ""repetitive""]}]",super long note and staggering ,long semitones clash note in early bars,,,{},{},
+t6_select,pair_14,2,harmony;phrasing;accompaniment,"[{""w"": 1, ""why"": [""messy"", ""wrong_notes"", ""repetitive"", ""timing""]}, {""w"": 1, ""why"": [""repetitive""]}, {""w"": 1, ""why"": [""wrong_notes""]}, {""w"": 0, ""why"": [""repetitive""]}]",bad harmony in 20th and 21th bar(20.5 to 21.5 bar),,,,{},{},
+t6_select,pair_15,2,harmony;melody;flow;phrasing;form;accompaniment,"[{""w"": 1, ""why"": [""messy"", ""wrong_notes"", ""repetitive""]}, {""w"": 1, ""why"": [""wrong_notes""]}, {""w"": 1, ""why"": [""empty""]}, null]",,,,,{},{},
+t6_select,pair_16,1,harmony,"[{""w"": 1, ""why"": [""wrong_notes""]}, null, null, {""w"": 1, ""why"": [""messy"", ""wrong_notes""]}]","too many semitones notes and wring note
+","too many long empty in first 8 bar and also some in later
+get too high in some bar",,,{},{},
+t6_select,pair_17,2,harmony;melody;flow;phrasing;form;accompaniment,"[{""w"": 1, ""why"": [""wrong_notes""]}, {""w"": 1, ""why"": [""wrong_notes""]}, null, null]",,long empty in early bars,,,{},{},
+t6_select,pair_18,-2,harmony;flow;phrasing;form,"[{""w"": -1, ""why"": []}, {""w"": -1, ""why"": []}, {""w"": -1, ""why"": []}, {""w"": 1, ""why"": []}]",,"first bar is totally outbof place but itself is not really bad
+interesting transition from 15 to 17th bar
+long empty in 20 th bar",,,{},{},
+t6_select,pair_19,-1,form,"[{""w"": 1, ""why"": []}, null, null, {""w"": -1, ""why"": [""off_vibe""]}]",staggering in early bars,very randomly jump to high note and stop aruplty leaving a bad taste ,,,{},{},
+t6_select,pair_20,-1,,,a lots empty ,a lots empty and mush messier than A ,,,{},{},
+t6_select,pair_21,2,,"[null, null, {""w"": 1, ""why"": [""messy"", ""wrong_notes"", ""empty"", ""off_vibe""]}, {""w"": 1, ""why"": [""messy"", ""empty"", ""off_vibe""]}]",,"long empty in bar 24
+and is the song end longer than 32 bars in about the same empty time?",,,{},{},
+t6_select,pair_22,-1,flow;form,"[null, {""w"": 0, ""why"": [""repetitive""]}, {""w"": 0, ""why"": [""repetitive""]}, {""w"": 0, ""why"": [""repetitive""]}]",very long note in early bars,very long note in early bars,,,{},{},
