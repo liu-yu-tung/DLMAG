@@ -117,7 +117,7 @@ Not tested by listening, worth trying: the same chord-relative fill under the pl
 python scripts/generate_plan_fill.py --plan_ckpt checkpoints/plan_rep_24k/loss_0.40 --plan_tok2idx data/tokens/plan_rep/tok2idx.json --fill_ckpt checkpoints/fill_rel_60k/last --tok2idx data/tokens/fill_rel/tok2idx.json --output_dir <dir> --n 20 --bars 32 --skip_bars 8 --form W8I4A8B8A8E4 --min_piano_bin 1 --tempo_range 60,125 --cadence --order melody_first --return_as var --repeat_bias 8 --rub_penalty 2 --seed 200 --wav
 ```
 
-Sample outputs of both (20 pieces each, MIDI and WAV) are in the release asset `hw2_extra_plan_fill.zip`.
+Sample outputs of both (20 pieces each, MIDI and MP3) are in the release asset `hw2_extra_plan_fill.zip`.
 
 ## Training and experiments
 
