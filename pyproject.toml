@@ -1,0 +1,32 @@
+[project]
+name = "hw2"
+version = "0.1.0"
+description = "DLMAG HW2: symbolic music generation on POP909 (TASK A, TASK B, BONUS TASK)"
+readme = "README.md"
+authors = [
+    { name = "liuyu", email = "57765519+liu-yu-tung@users.noreply.github.com" }
+]
+requires-python = ">=3.12"
+# Inference only: requirements.txt installs this package with these, and the TA asks for nothing more.
+dependencies = [
+    "miditoolkit>=1.0.1",
+    "numpy>=2.5.4",
+    "pretty-midi>=0.2.11.post0",
+    "scipy>=1.18.1",
+    "torch>=2.14.1",
+    "transformers>=5.19.0",
+]
+
+[dependency-groups]
+analysis = [
+    "matplotlib>=3.11.2",
+    "pandas>=3.0.6",
+    "tqdm>=4.70.1",
+]
+
+[tool.uv]
+default-groups = ["analysis"]
+
+[build-system]
+requires = ["uv_build>=0.13.0,<0.14.0"]
+build-backend = "uv_build"

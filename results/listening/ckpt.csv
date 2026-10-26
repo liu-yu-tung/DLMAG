@@ -1,0 +1,13 @@
+session,clip,coherence,correctness,structureness,richness,overall,note,source,file
+ckpt,clip_01,3,1,2,4,2,,outputs/exp2/step_6000,15.wav
+ckpt,clip_02,5,3,5,4,4,,outputs/ref/heldout_crop32,496.wav
+ckpt,clip_03,1,1,1,1,1,,outputs/exp2/step_2000,08.wav
+ckpt,clip_04,1,2,2,2,1,,outputs/exp2/loss_1.00,09.wav
+ckpt,clip_05,4,3,4,5,4,chord progression is good/interesting/fun/vibrant; end in rather abrupt way feel like it's cut off before something is gone to change,outputs/exp2/loss_1.00,12.wav
+ckpt,clip_06,5,5,4,4,3,the vibe is good but the transition is not smooth and I like the variation in the last few bar but it's way too late to do that,outputs/exp2/last,06.wav
+ckpt,clip_07,4,5,5,3,4,"the base tempo and the chord almost the same in the whole song, not much to complain kinda repetitive",outputs/exp2/loss_0.40,11.wav
+ckpt,clip_08,4,5,5,3,4,,outputs/ref/heldout_crop32,877.wav
+ckpt,clip_09,4,4,2,2,3,,outputs/exp2/last,18.wav
+ckpt,clip_10,1,2,2,2,2,,outputs/exp2/step_6000,16.wav
+ckpt,clip_11,2,2,2,4,2,,outputs/exp2/step_2000,01.wav
+ckpt,clip_12,3,3,3,4,3,,outputs/exp2/loss_0.40,15.wav

@@ -1,0 +1,5 @@
+config,CA,CA-ceiling,DP (Pitch-class OA),DV (Velocity OA),DD (Duration OA),DIOI (Inter-Onset OA)
+t1_p0.95_grammar,0.275,0.7625,0.8693,0.5428,0.746,0.5462
+t1_p0.95_free,0.2188,0.7625,0.8696,0.5784,0.722,0.4975
+t1_p1_grammar,0.1406,0.7344,0.8723,0.3882,0.6979,0.5131
+t0.8_p0.95_grammar,0.2062,0.7625,0.8635,0.5426,0.7068,0.5229

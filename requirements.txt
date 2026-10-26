@@ -1,0 +1,13 @@
+# Inference only (scripts/generate_uncond.py, generate_cont.py, generate_bonus.py, generate_plan_fill.py). Python 3.12.
+# Install from this folder:
+#   pip install -r requirements.txt
+# WAV output (--wav) also needs the FluidSynth command and a General MIDI soundfont (see README).
+# The last line installs this project (the hw2 package) in editable mode; its pyproject.toml lists the same libraries.
+torch==2.14.1
+transformers==5.19.0
+safetensors==0.8.0
+miditoolkit==1.0.1
+pretty_midi==0.2.11.post0
+numpy==2.5.4
+scipy==1.18.1
+-e .

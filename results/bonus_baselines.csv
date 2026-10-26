@@ -1,0 +1,4 @@
+set,CA,CA-ceiling,DP (Pitch-class OA),DV (Velocity OA),DD (Duration OA),DIOI (Inter-Onset OA)
+gt,0.7625,0.7625,1.0,1.0,1.0,1.0
+melody_8vb,0.3,0.7625,0.6498,0.3469,0.5449,0.3995
+other_song,0.0062,0.7625,0.8482,0.3863,0.6766,0.4304

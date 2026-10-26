@@ -1,0 +1,15 @@
+session,clip,coherence,correctness,structureness,richness,overall,note,source,file
+planfill,clip_01,4,4,4,5,4,some blank part and sudden speed change the sound is rich but I hope it maintains same vibe in the full length ,outputs/plan_fill/melody_first,13.wav
+planfill,clip_02,5,3,4,5,4,sometimes melody stop and only the piano stay in same note is a little weird ,outputs/plan_fill/piano_first,15.wav
+planfill,clip_03,4,4,2,4,3,there's 2 or 3 bar when melody just not there even single note,outputs/ref/heldout_crop32,522.wav
+planfill,clip_04,3,4,3,4,3,melody too weak,outputs/exp2/loss_0.40,17.wav
+planfill,clip_05,4,4,4,5,4,interesting piece but the velocity is too aggressive sometimes and also the beat  is kinda misaligned between melody and piano in first half ,outputs/ref/heldout_crop32,237.wav
+planfill,clip_06,5,5,3,2,3,every the piano notes should hold longer or decrease the velocity ,outputs/plan_fill/melody_first,12.wav
+planfill,clip_07,3,3,2,2,2,,outputs/exp2/loss_0.40,09.wav
+planfill,clip_08,5,5,5,5,5,"a half blank 
+otherwise perfect pieces for a single pop piano midi",outputs/ref/heldout_crop32,364.wav
+planfill,clip_09,3,2,3,5,3,very strange start but very good button 1/3,outputs/plan_fill/piano_first,16.wav
+planfill,clip_10,2,3,3,4,2,"uneven misaligned melody and piano combimed in the start 
+the latter is not that bad",outputs/plan_fill/melody_first,01.wav
+planfill,clip_11,4,3,4,4,4,,outputs/exp2/loss_0.40,06.wav
+planfill,clip_12,2,3,1,2,2,long and boring and loose,outputs/plan_fill/piano_first,08.wav

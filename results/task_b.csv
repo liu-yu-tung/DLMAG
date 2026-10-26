@@ -1,0 +1,4 @@
+dir,config,ckpt,n,H1_mean,H1_std,H4_mean,H4_std,GS_mean,GS_std,nll_mean,n_tokens_mean,bar_copy_mean,bar_copy_any_key_mean,ngram_copy_mean,note8_copy_mean
+outputs/task_b_final/t0.9_k0_p1,t0.9_k0_p1,checkpoints/gpt2_ppb16/loss_0.40,3,2.2478,0.0519,2.6333,0.0401,0.9434,0.0234,0.5631,3018.3333,0.0,0.0,0.0,0.0143
+outputs/task_b_final/t1_k0_p0.95,t1_k0_p0.95,checkpoints/gpt2_ppb16/loss_0.40,3,2.1705,0.0477,2.6038,0.0185,0.9432,0.0252,0.4644,3051.3333,0.0,0.0,0.0,0.0332
+outputs/task_b_final/t1_k0_p1,t1_k0_p1,checkpoints/gpt2_ppb16/loss_0.40,3,2.1845,0.0904,2.5839,0.0233,0.9494,0.0267,0.5586,2876.0,0.0,0.0,0.0,0.0112

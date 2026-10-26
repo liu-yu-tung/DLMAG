@@ -1,0 +1,7 @@
+dir,config,ckpt,n,H1_mean,H1_std,H4_mean,H4_std,GS_mean,GS_std,nll_mean,n_tokens_mean,bar_copy_mean,bar_copy_any_key_mean,ngram_copy_mean,note8_copy_mean
+outputs/task_a_plan_form_var_bias8/t0.8_k0_p0.9,melody_first_t0.8_k0_p0.9,,20,1.9696,0.1594,2.5477,0.1653,0.9798,0.0144,0.6459,2630.8,0.0,0.0,0.0,0.031
+outputs/task_a_plan_form_var_bias8/t1.2_k0_p1,melody_first_t1.2_k0_p1,,20,2.1956,0.1539,2.6924,0.1503,0.917,0.0338,1.8229,2424.0,0.0,0.0,0.0,0.0019
+outputs/task_a_plan_form_var_bias8/t1_k0_p0.95,melody_first_t1_k0_p0.95,,20,2.0591,0.1595,2.609,0.149,0.972,0.0154,1.0043,2595.8,0.0,0.0,0.0,0.0248
+outputs/task_a_plan_form_var_pbias4_bias8/t0.8_k0_p0.9,melody_first_t0.8_k0_p0.9,,20,1.9395,0.1545,2.5434,0.1594,0.981,0.0139,0.6536,2586.6,0.0,0.0,0.0,0.0371
+outputs/task_a_plan_form_var_pbias4_bias8/t1.2_k0_p1,melody_first_t1.2_k0_p1,,20,2.1724,0.1655,2.685,0.1389,0.9179,0.0361,1.8083,2396.6,0.0,0.0,0.0,0.0013
+outputs/task_a_plan_form_var_pbias4_bias8/t1_k0_p0.95,melody_first_t1_k0_p0.95,,20,2.0414,0.1617,2.609,0.1344,0.9698,0.0154,1.0098,2727.8,0.0,0.0,0.0,0.0252

@@ -1,0 +1,31 @@
+kind,progression,count,share
+2-chord,V -> I,6358,0.0623
+2-chord,IV -> V,5647,0.0553
+2-chord,V -> vi,3777,0.037
+2-chord,vi -> IV,3724,0.0365
+2-chord,ii -> V,3356,0.0329
+2-chord,iii -> vi,3339,0.0327
+2-chord,vi -> ii,3208,0.0314
+2-chord,I -> IV,3032,0.0297
+2-chord,I -> vi,2874,0.0282
+2-chord,I -> V,2540,0.0249
+2-chord,vi -> V,2372,0.0232
+2-chord,IV -> I,2282,0.0224
+2-chord,V -> IV,2210,0.0217
+2-chord,vi -> iii,1940,0.019
+2-chord,iii -> IV,1906,0.0187
+4-chord,vi -> IV -> V -> I,963,0.0096
+4-chord,vi -> ii -> V -> I,857,0.0085
+4-chord,V -> vi -> IV -> V,678,0.0068
+4-chord,IV -> V -> I -> vi,636,0.0063
+4-chord,V -> I -> V -> vi,633,0.0063
+4-chord,IV -> V -> iii -> vi,631,0.0063
+4-chord,iii -> vi -> ii -> V,623,0.0062
+4-chord,vi -> IV -> V -> vi,548,0.0055
+4-chord,V -> I -> IV -> V,541,0.0054
+4-chord,V -> I -> vi -> IV,524,0.0052
+4-chord,ii -> V -> I -> vi,501,0.005
+4-chord,IV -> V -> vi -> IV,487,0.0049
+4-chord,IV -> V -> I -> IV,482,0.0048
+4-chord,iii -> vi -> IV -> V,453,0.0045
+4-chord,I -> vi -> IV -> V,440,0.0044

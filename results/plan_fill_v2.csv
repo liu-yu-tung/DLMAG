@@ -1,0 +1,13 @@
+dir,config,ckpt,n,H1_mean,H1_std,H4_mean,H4_std,GS_mean,GS_std,nll_mean,n_tokens_mean,bar_copy_mean,bar_copy_any_key_mean,ngram_copy_mean,note8_copy_mean
+outputs/plan_fill_v2/form_IABAE,melody_first_t1_k0_p1,,20,2.0566,0.0919,2.5791,0.0699,0.9618,0.0242,1.3286,2373.8,0.0,0.0,0.0,0.0084
+outputs/plan_fill_v2/form_IABCAE,melody_first_t1_k0_p1,,20,2.0666,0.1018,2.5854,0.0747,0.9595,0.025,1.3137,2377.2,0.0,0.0,0.0,0.0113
+outputs/plan_fill_v2/gaps,melody_first_t1_k0_p1,,20,2.0872,0.129,2.5929,0.0873,0.9509,0.0291,1.3221,2548.2,0.0,0.0,0.0,0.0098
+outputs/plan_fill_v2/gaps_intro_cadence,melody_first_t1_k0_p1,,20,2.0692,0.1247,2.5904,0.0883,0.9575,0.0244,1.2872,2602.0,0.0,0.0,0.0,0.0105
+outputs/plan_fill_rep/form_IABAE_var,melody_first_t1_k0_p1,,20,2.0603,0.1359,2.6301,0.1313,0.9676,0.0184,1.2798,2486.4,0.0,0.0,0.0,0.0194
+outputs/plan_fill_rep/form_IABAE_var_bias8,melody_first_t1_k0_p1,,20,2.0907,0.1657,2.6352,0.1292,0.9684,0.0197,1.2979,2543.8,0.0,0.0,0.0,0.0119
+outputs/plan_fill_rep/free,melody_first_t1_k0_p1,,20,2.0437,0.139,2.592,0.1169,0.9644,0.0223,1.3316,2469.8,0.0,0.0,0.0,0.0147
+outputs/plan_fill_rep/free_bias16,melody_first_t1_k0_p1,,20,2.0509,0.161,2.5945,0.1255,0.9599,0.0249,1.4086,2738.6,0.0,0.0,0.0,0.0108
+outputs/plan_fill_rep/free_bias4,melody_first_t1_k0_p1,,20,2.0464,0.1548,2.5958,0.1203,0.9631,0.019,1.3216,2463.2,0.0,0.0,0.0,0.0126
+outputs/plan_fill_rep/free_bias8,melody_first_t1_k0_p1,,20,2.0485,0.1644,2.5912,0.1144,0.961,0.0204,1.3633,2591.6,0.0,0.0016,0.0,0.0133
+outputs/plan_fill_rep/free_drop_repeat,melody_first_t1_k0_p1_drop-repeat,,20,2.0854,0.1512,2.5995,0.1198,0.9636,0.022,1.2791,2446.6,0.0,0.0,0.0,0.013
+outputs/plan_fill_rep/free_pbias4_bias8,melody_first_t1_k0_p1,,20,2.0242,0.1059,2.5924,0.0909,0.9589,0.0283,1.319,2491.6,0.0,0.0,0.0,0.0135

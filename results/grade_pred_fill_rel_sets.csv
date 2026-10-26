@@ -1,0 +1,3 @@
+source,variant,pieces,win_vs_real_mean,win_vs_real_sd,win_vs_real_min,checkpoint,step,train_loss_ema,val_loss
+outputs/sweep/fill_rep_60k/last,v3,20,0.41992075243552085,0.1143012033473719,0.1710647610318949,fill_rep_60k/last,60000,0.11492615231301359,3.8091
+outputs/cand_a/pf_fillrel60k,v3,20,0.40176424861026083,0.10742723884660667,0.13346751589794384,fill_rel_60k/last,60000,0.12064671490285216,3.7901

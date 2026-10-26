@@ -1,0 +1,4 @@
+source,variant,pieces,win_vs_real_mean,win_vs_real_sd,win_vs_real_min,checkpoint,step,train_loss_ema,val_loss
+outputs/real_plan/fill_rep_long_loss_0.40,v1,45,0.45132294618973934,0.12763688442134927,0.07278483576418901,fill_rep_long/loss_0.40,18908.0,0.39996925909109093,2.3608
+outputs/cand_a/pf_oldplan_fill040,v1,20,0.4310292283612851,0.10863486334400456,0.106079471807775,fill_rep_long/loss_0.40,18908.0,0.39996925909109093,2.3608
+outputs/ref/heldout_open32,v1,12,0.513610952242181,0.06895081704237921,0.377460209083723,,,,

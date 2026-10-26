@@ -1,0 +1,16 @@
+session,clip,coherence,correctness,structureness,richness,overall,note,source,file
+ckpt2,clip_01,5,5,5,5,5,"beautiful and smooth
+but some half bar looks left out empty ",outputs/ref/heldout_crop32,338.wav
+ckpt2,clip_02,4,4,3,2,3,,outputs/exp2/loss_0.30,03.wav
+ckpt2,clip_03,3,3,2,3,2,,outputs/exp2/loss_0.30,15.wav
+ckpt2,clip_04,3,3,3,5,3,,outputs/exp2/last,07.wav
+ckpt2,clip_05,2,3,1,4,2,,outputs/exp2/loss_0.40,02.wav
+ckpt2,clip_06,3,3,4,3,4,,outputs/exp2/loss_0.30,14.wav
+ckpt2,clip_07,2,2,3,1,2,,outputs/exp2/loss_0.40,08.wav
+ckpt2,clip_08,2,1,4,3,2,,outputs/exp2/last,13.wav
+ckpt2,clip_09,4,3,4,4,4,,outputs/exp2/loss_0.40,04.wav
+ckpt2,clip_10,5,5,5,5,5,great structure and detail in melody and sub melody (sub bar) good transition and proper piano ,outputs/ref/heldout_crop32,223.wav
+ckpt2,clip_11,5,3,5,5,5,"some strange blank not sure if it's the sampling or something else
+and 1 bar substantially with same note too long
+also strange pace but beautiful arrangement and composition ",outputs/ref/heldout_crop32,559.wav
+ckpt2,clip_12,5,5,4,4,4,,outputs/exp2/last,16.wav

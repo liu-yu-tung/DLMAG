@@ -1,0 +1,12 @@
+session,variant,pairs,correct,accuracy,fit_on
+t3_continuations,v1,9,5,0.5555555555555556,candidates;ckpt;ckpt2;planfill;t1_checkpoint;t2_openings
+t3_continuations,v2,9,3,0.3333333333333333,candidates;ckpt;ckpt2;planfill;t1_checkpoint;t2_openings
+t4_openings,v1,7,5,0.7142857142857143,candidates;ckpt;ckpt2;planfill;t1_checkpoint;t2_openings;t3_continuations
+t4_openings,v2,7,4,0.5714285714285714,candidates;ckpt;ckpt2;planfill;t1_checkpoint;t2_openings;t3_continuations
+t4_openings,v3,7,6,0.8571428571428571,candidates;ckpt;ckpt2;planfill;t1_checkpoint;t2_openings;t3_continuations
+t5_sections,v1,11,6,0.5454545454545454,candidates;ckpt;ckpt2;planfill;t1_checkpoint;t2_openings;t3_continuations;t4_openings
+t5_sections,v2,11,6,0.5454545454545454,candidates;ckpt;ckpt2;planfill;t1_checkpoint;t2_openings;t3_continuations;t4_openings
+t5_sections,v3,11,5,0.4545454545454545,candidates;ckpt;ckpt2;planfill;t1_checkpoint;t2_openings;t3_continuations;t4_openings
+t6_select,v1,21,12,0.5714285714285714,candidates;ckpt;ckpt2;planfill;t1_checkpoint;t2_openings;t3_continuations;t4_openings;t5_sections
+t6_select,v2,21,11,0.5238095238095238,candidates;ckpt;ckpt2;planfill;t1_checkpoint;t2_openings;t3_continuations;t4_openings;t5_sections
+t6_select,v3,21,14,0.6666666666666666,candidates;ckpt;ckpt2;planfill;t1_checkpoint;t2_openings;t3_continuations;t4_openings;t5_sections

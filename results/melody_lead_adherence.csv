@@ -1,0 +1,5 @@
+source,pieces,bars,chord_match,PDen_exact,PDen_within1,PDur_exact,PDur_within1,MDen_exact,MDen_within1,MDur_exact,MDur_within1,written_none,written_exact,written_var,written_rhythm,asked_repeat_bars,asked_label_written,asked_kind_at_lag,asked_any_at_lag,asked_none_written_none
+real_heldout,45,3745,0.852,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.477,0.215,0.168,0.14,1463,1.0,1.0,1.0,1.0
+outputs/sweep/fill_rep_60k/last,20,640,0.79,0.539,0.919,0.472,0.888,0.684,0.934,0.638,0.919,0.623,0.061,0.187,0.128,291,0.127,0.175,0.333,0.81
+outputs/cand_a/pf_melody20k,20,640,0.115,0.162,0.369,0.141,0.362,0.725,0.942,0.662,0.944,0.42,0.325,0.115,0.141,290,0.159,0.207,0.745,0.763
+outputs/cand_a/pf_fillnochord60k,20,640,0.167,0.512,0.898,0.388,0.836,0.592,0.914,0.581,0.877,0.604,0.049,0.135,0.213,292,0.103,0.127,0.284,0.8

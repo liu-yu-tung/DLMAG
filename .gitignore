@@ -1,0 +1,17 @@
+__pycache__/
+*.py[oc]
+*.egg-info
+.venv/
+data/
+checkpoints/
+runs/
+outputs/
+scripts/ta/MusDr/
+*.tar
+*.zip
+*.mid
+*.wav
+prompts_basic_b.json
+results/*_pieces.csv
+results/*_bars.csv
+results/*_closure.csv

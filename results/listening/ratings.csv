@@ -1,0 +1,30 @@
+session,clip,coherence,correctness,structureness,richness,overall,harmony,melody,flow,phrasing,form,accompaniment,tags,note
+candidates,clip_01,,,,,3.5,4,2,2,4,3.5,5,abrupt_start;odd_tempo;melody_missing;timing_off,terrible first 8 bar
+candidates,clip_02,,,,,3.5,3,3,3,4.5,4.5,2.5,,too much on off between notes which sound rigid and not smooth 
+candidates,clip_03,,,,,4,5,3.5,3.5,2.5,2.5,3,silent_gap;melody_missing,this has surprisingly good sounding experience bcuz the melody and piano are seperated on frequencies scale 
+candidates,clip_04,,,,,4.5,5,5,4,5,5,4.5,odd_tempo;timing_off,very fun but slightly nerfed due to too many notes(still very delightful 
+candidates,clip_05,,,,,3,3,4,3,3.5,4,2.5,silent_gap;abrupt_start,weak first 16 bar 
+candidates,clip_06,,,,,3.5,4.5,3.5,2.5,4.5,2.5,5,cut_off_ending,some very bad transition from bar 12 to bar 13 and after bar 28 sounds like it's giving up which drag the impression very drastically 
+candidates,clip_07,,,,,2,2,4,4,4,2,2.5,wrong_notes,so many wrong note in melody at first 8
+candidates,clip_08,,,,,3.5,2.5,5,3.5,4,4,4.5,silent_gap;abrupt_start;cut_off_ending;odd_tempo,"too rush in the beginning so it's not very pleasant and too messy 
+the latter is a bit better"
+candidates,clip_09,,,,,2,2.5,2,1.5,3.5,2,1,silent_gap;abrupt_start;cut_off_ending;wrong_notes;odd_tempo;melody_missing;timing_off,bad consistently 
+candidates,clip_10,,,,,1.5,1,2,1,2,1,1,silent_gap;abrupt_start;cut_off_ending;wrong_notes;too_repetitive;odd_tempo;melody_missing;timing_off,it's crashing out and giving up 
+candidates,clip_11,,,,,3.5,4,4,4,5,4.5,4,silent_gap;abrupt_start;wrong_notes;timing_off,"first 4 bar is not a song at all very strange 
+gradually getting much better after 16 bar
+but then it's just 2 segments left very hard to judge 
+"
+candidates,clip_12,,,,,5,4.5,4.5,5,5,5,4.5,,"no obvious drawbacks 
+pleasant listening "
+candidates,clip_13,,,,,2.5,3,3.5,4.5,3.5,3,3,abrupt_start;wrong_notes;too_repetitive;timing_off,
+candidates,clip_14,,,,,4.5,5,5,4.5,4,5,5,silent_gap;cut_off_ending,
+candidates,clip_15,,,,,2,5,4,3.5,4,3,2.5,silent_gap;too_repetitive;melody_missing;timing_off,"some note too long there no sound in the audio(happened to a lot of audio)
+also other song have some notes abruptly loud but this one is especially annoying need to fix in code"
+candidates,clip_16,,,,,1.5,1,3,2,3,2,1.5,wrong_notes,the key change  is very weird in this song pls check what happened 
+candidates,clip_17,,,,,4,4.5,4.5,4,3,3.5,4,too_repetitive,"the sheet doesn't meet the audio AT ALL
+and this one has very good volume seperation between piano and melody
+nothing very bad just boring and not much going on"
+candidates,clip_18,,,,,5,5,5,5,5,5,5,cut_off_ending,
+candidates,clip_19,,,,,4.5,4.5,5,4.5,5,5,4,silent_gap;timing_off,"weird silent in bar 12 to bar 13
+and misaligned beat at first few bar"
+candidates,clip_20,,,,,5,5,5,5,5,5,5,,the audio and sheet has different start offset/lag
