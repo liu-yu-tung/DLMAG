@@ -448,7 +448,7 @@ Of 63 rated pairs, 36 were "clearly", 24 "a bit" and 3 "same". Counting only "cl
 
 | matchup | all wins | clear wins only |
 |---|---|---|
-| real vs any system (T1, T2, T6) | 6-0 | 5-0 |
+| real vs any system (T1, T2, T6) | 7-0 | 5-0 |
 | TASK B `t1 p0.95` vs the other two configs (T3) | 6-0 | 5-0 |
 | single-stage cut vs uncut (T5) | 4-0 | 3-0 |
 | plan-fill vs single-stage (T2, T5, T6) | 13-7 | 7-6 |
