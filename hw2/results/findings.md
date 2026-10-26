@@ -462,6 +462,12 @@ Of 64 rated pairs, 37 were "clearly", 24 "a bit" and 3 "same". Counting only "cl
 - Plan-fill's strengths and weaknesses cancel within a piece: it wins later sections and loses openings (T5 section duel).
 - The decision rules were hard to pass on purpose: with a true 70/30 preference, 5 of 6 happens 42% of the time and 8 of 10 38%, so a close result was the expected outcome unless one system was clearly better.
 
+## Plan model length: inconclusive (2026-10-26; `grade_pred_plan_rep_24k_v3_sets.csv`, `sweep_silence.csv`)
+
+- The plan model reaches its held-out minimum at step 3600 (`plan_rep/best`, 104 epochs: plan tokens are one short label line per bar, so 4k steps is many passes). A 6x longer run (`plan_rep_24k/last`, 691 epochs, train loss 0.22, held-out 2.74) tied 1-1 in T4: 2 pairs, no evidence either way.
+- The 9 checkpoints of `plan_rep_24k` (same fill, 20 pieces each) were scored only by the predictor and the silence stats: predicted win vs real 0.38-0.48 with no trend in training loss (the lowest-held-out checkpoint lowest at 0.38), per-set standard error about 0.02-0.03, and the predictor itself matches the listener on 25 of 39 out-of-sample pairs; silent share 1.9-4.0%, no trend. Never listened to.
+- Report it as a limitation. A real test needs about 6+ pairs per checkpoint (e.g. the T6 challenger setup with plan `best` vs `plan_rep_24k/loss_0.40`).
+
 ## Listening-grade predictor (`docs/grade_model.md`; `grade_model_cv.csv`, `grade_model_check.csv`) · as of 2026-10-25
 
 Logistic model on feature differences, fit on the decisive A/B pairs and the pilot sessions.

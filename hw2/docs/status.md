@@ -12,20 +12,14 @@ As of 2026-10-25 04:20. Deadline Mon 2026-10-26 23:59; the report (PPT-style PDF
 - **BONUS TASK:** `abl_melody/step_7000`, ablations `abl_lookahead`, `abl_chords`. The `abl_chords` row is invalid: training transposed the notes but not the chord roots (findings "BONUS piano against the melody"); fix and retrain (about 45 min GPU) or report the bug: user to decide.
 - **Held-out songs:** 45 of 896 are held out; the report must say so.
 
-## Schedule (draft 2026-10-25 04:20; deadline Mon 2026-10-26 23:59)
+## Schedule (deadline Mon 2026-10-26 23:59; state at 18:45)
 
-1. **Done 04:20:** T5 graded (findings "Listening tests", `listening_issues.md` section 13), predictor refit.
-2. **Sun 04:30-05:45, packaging code:** checkpoint defaults in the `Makefile`, `generate_uncond.py` (cut on), `generate_plan_fill.py` and the README examples; `--plan_tok2idx` (without `runs/` the plan vocabulary falls back to the fill one, which breaks with a `Rel_` fill model); final TASK A (cut) and TASK B (`t1 p0.95`) WAVs at −18 LUFS (now −38 to −30).
-3. **T6 `t6_select` (built and on the site 2026-10-25 06:20; 22 pairs, 44 clips, 83 min of audio; rate when back, 10:00-13:00): one named challenger against the TASK A cut.** Penalty strength chosen by the rule below: 2 (findings "T6 sets"). Fresh pieces nobody has heard. Challenger fixed before building: **chord-relative fill + cut (`--skip_bars 8`, form `W8I4A8B8A8E4`) + semitone penalty (`--rub_penalty`)**, the only plan-fill with a winning record against single-stage (T5: 4 wins, 1 loss, 1 same), with the two fixes aimed at its flaws (clashes, openings). One challenger, not three, so a lucky switch stays unlikely.
-   - Sets: single-stage cut seeds 100+ (`outputs/cand_a/single_t1_p1_skip8_s100`); 30 new plans with warm-up (seed 200), filled by the chord-relative fill at penalty 0, 2, 4, 8 and by the current fill at the chosen penalty, all on the same plans (`outputs/cand_a/pf_*_cut_*s200`).
-   - **Penalty strength, chosen by measurement before the session is built:** the smallest of 2, 4, 8 with piano-side clash time at most 1.25x real (real 0.005 of melody time), melody chord-tone time (plan labels, pooled) at most 0.01 below penalty 0, and silent share at most 0.005 above penalty 0; if none meets the clash bound, the lowest piano-side clash time among those meeting the other two.
-   - 22 pairs, sides alternate within each matchup, no plan used twice outside the same-plan pairs: challenger vs cut single-stage x10; challenger vs the same plans at penalty 0 x4; challenger vs current fill at the same penalty and plans x4; cut single-stage vs real opening x2; challenger vs real opening x2.
-   - **Rules, fixed before rating:** (a) TASK A switches to the challenger only with at least 8 wins of its 10 pairs against the cut (ties count as not won; if the two were equal, 8 of 10 happens about 1 time in 20); otherwise the cut stays. (b) The penalty pairs, the fill pairs and the real pairs are for the report only.
-   - If (a) switches TASK A to plan-fill, TASK B must switch too (spec page 16: TASK B uses the TASK A model): a new TASK B plan-fill set and a check, about 1-2 h on Monday.
-   - The uncut sets made first for T6 (`pf_fill60k_s100`, `pf_fillrel60k_s100`) are kept for the record and not used.
-   - Later, after packaging: T7, the submitted TASK A pieces and TASK B continuations as rendered, flag broken ones only.
-4. **Sun 06:30-11:00, report:** slide outline (about 10 pages) and the figure and table list from findings, then drafts.
-5. **Sun after 11:00 to Mon evening:** finish slides, `submission` branch, fresh-venv README test, code, checkpoints and README to the cloud drive (user), PDF with name and ID on the cover; Mon 20:00 buffer.
+Decided: TASK A = single-stage cut (T5 4-0, T6 challenger 6-4 < 8 of 10); TASK B `t1 p0.95`; BONUS = `bonus_ppb16/last`, `--grammar --top_p 0.95` (`outputs/bonus/t1_p0.95_grammar`; user 2026-10-26); `abl_chords` bug stated in the report, not retrained; publish like HW1 (user 2026-10-26).
+
+1. **Packaging (in progress):** done: README and Makefile final commands (`fba4d32`), `--plan_tok2idx`, `tokens_to_midi` time signatures (`782580f`); `dist/release/*.tar` (5 checkpoints) and `dist/checkpoints.sha256`; `dist/results/hw2_generation_results/` (TASK A 20, TASK B 3 prompts x 3 configs, BONUS 10; WAV copies at -18 LUFS). To do: zip the results and add a note naming the best TASK B config per prompt; branch `hw2-submission` (HW2 inference files only at the root plus `data/tokens/*` vocabularies, prompts and bins; the `submission` branch stays HW1's); release `hw2` (the tars, the results zip); fresh-clone test from the release.
+2. **Report:** Slides artifact type as HW1 (`hw1/report/deck/`, same look); outline `docs/report_outline.md`; cover "Liu, Yu-Tung · b10901114", links `github.com/liu-yu-tung/DLMAG/tree/hw2-submission` and `.../releases/tag/hw2`; PDF to `dist/cool/b10901114_report.pdf`.
+3. **Optional, user to decide:** plan-model listening test (findings "Plan model length"), only if the user listens while slides are written.
+4. User review, PDF upload to NTU COOL.
 
 ## Open issues
 
