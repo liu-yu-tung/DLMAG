@@ -103,6 +103,13 @@ def tokens_to_midi(
     if not tempos or tempos[0][0] > 0:
         tempos.insert(0, (0, tempos[0][1] if tempos else DEFAULT_TEMPO))
     midi.tempo_changes = [miditoolkit.TempoChange(q, t) for t, q in tempos]
+    # without it readers assume 4/4: a 6-beat song showed 48 bars on the listening page (T6 pair 12)
+    tick, last = 0, None
+    for beats in bar_lengths(tokens, pos_per_beat, beats_per_bar):
+        if beats != last:
+            midi.time_signature_changes.append(miditoolkit.TimeSignature(beats, 4, tick))
+            last = beats
+        tick += beats * TICKS_PER_BEAT
     inst = miditoolkit.Instrument(program=0, is_drum=False, name=track_name)
     inst.notes = [miditoolkit.Note(velocity=v, pitch=p, start=s, end=e) for s, e, p, v in notes]
     midi.instruments.append(inst)
