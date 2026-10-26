@@ -56,54 +56,63 @@ WAV output (`--wav`) runs the `fluidsynth` command with the FluidR3 General MIDI
 
 ## Checkpoints and token files
 
-Download from the cloud drive and place them as:
+Token files (vocabularies, the tokenized TASK B prompts, plan-fill bin edges) are in `data/tokens/` on this branch. The checkpoints are larger than GitHub's 100 MiB file limit, so they are assets of the release `hw2` (one `.tar` per checkpoint folder, SHA-256 in `checkpoints.sha256`):
 
 ```
-checkpoints/gpt2_ppb16/<checkpoint>/    TASK A and TASK B model
-checkpoints/abl_melody/step_7000/       BONUS TASK model
-checkpoints/plan_rep/best/              plan-fill: plan model
-checkpoints/fill_rep/best/              plan-fill: fill model
-data/tokens/ppb16/tok2idx.json          vocabulary
-data/tokens/ppb16/prompts_basic_b.json  TASK B prompts, tokenized
-data/tokens/bonus_ppb16/tok2idx.json    BONUS TASK vocabulary
-data/tokens/fill_rep/tok2idx.json       plan-fill vocabulary
-data/tokens/fill_rep/bins.json          plan-fill bin edges (labels TASK B prompts)
+for f in gpt2_ppb16_loss_0.40 bonus_ppb16_last plan_rep_best fill_rep_60k_last fill_rel_60k_last; do
+  curl -L --fail -O https://github.com/liu-yu-tung/DLMAG/releases/download/hw2/$f.tar
+done
+sha256sum -c checkpoints.sha256
+for f in *.tar; do tar -xf $f; done
+```
+
+This gives:
+
+```
+checkpoints/gpt2_ppb16/loss_0.40/    TASK A and TASK B model
+checkpoints/bonus_ppb16/last/        BONUS TASK model
+checkpoints/plan_rep/best/           plan-fill: plan model
+checkpoints/fill_rep_60k/last/       plan-fill: fill model
+checkpoints/fill_rel_60k/last/       plan-fill: chord-relative fill model
 ```
 
 ## Inference
 
-Every script takes `--output_dir`; it is created if missing.
+Every script takes `--output_dir`; it is created if missing. `--wav` also renders WAV files (needs `fluidsynth`, see Setup).
 
-TASK A, 20 pieces of 32 bars, single-stage:
-
-```
-python scripts/generate_uncond.py --ckpt checkpoints/gpt2_ppb16/<checkpoint> --output_dir <dir> --temperature <t> --top_p <p> --wav
-```
-
-TASK A with plan-fill (the `--tok2idx` default comes from `runs/`, which is not shipped, so pass it; the checkpoints in these examples are updated at packaging, current choice in `docs/status.md`):
+TASK A, 20 pieces of 32 bars (submitted configuration: temperature 1.0, top-p 1.0, 40 bars generated and the first 8 dropped):
 
 ```
-python scripts/generate_plan_fill.py --plan_ckpt checkpoints/plan_rep/best --fill_ckpt checkpoints/fill_rep/best --tok2idx data/tokens/fill_rep/tok2idx.json --output_dir <dir> --min_piano_bin 1 --tempo_range 60,125 --cadence --wav
+python scripts/generate_uncond.py --ckpt checkpoints/gpt2_ppb16/loss_0.40 --output_dir <dir> --n 20 --bars 32 --skip_bars 8 --max_beats 4 --temperature 1.0 --top_p 1.0 --wav
 ```
 
-TASK B, 24 bars after each 8-bar prompt, one folder per configuration (`temperature,top_k,top_p`):
+The other TASK A configurations in the report: `--temperature 1.0 --top_p 0.95` and `--temperature 0.9 --top_p 1.0`, each with and without `--skip_bars 8`.
+
+TASK B, 24 bars after each 8-bar prompt, one folder per configuration (`temperature,top_k,top_p`; best for all three prompts: `1.0,0,0.95`):
 
 ```
-python scripts/generate_cont.py --ckpt checkpoints/gpt2_ppb16/<checkpoint> --output_dir <dir> --config 1.0,0,0.95 --wav
-python scripts/generate_plan_fill.py --plan_ckpt checkpoints/plan_rep/best --fill_ckpt checkpoints/fill_rep/best --tok2idx data/tokens/fill_rep/tok2idx.json --output_dir <dir> --prompt_dir data/POP909/prompts/basic-b --melody_by_bar 9 --config 1.0,0,0.95 --min_piano_bin 1 --cadence --wav
+python scripts/generate_cont.py --ckpt checkpoints/gpt2_ppb16/loss_0.40 --prompts data/tokens/ppb16/prompts_basic_b.json --output_dir <dir> --max_beats 4 --config 0.9,0,1.0 --config 1.0,0,0.95 --config 1.0,0,1.0 --wav
 ```
 
-To continue other prompts with `generate_cont.py`, tokenize their folders (same layout as POP909: `<name>/<name>.mid`, `beat_midi.txt`, `chord_midi.txt`) and pass `--prompts`:
+To continue other prompts, tokenize their folders (same layout as POP909: `<name>/<name>.mid`, `beat_midi.txt`, `chord_midi.txt`) and pass `--prompts`:
 
 ```
 python scripts/ta/tokenization.py --dataset_path <prompt_folder> --tok2idx_output /tmp/tok2idx.json --sequences_output <prompts.json>
 ```
 
-BONUS TASK, a PIANO track for each 16-bar MELODY prompt (folders with `melody.mid` and `beat_midi.txt`):
+BONUS TASK, a PIANO track for each 16-bar MELODY prompt (folders with `melody.mid` and `beat_midi.txt`, as the TA's `prompts/bonus`):
 
 ```
-python scripts/generate_bonus.py --ckpt checkpoints/abl_melody/step_7000 --tok2idx data/tokens/bonus_ppb16/tok2idx.json --prompt_dir <bonus_prompt_folder> --output_dir <dir> --top_p 0.95 --wav
+python scripts/generate_bonus.py --ckpt checkpoints/bonus_ppb16/last --tok2idx data/tokens/bonus_ppb16/tok2idx.json --prompt_dir <bonus_prompt_folder> --output_dir <dir> --top_p 0.95 --grammar --wav
 ```
+
+Plan-fill (the extra two-stage system in the report), 20 pieces of 32 bars with the current fill:
+
+```
+python scripts/generate_plan_fill.py --plan_ckpt checkpoints/plan_rep/best --plan_tok2idx data/tokens/plan_rep/tok2idx.json --fill_ckpt checkpoints/fill_rep_60k/last --tok2idx data/tokens/fill_rep/tok2idx.json --output_dir <dir> --n 20 --form I4A8B8A8E4 --min_piano_bin 1 --tempo_range 60,125 --cadence --order melody_first --return_as var --repeat_bias 8 --wav
+```
+
+The T6 challenger (chord-relative fill, cut, semitone penalty): `--fill_ckpt checkpoints/fill_rel_60k/last --tok2idx data/tokens/fill_rel/tok2idx.json --skip_bars 8 --form W8I4A8B8A8E4 --rub_penalty 2`, other options as above.
 
 ## Training and experiments
 

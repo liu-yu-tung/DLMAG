@@ -26,6 +26,7 @@ def parse_args():
     p.add_argument("--plan_ckpt", type=str, default="checkpoints/plan_v1/best")
     p.add_argument("--fill_ckpt", type=str, default="checkpoints/fill_v1/best")
     p.add_argument("--output_dir", type=str, required=True)
+    p.add_argument("--plan_tok2idx", type=str, default=None, help="plan model vocabulary (default: from runs/, else --tok2idx); needed with a Rel_ fill model when runs/ is not there")
     p.add_argument("--tok2idx", type=str, default=None, help="default: the token folder in runs/<fill run>/args.json")
     p.add_argument("--n", type=int, default=20, help="pieces (TASK A)")
     p.add_argument("--bars", type=int, default=32, help="bars per piece, prompt included")
@@ -140,7 +141,7 @@ def main():
         # a Rel_ fill vocabulary is the plan vocabulary plus tokens at the end; the plan model needs its own size
         plan_run = HW2_ROOT / "runs" / Path(args.plan_ckpt).parent.name / "args.json"
         plan_tokens = HW2_ROOT / json.loads(plan_run.read_text())["tokens_dir"] if plan_run.exists() else Path(args.tok2idx).parent
-        plan_vocab = load_vocab(plan_tokens / "tok2idx.json")
+        plan_vocab = load_vocab(args.plan_tok2idx or plan_tokens / "tok2idx.json")
         assert all(tok2idx.get(t) == i for t, i in plan_vocab[0].items()), "plan and fill vocabularies disagree"
         jobs = []
         for i, (name, prompt, given) in enumerate(prompts):

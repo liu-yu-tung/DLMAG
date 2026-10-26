@@ -8,7 +8,7 @@ GPU_START_C ?= 75
 MAIN_CKPT ?= checkpoints/gpt2_ppb16/loss_0.40
 PLAN_CKPT ?= checkpoints/plan_rep/best
 FILL_CKPT ?= checkpoints/fill_rep_long/loss_0.40
-BONUS_CKPT ?= checkpoints/abl_melody/step_7000
+BONUS_CKPT ?= checkpoints/bonus_ppb16/last
 BONUS_TOKENS ?= data/tokens/bonus_ppb16
 
 TEMP ?= 1.0
@@ -130,7 +130,7 @@ task-b-plan: gpu-cool ## TASK B with plan-fill: one plan per prompt, filled once
 	$(PY) scripts/generate_plan_fill.py --plan_ckpt $(PLAN_CKPT) --fill_ckpt $(FILL_CKPT) --prompt_dir $(PROMPT_DIR) --output_dir $(PLAN_TASK_B_DIR) --melody_by_bar 9 $(foreach c,$(TASK_B_CONFIGS),--config $(c)) $(PLAN_RULES) $(WAV)
 
 bonus: gpu-cool ## BONUS TASK accompaniment for the 10 prompts, then the TA eval
-	$(PY) scripts/generate_bonus.py --ckpt $(BONUS_CKPT) --tok2idx $(BONUS_TOKENS)/tok2idx.json --output_dir $(BONUS_DIR) --top_p 0.95 $(WAV)
+	$(PY) scripts/generate_bonus.py --ckpt $(BONUS_CKPT) --tok2idx $(BONUS_TOKENS)/tok2idx.json --output_dir $(BONUS_DIR) --top_p 0.95 --grammar $(WAV)
 	$(MAKE) eval-bonus
 
 eval-task-a: ## H1/H4/GS, NLL, copy rate for TASK A
