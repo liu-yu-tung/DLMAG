@@ -1,0 +1,6 @@
+pair,section,system_a,system_b,better,worse,flaws
+pair_01,9-16,pick,planfill,pick,planfill,messy;wrong_notes;timing
+pair_01,17-24,pick,planfill,pick,planfill,messy;wrong_notes
+pair_01,25-32,pick,planfill,planfill,pick,off_vibe
+pair_06,17-24,t1_k0_p0.9,pick,t1_k0_p0.9,pick,repetitive
+pair_06,25-32,t1_k0_p0.9,pick,t1_k0_p0.9,pick,repetitive

@@ -1,0 +1,7 @@
+dir,config,ckpt,n,H1_mean,H1_std,H4_mean,H4_std,GS_mean,GS_std,nll_mean,n_tokens_mean,bar_copy_mean,bar_copy_any_key_mean,ngram_copy_mean,note8_copy_mean
+outputs/task_b_sweep/t0.8_k0_p1,t0.8_k0_p1,checkpoints/gpt2_ppb16/loss_0.40,24,2.1178,0.0729,2.5874,0.0462,0.9406,0.0311,0.4842,2852.0833,0.0,0.0,0.0,0.0216
+outputs/task_b_sweep/t0.9_k0_p1,t0.9_k0_p1,checkpoints/gpt2_ppb16/loss_0.40,24,2.1435,0.088,2.6231,0.0564,0.9423,0.0251,0.5037,3010.125,0.0,0.0,0.0,0.0231
+outputs/task_b_sweep/t1.1_k0_p0.95,t1.1_k0_p0.95,checkpoints/gpt2_ppb16/loss_0.40,24,2.1409,0.0582,2.5992,0.0355,0.9377,0.0293,0.5497,3015.0417,0.0,0.0,0.0,0.0282
+outputs/task_b_sweep/t1_k0_p0.9,t1_k0_p0.9,checkpoints/gpt2_ppb16/loss_0.40,24,2.1202,0.0951,2.5932,0.0552,0.9442,0.0293,0.4309,2880.9167,0.0,0.0,0.0,0.0336
+outputs/task_b_sweep/t1_k0_p0.95,t1_k0_p0.95,checkpoints/gpt2_ppb16/loss_0.40,24,2.1119,0.0847,2.5937,0.0563,0.9406,0.0282,0.484,3064.7083,0.0,0.0,0.0,0.03
+outputs/task_b_sweep/t1_k0_p1,t1_k0_p1,checkpoints/gpt2_ppb16/loss_0.40,24,2.2044,0.0677,2.6402,0.0444,0.936,0.033,0.5919,3029.75,0.0,0.0,0.0,0.0144
