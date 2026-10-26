@@ -9,7 +9,7 @@ As of 2026-10-25 04:20. Deadline Mon 2026-10-26 23:59; the report (PPT-style PDF
 - **Plan-fill (extra system for the report):** plan `plan_rep/best`, fill `fill_rep_60k/last` (T4: 2 of 2 against `fill_rep_long/loss_0.40`), melody first, `--form I4A8B8A8E4 --return_as var --repeat_bias 8`; set `outputs/sweep/fill_rep_60k/last` (the 20 plans of `pf_oldplan_fill040`).
 - **Plan-fill, chord-relative:** `fill_rel_60k/last` (pitches as `Rel_k`, semitones from the chord root; `docs/plan_fill.md`), set `outputs/cand_a/pf_fillrel60k`: melody on chord tones at the real level, more minor-2nd rubs (findings "Chord-relative fill, trained"). T5: 1-1 against the current fill, so the current fill stays (tie rule); reported as the harmony attempt.
 - **Plan-fill, melody-lead (2026-10-20):** melody model `melody_20k` plus BONUS piano, set `outputs/cand_a/pf_melody20k`: the piano does not follow the melody (80% of pieces past the real line), not a listening candidate (findings "Melody model plus BONUS piano"). No-chord fill `fill_nochord_60k/last`, set `outputs/cand_a/pf_fillnochord60k`: also 80% past the line (findings "Fill trained without chord labels"). All three melody-lead options failed; none goes to listening. The no-training test (`--drop chords`) failed (findings "Melody-lead tests").
-- **BONUS TASK:** `abl_melody/step_7000`, ablations `abl_lookahead`, `abl_chords`. The `abl_chords` row is invalid: training transposed the notes but not the chord roots (findings "BONUS piano against the melody"); fix and retrain (about 45 min GPU) or report the bug: user to decide.
+- **BONUS TASK:** `bonus_ppb16/last` (30k steps), `--top_p 0.95 --grammar`, set `outputs/bonus/t1_p0.95_grammar` (CA 0.275, below the octave-down baseline 0.30; OA above both baselines). Ablations `abl_melody`, `abl_lookahead`, `abl_chords` (12k-step runs); the `abl_chords` row is invalid (chord roots not transposed with the notes), stated in the report, not retrained.
 - **Held-out songs:** 45 of 896 are held out; the report must say so.
 
 ## Schedule (deadline Mon 2026-10-26 23:59; plan at 19:05)
@@ -18,7 +18,7 @@ Decided: TASK A = single-stage cut (T5 4-0, T6 challenger 6-4 < 8 of 10); TASK B
 
 Required by the spec: code, README, `requirements.txt`, the checkpoints behind the submitted files (`gpt2_ppb16/loss_0.40`, `bonus_ppb16/last`), the generation results; not training data, preprocessed data (so the TASK B prompts are tokenized by the README step, not shipped), other people's models or caches. The plan-fill checkpoints are extras.
 
-State at 19:25:
+State at 19:50:
 
 | # | Step | State / ETA |
 |---|---|---|
@@ -27,9 +27,9 @@ State at 19:25:
 | 3 | Orphan branch `hw2-submission` pushed (`e98c404`, `7de14d0`; 210 files; worktree in the session scratchpad `hw2-submission/`); listening page screenshots, blank state (`results/figures/listening_page_*.png`, `78e8ab0`) | done |
 | 4 | Release `hw2` is a **draft** (only the owner sees it). 8 assets uploading direct, about 0.26 MB/s in total (route cap, not stream count): 6 tars, `hw2_generation_results.zip`, `hw2_extra_plan_fill.zip`. When all 8 are up: `gh release edit hw2 --repo liu-yu-tung/DLMAG --draft=false`, then check logged out (`curl -sI .../releases/download/hw2/plan_rep_best.tar` gives 302) | uploads ETA 20:50 |
 | 5 | Fresh-clone test from the published release: TASK A n=1, TASK B (tokenize step), BONUS | 21:10 |
-| 6 | Report deck, 13 slides (`docs/report_outline.md`: slide 8 plan-fill vs cut table, slide 11 screenshots), Slides type with HW1's look; written while steps 4-5 run | 19:30-21:45 |
-| 7 | User review and fixes | 21:45-23:00 |
-| 8 | PDF to `dist/cool/b10901114_report.pdf`, upload to NTU COOL with the link in the comment | by 23:30 (buffer 30 min) |
+| 6 | Report deck, 16 slides, Slides type with HW1's look: https://claude.ai/artifact/YLnJeXb6ftHLLR33zgCFqm (scratch copy in the session scratchpad `deck_hw2/`) | first draft done 19:47 |
+| 7 | User review and fixes | from 19:50, done by 21:30 |
+| 8 | PDF to `dist/cool/b10901114_report.pdf`, first (safe) upload to NTU COOL with the link in the comment; later re-upload only if COOL allows it | safe upload by 22:15, last by 23:30 |
 
 Upload notes: `gh` token had expired (user re-logged in 19:09). Measured: direct 0.26 MB/s whatever the stream count; WARP full tunnel 0.22; direct + WARP proxy 0.51 (worked once, then the proxy timed out after switching modes). WARP is back as it was: proxy mode, disconnected; `warp-svc` left running (started by the user).
 
