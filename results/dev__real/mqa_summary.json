@@ -1,0 +1,30 @@
+{
+  "n_items_expected": 100,
+  "n_items_scored": 100,
+  "n_items_with_tags": 98,
+  "n_questions": 651,
+  "mqascore_mean": 0.6460749014525148,
+  "mqascore_ci95": [
+    0.6104266510827984,
+    0.6814795340412143
+  ],
+  "bootstrap": {
+    "resamples": 1000,
+    "seed": 0,
+    "unit": "items"
+  },
+  "attribute_mean": {
+    "genre": 0.7298901845328509,
+    "instrument": 0.5104500114270816,
+    "mood_theme": 0.8378188237865707,
+    "vocal": 0.49365422937708603,
+    "context": 0.863123752280242
+  },
+  "attribute_n_items": {
+    "genre": 50,
+    "instrument": 96,
+    "mood_theme": 64,
+    "vocal": 50,
+    "context": 48
+  }
+}

@@ -1,0 +1,147 @@
+<title>Listening test</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root {
+  --bg: #eef1f5; --sheet: #fff; --ink: #18202c; --muted: #5d6878; --line: #d5dbe4;
+  --accent: #2c55c9; --accent-ink: #fff; --ok: #1d7a4c; --warn: #a35a00;
+  --font-ui: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #12161d; --sheet: #1b212b; --ink: #e6eaf1; --muted: #9aa5b5; --line: #2e3744; --accent: #7c9cf0; --accent-ink: #0f1420; --ok: #5cc48e; --warn: #f0a94a; color-scheme: dark; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.45 var(--font-ui); padding-bottom: 88px; }
+.wrap { max-width: 640px; margin: 0 auto; padding: 0 12px; }
+header { position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--line); padding: 8px 0; z-index: 5; }
+header h1 { font-size: 1rem; margin: 0 0 6px; display: flex; justify-content: space-between; }
+header h1 small { color: var(--muted); font-weight: 400; }
+.dots { display: flex; flex-wrap: wrap; gap: 5px; }
+.dot { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--muted); background: none; padding: 0; cursor: pointer; }
+.dot.done { background: var(--ok); border-color: var(--ok); }
+.dot.here { outline: 2px solid var(--accent); outline-offset: 2px; }
+.card { background: var(--sheet); border: 1px solid var(--line); border-radius: 10px; padding: 12px; margin-top: 12px; }
+.card h2 { font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; font-weight: 600; }
+.caption { margin: 0; font-size: 1rem; }
+.clip { margin-top: 12px; }
+.clip b { display: block; margin-bottom: 4px; }
+audio { width: 100%; }
+.prefs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.pref { font: inherit; background: var(--sheet); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 10px 2px; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
+.pref b { font-size: 1.05rem; }
+.pref small { font-size: 0.7rem; color: var(--muted); }
+.pref[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.pref[aria-pressed="true"] small { color: var(--accent-ink); }
+.rules { margin: 8px 0 0; padding-left: 18px; color: var(--muted); font-size: 0.85rem; }
+textarea { width: 100%; font: inherit; background: var(--sheet); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 6px; margin-top: 8px; }
+.status { font-size: 0.8rem; color: var(--muted); min-height: 1.2em; margin-top: 6px; }
+.status.ok { color: var(--ok); } .status.err { color: var(--warn); }
+nav { position: fixed; left: 0; right: 0; bottom: 0; background: var(--bg); border-top: 1px solid var(--line); padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px)); }
+nav .wrap { display: flex; gap: 8px; padding: 0; }
+nav button { flex: 1; font: inherit; padding: 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--sheet); color: var(--ink); cursor: pointer; }
+nav button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+nav button:disabled { opacity: 0.4; }
+</style>
+<body>
+<header><div class="wrap">
+  <h1><span id="title"></span><small id="count"></small></h1>
+  <div class="dots" id="dots"></div>
+</div></header>
+<main class="wrap" id="main"></main>
+<nav><div class="wrap">
+  <button id="back">Back</button>
+  <button id="export" title="Download the ratings as a CSV">Export CSV</button>
+  <button id="next" class="primary">Next</button>
+</div></nav>
+<script type="application/json" id="manifest">null</script>
+<script>
+const manifest = JSON.parse(document.getElementById("manifest").textContent);
+const PREFS = [[-2, "A", "clearly"], [-1, "A", "a bit"], [0, "=", "same"], [1, "B", "a bit"], [2, "B", "clearly"]];
+const KEY = "hw3-listening-" + manifest.session;
+const ratings = (() => { try { return JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { return {}; } })();
+const site = location.protocol.startsWith("http");
+let index = Number(localStorage.getItem(KEY + "-index") || 0);
+
+const $ = id => document.getElementById(id);
+const docId = pair => `${manifest.session}__${pair}`;
+const isRated = pair => Number.isFinite(ratings[pair]?.pref);
+
+async function save(pair) {
+  const body = { session: manifest.session, pair, pref: ratings[pair].pref, note: ratings[pair].note || "", updatedAt: new Date().toISOString() };
+  try { localStorage.setItem(KEY, JSON.stringify(ratings)); } catch (e) {}
+  if (!site) return setStatus("Kept on this device only", "err");
+  setStatus("Saving...", "");
+  try {
+    const r = await fetch(`/api/ratings/${docId(pair)}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), redirect: "manual" });
+    if (!r.ok) throw new Error(r.status);
+    setStatus("Saved", "ok");
+  } catch (e) {
+    setStatus("Not synced; kept on this device. Use Export CSV at the end.", "err");
+  }
+}
+
+function setStatus(text, cls) {
+  const s = $("status");
+  if (s) { s.textContent = text; s.className = "status " + cls; }
+}
+
+function render() {
+  const pair = manifest.pairs[index];
+  $("title").textContent = `Pair ${index + 1} of ${manifest.pairs.length}`;
+  $("count").textContent = `${manifest.pairs.filter(p => isRated(p.id)).length} rated`;
+  $("dots").replaceChildren(...manifest.pairs.map((p, i) => {
+    const d = document.createElement("button");
+    d.className = "dot" + (isRated(p.id) ? " done" : "") + (i === index ? " here" : "");
+    d.setAttribute("aria-label", `Pair ${i + 1}`);
+    d.onclick = () => go(i);
+    return d;
+  }));
+  const current = ratings[pair.id]?.pref;
+  $("main").innerHTML = `
+    <section class="card"><h2>Text prompt</h2><p class="caption"></p>
+      <div class="clip"><b>A</b><audio controls preload="metadata" src="${pair.a}"></audio></div>
+      <div class="clip"><b>B</b><audio controls preload="metadata" src="${pair.b}"></audio></div></section>
+    <section class="card"><h2>Which clip is better overall?</h2>
+      <div class="prefs">${PREFS.map(([v, side, word]) => `<button class="pref" data-v="${v}" aria-pressed="${v === current}"><b>${side}</b><small>${word}</small></button>`).join("")}</div>
+      <ul class="rules"><li>Judge the whole clip: does it sound good, and does it fit the text prompt.</li>
+        <li>Clearly: you would pick it every time. A bit: close. Same: no preference.</li></ul>
+      <textarea id="note" rows="2" placeholder="Optional note"></textarea><div class="status" id="status"></div></section>`;
+  document.querySelector(".caption").textContent = pair.caption;
+  $("note").value = ratings[pair.id]?.note || "";
+  $("note").oninput = e => { (ratings[pair.id] ||= {}).note = e.target.value; if (isRated(pair.id)) save(pair.id); };
+  document.querySelectorAll(".pref").forEach(b => b.onclick = () => {
+    const v = Number(b.dataset.v);
+    (ratings[pair.id] ||= {}).pref = ratings[pair.id].pref === v ? null : v;
+    if (ratings[pair.id].pref === null) { delete ratings[pair.id].pref; localStorage.setItem(KEY, JSON.stringify(ratings)); } else save(pair.id);
+    render();
+  });
+  document.querySelectorAll("audio").forEach(a => a.addEventListener("play", () => document.querySelectorAll("audio").forEach(o => o !== a && o.pause())));
+  $("back").disabled = index === 0;
+  $("next").disabled = index === manifest.pairs.length - 1;
+}
+
+function go(i) {
+  index = Math.max(0, Math.min(manifest.pairs.length - 1, i));
+  try { localStorage.setItem(KEY + "-index", String(index)); } catch (e) {}
+  render();
+  scrollTo(0, 0);
+}
+
+function exportCsv() {
+  const rows = ["pair,pref,note"].concat(manifest.pairs.filter(p => isRated(p.id)).map(p => `${p.id},${ratings[p.id].pref},"${(ratings[p.id].note || "").replace(/"/g, '""')}"`));
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(new Blob([rows.join("\n") + "\n"], { type: "text/csv" }));
+  link.download = `${manifest.session}_ratings.csv`;
+  link.click();
+}
+
+$("back").onclick = () => go(index - 1);
+$("next").onclick = () => go(index + 1);
+$("export").onclick = exportCsv;
+addEventListener("keydown", e => {
+  if (e.target.tagName === "TEXTAREA") return;
+  if (e.key === "ArrowLeft") go(index - 1);
+  if (e.key === "ArrowRight") go(index + 1);
+});
+render();
+</script>

@@ -1,0 +1,3 @@
+{"id": "3", "seed": 3, "seconds": 16.112, "time": 1794683950.8, "tokens": 93, "peak": 1.0127, "clip_fraction": 2.267573790959432e-06, "rms": 0.14662, "noise_fingerprint": 81481.42219543457, "valid_frames": 216, "forward_samples": 200}
+{"id": "4", "seed": 4, "seconds": 15.825, "time": 1794683966.7, "tokens": 71, "peak": 1.0039, "clip_fraction": 1.2471656191337388e-05, "rms": 0.08495, "noise_fingerprint": 128031.7417755127, "valid_frames": 216, "forward_samples": 200}
+{"id": "5", "seed": 5, "seconds": 15.941, "time": 1794683982.6, "tokens": 52, "peak": 0.8745, "clip_fraction": 0.0, "rms": 0.13893, "noise_fingerprint": 18030.21827697754, "valid_frames": 216, "forward_samples": 200}

@@ -1,0 +1,5 @@
+metric,better,pairs,agree,agreement_rate,sign_test_p,clearly_pairs,clearly_agree
+clap_cosine,higher,14,11,0.786,0.057,11,9
+kl_passt_softmax,lower,14,13,0.929,0.002,11,11
+kl_panns_softmax,lower,14,14,1.0,0.0,11,11
+mqascore,higher,13,9,0.692,0.267,10,8

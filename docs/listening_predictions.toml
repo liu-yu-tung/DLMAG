@@ -1,0 +1,33 @@
+# Listening A/B predictions, written 11-15 16:20 by main BEFORE the user rated any pair; never edited afterwards.
+# Sessions from scripts/listening/listening.py (keys in outputs/listening/<session>/key.json, git-ignored). Counts are pairs where the
+# second run is preferred (either strength); "no preference" ratings count for neither side. Two-sided sign test at n = 16
+# needs 13 of 16 for p < 0.05, so each session can show a strong lean at most; it decides only through the vetoes below.
+# Metric counts on the same 16 pairs were computed before the prediction (scratchpad listening_metric_wins.py).
+
+[[session]]
+name = "hw3_s1"
+first = "dev__cfg7"
+second = "dev__rescale12_best3_c8998"
+question = "Does the dev pick sound better than the baseline?"
+metric_wins_of_16 = { clap9014 = 11, kl_lower = 10, mqa = 10 }
+predict_low = 8
+predict_high = 11
+reason = "dCLAP +0.042 is small, and CLAP-human agreement in the literature is modest; rescale lowers clipping and KL, which may help a little"
+agreement_with_clap_low = 8
+agreement_with_clap_high = 11
+if_met = "the ear leans with the metrics; keep the pick and report the count with its sign test."
+if_missed = "if 7 or fewer: the ear does not follow the metrics on the pick; report it as a metric-human gap and ask the user before the submission run."
+
+[[session]]
+name = "hw3_s2"
+first = "dev__rescale12"
+second = "dev__rescale12_best3_c8998"
+question = "Does best-of-3 (ranked by CLAP 89.98) sound better than seed 0 of the same setting? Identical pairs (seed 0 kept) are excluded."
+metric_wins_of_16 = { clap9014 = 11, kl_lower = 11, mqa = 8 }
+predict_low = 6
+predict_high = 10
+reason = "the ranker scores text match, which a listener may not hear; MQAScore splits 8 of 16 on these pairs"
+agreement_with_clap_low = 7
+agreement_with_clap_high = 10
+if_met = "no human veto: best-of-3 goes in, since it qualifies on dev metrics (decision #2)."
+if_missed = "if 5 or fewer: the ear prefers seed 0, a veto: submit the single run and report best-of-3 as analysis. If 11 or more: best-of-3 goes in with human support."

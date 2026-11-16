@@ -1,0 +1,344 @@
+diff --git a/av_bench/args.py b/av_bench/args.py
+index 3668cb4..16ef2d3 100644
+--- a/av_bench/args.py
++++ b/av_bench/args.py
+@@ -30,5 +30,10 @@ def get_eval_parser() -> ArgumentParser:
+                         action='store_true',
+                         help='skips ImageBind and SynchFormer computation')
+     parser.add_argument('--skip_clap', action='store_true', help='skips CLAP computation')
++    parser.add_argument('--skip_ms_clap', action='store_true', help='skips MS-CLAP computation')
++    parser.add_argument('--clap_ckpt',
++                        type=Path,
++                        default=None,
++                        help='LAION-CLAP checkpoint (default: weights/music_speech_audioset_epoch_15_esc_89.98.pt)')
+ 
+     return parser
+diff --git a/av_bench/data/audio_dataset.py b/av_bench/data/audio_dataset.py
+index 3c74141..dc02bca 100644
+--- a/av_bench/data/audio_dataset.py
++++ b/av_bench/data/audio_dataset.py
+@@ -2,6 +2,7 @@ import logging
+ from pathlib import Path
+ from typing import List
+ 
++import soundfile
+ import torch
+ import torchaudio
+ import torchvision.transforms.v2 as v2
+@@ -122,7 +123,9 @@ class AudioDataset(Dataset):
+         return len(self.datalist)
+ 
+     def read_from_file(self, audio_file):
+-        waveform, sample_rate = torchaudio.load(audio_file)
++        # torchaudio >= 2.9 needs torchcodec, which does not load against this machine's FFmpeg 9
++        data, sample_rate = soundfile.read(str(audio_file), dtype='float32', always_2d=True)
++        waveform = torch.from_numpy(data.T)
+         waveform = waveform.mean(dim=0)  # mono
+         waveform = waveform - waveform.mean()
+ 
+diff --git a/av_bench/evaluate.py b/av_bench/evaluate.py
+index 3637e5c..a55ee8a 100644
+--- a/av_bench/evaluate.py
++++ b/av_bench/evaluate.py
+@@ -23,11 +23,13 @@ def evaluate(gt_audio_cache: Path,
+              is_paired: bool = True,
+              num_samples: int = 1,
+              skip_video_related: bool = False,
+-             skip_clap: bool = False) -> Dict[str, float]:
++             skip_clap: bool = False,
++             skip_ms_clap: bool = False) -> Dict[str, float]:
+ 
+-    sync_model = Synchformer().to(device).eval()
+-    sd = torch.load(_syncformer_ckpt_path, weights_only=True)
+-    sync_model.load_state_dict(sd)
++    if not skip_video_related:
++        sync_model = Synchformer().to(device).eval()
++        sd = torch.load(_syncformer_ckpt_path, weights_only=True)
++        sync_model.load_state_dict(sd)
+ 
+     gt_audio_cache = gt_audio_cache.expanduser()
+     pred_audio_cache = pred_audio_cache.expanduser()
+@@ -84,13 +86,16 @@ def evaluate(gt_audio_cache: Path,
+                 laion_clap_text_features, laion_clap_audio_features)
+             log.info(f'Unpaired LAION CLAP features keys: {unpaired_laion_clap_keys}')
+ 
+-            ms_clap_text_features = torch.load(gt_audio_cache / 'clap_ms_text.pth',
+-                                               weights_only=True)
+-            ms_clap_audio_features = torch.load(pred_audio_cache / 'clap_ms_audio.pth',
+-                                                weights_only=True)
+-            paired_ms_clap_text_features, paired_ms_clap_audio_features, unpaired_ms_clap_keys = unroll_paired_dict(
+-                ms_clap_text_features, ms_clap_audio_features)
+-            log.info(f'Unpaired MS CLAP features keys: {unpaired_ms_clap_keys}')
++            if skip_ms_clap:
++                paired_ms_clap_text_features = paired_ms_clap_audio_features = None
++            else:
++                ms_clap_text_features = torch.load(gt_audio_cache / 'clap_ms_text.pth',
++                                                   weights_only=True)
++                ms_clap_audio_features = torch.load(pred_audio_cache / 'clap_ms_audio.pth',
++                                                    weights_only=True)
++                paired_ms_clap_text_features, paired_ms_clap_audio_features, unpaired_ms_clap_keys = unroll_paired_dict(
++                    ms_clap_text_features, ms_clap_audio_features)
++                log.info(f'Unpaired MS CLAP features keys: {unpaired_ms_clap_keys}')
+         else:
+             paired_laion_clap_text_features = paired_laion_clap_audio_features = None
+             paired_ms_clap_text_features = paired_ms_clap_audio_features = None
+@@ -197,9 +202,10 @@ def evaluate(gt_audio_cache: Path,
+                                              dim=-1).mean()
+         output_metrics['LAION-CLAP-Score'] = clap_score.item()
+ 
+-        clap_score = torch.cosine_similarity(paired_ms_clap_text_features,
+-                                             paired_ms_clap_audio_features,
+-                                             dim=-1).mean()
+-        output_metrics['MS-CLAP-Score'] = clap_score.item()
++        if paired_ms_clap_text_features is not None:
++            clap_score = torch.cosine_similarity(paired_ms_clap_text_features,
++                                                 paired_ms_clap_audio_features,
++                                                 dim=-1).mean()
++            output_metrics['MS-CLAP-Score'] = clap_score.item()
+ 
+     return output_metrics
+diff --git a/av_bench/extract.py b/av_bench/extract.py
+index a6dfc9e..a7fa56d 100644
+--- a/av_bench/extract.py
++++ b/av_bench/extract.py
+@@ -9,7 +9,7 @@ from tqdm import tqdm
+ 
+ from av_bench.data.audio_dataset import (AudioDataset, ImageBindAudioDataset,
+                                          SynchformerAudioDataset, pad_or_truncate)
+-from av_bench.extraction_models import ExtractionModels
++from av_bench.extraction_models import ExtractionModels, _clap_ckpt_path as _default_clap_ckpt_path
+ from av_bench.synchformer.synchformer import Synchformer
+ 
+ log = logging.getLogger()
+@@ -49,14 +49,19 @@ def extract(audio_path: Path,
+             num_workers: int = 32,
+             device: str,
+             skip_video_related: bool = False,
+-            skip_clap: bool = False):
++            skip_clap: bool = False,
++            skip_ms_clap: bool = False,
++            clap_ckpt_path: Path = _default_clap_ckpt_path):
+ 
+-    audios = sorted(list(audio_path.glob('*.wav')) + list(audio_path.glob('*.flac')),
++    audios = sorted(list(audio_path.glob('*.wav')) + list(audio_path.glob('*.flac')) +
++                    list(audio_path.glob('*.mp3')),
+                     key=lambda x: x.stem)
+ 
+     log.info(f'{len(audios)} audios found in {audio_path}')
+ 
+-    models = ExtractionModels().to(device).eval()
++    models = ExtractionModels(clap_ckpt_path=clap_ckpt_path,
++                              skip_video_related=skip_video_related,
++                              skip_ms_clap=skip_ms_clap).to(device).eval()
+     dataset = AudioDataset(audios, audio_length=audio_length, sr=16000)
+     loader = DataLoader(dataset, batch_size=batch_size, num_workers=num_workers, pin_memory=True)
+ 
+@@ -145,15 +150,16 @@ def extract(audio_path: Path,
+         log.info(f'Saving {len(out_dict)} features to {clap_feature_path}')
+         torch.save(out_dict, clap_feature_path)
+ 
+-        out_dict = {}
+-        for i in range(0, len(audios), batch_size):
+-            audio_paths = audios[i:i + batch_size]
+-            ms_features = models.ms_clap.get_audio_embeddings(audio_paths).cpu().squeeze()
+-            for f_name, f in zip(audio_paths, ms_features):
+-                out_dict[f_name.stem] = f
+-        ms_feature_path = output_path / 'clap_ms_audio.pth'
+-        log.info(f'Saving {len(out_dict)} features to {ms_feature_path}')
+-        torch.save(out_dict, ms_feature_path)
++        if not skip_ms_clap:
++            out_dict = {}
++            for i in range(0, len(audios), batch_size):
++                audio_paths = audios[i:i + batch_size]
++                ms_features = models.ms_clap.get_audio_embeddings(audio_paths).cpu().squeeze()
++                for f_name, f in zip(audio_paths, ms_features):
++                    out_dict[f_name.stem] = f
++            ms_feature_path = output_path / 'clap_ms_audio.pth'
++            log.info(f'Saving {len(out_dict)} features to {ms_feature_path}')
++            torch.save(out_dict, ms_feature_path)
+ 
+     # PassT, need 32K sampling rate
+     dataset = AudioDataset(audios, audio_length=audio_length, sr=32_000)
+diff --git a/av_bench/extraction_models.py b/av_bench/extraction_models.py
+index 377996a..529d769 100644
+--- a/av_bench/extraction_models.py
++++ b/av_bench/extraction_models.py
+@@ -19,7 +19,10 @@ _syncformer_ckpt_path = Path(__file__).parent.parent / 'weights' / 'synchformer_
+ 
+ class ExtractionModels(nn.Module):
+ 
+-    def __init__(self):
++    def __init__(self,
++                 clap_ckpt_path: Path = _clap_ckpt_path,
++                 skip_video_related: bool = False,
++                 skip_ms_clap: bool = False):
+         super().__init__()
+ 
+         features_list = ["2048", "logits"]
+@@ -42,16 +45,20 @@ class ExtractionModels(nn.Module):
+         self.passt_model = get_basic_model(mode="all")
+         self.passt_model.eval()
+ 
+-        self.imagebind = imagebind_model.imagebind_huge(pretrained=True).eval()
++        self.imagebind = None if skip_video_related else imagebind_model.imagebind_huge(
++            pretrained=True).eval()
+ 
+         self.laion_clap = laion_clap.CLAP_Module(enable_fusion=False, amodel='HTSAT-base').eval()
+-        self.laion_clap.load_ckpt(_clap_ckpt_path, verbose=False)
++        self.laion_clap.load_ckpt(clap_ckpt_path, verbose=False)
+ 
+-        self.ms_clap = CLAP(version='2023', use_cuda=True)
++        self.ms_clap = None if skip_ms_clap else CLAP(version='2023', use_cuda=True)
+ 
+-        self.synchformer = Synchformer().eval()
+-        sd = torch.load(_syncformer_ckpt_path, weights_only=True)
+-        self.synchformer.load_state_dict(sd)
++        if skip_video_related:
++            self.synchformer = None
++        else:
++            self.synchformer = Synchformer().eval()
++            sd = torch.load(_syncformer_ckpt_path, weights_only=True)
++            self.synchformer.load_state_dict(sd)
+ 
+         # from synchformer
+         self.sync_mel_spectrogram = torchaudio.transforms.MelSpectrogram(
+diff --git a/av_bench/panns/models.py b/av_bench/panns/models.py
+index d82d66f..608262e 100644
+--- a/av_bench/panns/models.py
++++ b/av_bench/panns/models.py
+@@ -234,14 +234,16 @@ class Cnn14(nn.Module):
+         self.fc1 = nn.Linear(2048, 2048, bias=True)
+         self.fc_audioset = nn.Linear(2048, classes_num, bias=True)
+         home_dir = os.path.expanduser("~")
+-        if not os.path.exists("%s/.cache/audioldm_eval/ckpt/Cnn14_mAP=0.431.pth" % (home_dir)):
++        # only the checkpoint for this sample rate is fetched (the 32 kHz one is 1.3 GB and unused at 16 kHz)
++        checkpoints = {
++            16000: ("Cnn14_16k_mAP=0.438.pth", "https://zenodo.org/record/3987831/files/Cnn14_16k_mAP%3D0.438.pth"),
++            32000: ("Cnn14_mAP=0.431.pth", "https://zenodo.org/record/3576403/files/Cnn14_mAP%3D0.431.pth"),
++        }
++        file_name, url = checkpoints[sample_rate]
++        if not os.path.exists("%s/.cache/audioldm_eval/ckpt/%s" % (home_dir, file_name)):
+             print("Download pretrained checkpoints of Cnn14.")
+             os.makedirs("%s/.cache/audioldm_eval/ckpt" % (home_dir), exist_ok=True)
+-            os.system("wget -P %s/.cache/audioldm_eval/ckpt/ %s" %
+-                      (home_dir, "https://zenodo.org/record/3576403/files/Cnn14_mAP%3D0.431.pth"))
+-            os.system(
+-                "wget -P %s/.cache/audioldm_eval/ckpt/ %s" %
+-                (home_dir, "https://zenodo.org/record/3987831/files/Cnn14_16k_mAP%3D0.438.pth"))
++            os.system("wget -P %s/.cache/audioldm_eval/ckpt/ %s" % (home_dir, url))
+ 
+         # self.init_weight()
+         if sample_rate == 16000:
+diff --git a/av_bench/vggish/vggish.py b/av_bench/vggish/vggish.py
+index 4f86d77..a0cc225 100644
+--- a/av_bench/vggish/vggish.py
++++ b/av_bench/vggish/vggish.py
+@@ -51,7 +51,7 @@ class VGGish(VGG):
+     def __init__(self, device=None, pretrained=True, preprocess=True, postprocess=True):
+         super().__init__(make_layers())
+         if pretrained:
+-            state_dict = torch.hub.load('harritaylor/torchvggish', 'vggish').state_dict()
++            state_dict = torch.hub.load('harritaylor/torchvggish', 'vggish', trust_repo=True).state_dict()
+             super().load_state_dict(state_dict, strict=False)
+ 
+         if device is None:
+diff --git a/evaluate.py b/evaluate.py
+index 3a13a44..39f2ab4 100644
+--- a/evaluate.py
++++ b/evaluate.py
+@@ -8,6 +8,7 @@ from colorlog import ColoredFormatter
+ from av_bench.args import get_eval_parser
+ from av_bench.evaluate import evaluate
+ from av_bench.extract import extract
++from av_bench.extraction_models import _clap_ckpt_path as _default_clap_ckpt_path
+ 
+ log = logging.getLogger()
+ device = 'cuda'
+@@ -44,6 +45,9 @@ def main(args):
+     skip_clap: bool = args.skip_clap
+     recompute_gt_cache: bool = args.recompute_gt_cache
+     recompute_pred_cache: bool = args.recompute_pred_cache
++    skip_ms_clap: bool = args.skip_ms_clap
++    clap_ckpt_path: Path = args.clap_ckpt or _default_clap_ckpt_path
++    assert clap_ckpt_path.exists(), clap_ckpt_path
+ 
+     # apply default path
+     if gt_cache is None:
+@@ -85,6 +89,8 @@ def main(args):
+             num_workers=num_workers,
+             skip_video_related=True,
+             skip_clap=True,
++            skip_ms_clap=True,
++            clap_ckpt_path=clap_ckpt_path,
+         )
+ 
+     # extract for pred if needed
+@@ -103,6 +109,8 @@ def main(args):
+             num_workers=num_workers,
+             skip_video_related=skip_video_related,
+             skip_clap=skip_clap,
++            skip_ms_clap=skip_ms_clap,
++            clap_ckpt_path=clap_ckpt_path,
+         )
+ 
+     log.info('Starting evaluation...')
+@@ -111,7 +119,10 @@ def main(args):
+     output_metrics = evaluate(gt_audio_cache=gt_cache,
+                               pred_audio_cache=pred_cache,
+                               num_samples=num_samples,
+-                              is_paired=not unpaired)
++                              is_paired=not unpaired,
++                              skip_video_related=skip_video_related,
++                              skip_clap=skip_clap,
++                              skip_ms_clap=skip_ms_clap)
+ 
+     for k, v in output_metrics.items():
+         # pad k to 10 characters
+diff --git a/extract_text.py b/extract_text.py
+index 3e418aa..4d3ca38 100644
+--- a/extract_text.py
++++ b/extract_text.py
+@@ -35,15 +35,16 @@ setup_eval_logging()
+ def extract(args):
+     text_csv = args.text_csv
+     output_cache_path = args.output_cache_path
++    clap_ckpt_path = args.clap_ckpt or _clap_ckpt_path
+ 
+     output_cache_path.mkdir(parents=True, exist_ok=True)
+     df = pd.read_csv(text_csv).to_dict(orient='records')
+ 
+     laion_clap_model = laion_clap.CLAP_Module(enable_fusion=False,
+                                               amodel='HTSAT-base').cuda().eval()
+-    laion_clap_model.load_ckpt(_clap_ckpt_path, verbose=False)
++    laion_clap_model.load_ckpt(clap_ckpt_path, verbose=False)
+ 
+-    ms_clap_model = CLAP(version='2023', use_cuda=True)
++    ms_clap_model = None if args.skip_ms_clap else CLAP(version='2023', use_cuda=True)
+ 
+     all_laion_clap = {}
+     all_ms_clap = {}
+@@ -55,11 +56,13 @@ def extract(args):
+         text_embed = laion_clap_model.get_text_embedding(text_data, use_tensor=True)
+         all_laion_clap[name] = text_embed.cpu().squeeze()
+ 
+-        text_embed = ms_clap_model.get_text_embeddings(text_data)
+-        all_ms_clap[name] = text_embed.cpu().squeeze()
++        if ms_clap_model is not None:
++            text_embed = ms_clap_model.get_text_embeddings(text_data)
++            all_ms_clap[name] = text_embed.cpu().squeeze()
+ 
+     torch.save(all_laion_clap, output_cache_path / 'clap_laion_text.pth')
+-    torch.save(all_ms_clap, output_cache_path / 'clap_ms_text.pth')
++    if ms_clap_model is not None:
++        torch.save(all_ms_clap, output_cache_path / 'clap_ms_text.pth')
+ 
+ 
+ if __name__ == '__main__':
+@@ -68,5 +71,7 @@ if __name__ == '__main__':
+     parser = ArgumentParser()
+     parser.add_argument('--text_csv', type=Path, required=True)
+     parser.add_argument('--output_cache_path', type=Path, required=True)
++    parser.add_argument('--clap_ckpt', type=Path, default=None)
++    parser.add_argument('--skip_ms_clap', action='store_true')
+     args = parser.parse_args()
+     extract(args)

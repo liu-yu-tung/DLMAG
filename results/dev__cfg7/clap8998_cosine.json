@@ -1,0 +1,6 @@
+{
+ "column": "clap8998_cosine",
+ "mean": 0.2670433165598661,
+ "checkpoint": "music_speech_audioset_epoch_15_esc_89.98.pt",
+ "n_clips": 100
+}

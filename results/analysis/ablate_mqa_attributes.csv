@@ -1,0 +1,13 @@
+removed,measure,tag_share,n,mean,ci_low,ci_high
+instrument,mqascore,0.51,17,0.02,-0.049,0.093
+instrument,genre_mean,0.51,11,-0.023,-0.208,0.181
+instrument,instrument_mean,0.51,17,-0.019,-0.142,0.118
+instrument,mood_theme_mean,0.51,14,-0.003,-0.167,0.155
+instrument,vocal_mean,0.51,7,0.117,-0.113,0.385
+instrument,context_mean,0.51,7,0.076,-0.009,0.16
+vocal,mqascore,0.129,15,-0.011,-0.053,0.032
+vocal,genre_mean,0.129,12,-0.126,-0.249,0.002
+vocal,instrument_mean,0.129,15,0.122,0.007,0.254
+vocal,mood_theme_mean,0.129,10,0.029,-0.073,0.136
+vocal,vocal_mean,0.129,14,-0.266,-0.407,-0.135
+vocal,context_mean,0.129,6,0.049,-0.134,0.24

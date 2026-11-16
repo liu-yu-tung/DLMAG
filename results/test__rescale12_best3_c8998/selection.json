@@ -1,0 +1,24 @@
+{
+  "set": "test",
+  "name": "rescale12_best3_c8998",
+  "candidates": [
+    "rescale12",
+    "rescale12_seed1",
+    "rescale12_seed2"
+  ],
+  "score": "clap8998_cosine",
+  "n_items": 100,
+  "chosen_counts": {
+    "rescale12": 26,
+    "rescale12_seed1": 41,
+    "rescale12_seed2": 33
+  },
+  "mean_score_per_candidate": {
+    "rescale12": 0.28735705330967903,
+    "rescale12_seed1": 0.29010270565748214,
+    "rescale12_seed2": 0.292062769010663
+  },
+  "mean_score_selected": 0.3279857574403286,
+  "code_version": "75dda4d+dirty",
+  "time": "2026-11-15 17:44:59"
+}

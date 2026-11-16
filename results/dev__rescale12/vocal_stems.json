@@ -1,0 +1,32 @@
+{
+  "set": "dev",
+  "run": "rescale12",
+  "n_clips": 100,
+  "limit": null,
+  "demucs": "torchaudio HDEMUCS_HIGH_MUSDB_PLUS",
+  "whisper": "openai/whisper-large-v3-turbo",
+  "vocal_pattern": "\\b(vocals?|vocalists?|sing|sings|singer|singers|singing|voices?|choir|choirs|rap|raps|rapper|rappers|rapping|lyrics?|males?|females?|chant|chants|chanting)\\b",
+  "all": {
+    "n": 100,
+    "vocal_ratio_db": -31.94087166345224,
+    "vocal_rms_dbfs": -49.94811392856588,
+    "no_speech_prob": 1.2092648202233213e-10,
+    "top_lang_prob": 0.6761038814485073
+  },
+  "vocal_captions": {
+    "n": 61,
+    "vocal_ratio_db": -26.046634994006137,
+    "vocal_rms_dbfs": -43.76181850624058,
+    "no_speech_prob": 1.5515255596112223e-10,
+    "top_lang_prob": 0.6633410387840427
+  },
+  "other_captions": {
+    "n": 39,
+    "vocal_ratio_db": -41.160062351560256,
+    "vocal_rms_dbfs": -59.624114460920865,
+    "no_speech_prob": 6.739339201550659e-11,
+    "top_lang_prob": 0.696066276385234
+  },
+  "seconds": 19.8,
+  "peak_gpu_mib": 2333
+}

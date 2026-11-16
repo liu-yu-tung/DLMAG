@@ -1,0 +1,24 @@
+{
+  "set": "test",
+  "name": "cfg7_best3_c8998",
+  "candidates": [
+    "cfg7",
+    "cfg7_seed1",
+    "cfg7_seed2"
+  ],
+  "score": "clap8998_cosine",
+  "n_items": 100,
+  "chosen_counts": {
+    "cfg7": 29,
+    "cfg7_seed1": 39,
+    "cfg7_seed2": 32
+  },
+  "mean_score_per_candidate": {
+    "cfg7": 0.2820983877778053,
+    "cfg7_seed1": 0.28940299794077873,
+    "cfg7_seed2": 0.27789811611175536
+  },
+  "mean_score_selected": 0.32706027522683145,
+  "code_version": "75dda4d+dirty",
+  "time": "2026-11-15 17:45:14"
+}

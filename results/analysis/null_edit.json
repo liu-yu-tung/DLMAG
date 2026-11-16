@@ -1,0 +1,29 @@
+{
+  "first": "outputs/dev/rescale12",
+  "second": "outputs/dev/edit_null",
+  "clips": [
+    {
+      "id": "9",
+      "identical_file": true,
+      "max_abs_difference": 0.0,
+      "rms_first": 0.13318231354014196,
+      "rms_difference": 0.0
+    },
+    {
+      "id": "10",
+      "identical_file": true,
+      "max_abs_difference": 0.0,
+      "rms_first": 0.2255348148102531,
+      "rms_difference": 0.0
+    },
+    {
+      "id": "22",
+      "identical_file": true,
+      "max_abs_difference": 0.0,
+      "rms_first": 0.10550059574416328,
+      "rms_difference": 0.0
+    }
+  ],
+  "all_identical": true,
+  "time": "2026-11-15 19:28:36"
+}

@@ -1,0 +1,26 @@
+{
+  "set": "dev",
+  "name": "rescale12_best3_mqa",
+  "candidates": [
+    "rescale12",
+    "rescale12_seed1",
+    "rescale12_seed2"
+  ],
+  "score": "mqascore",
+  "score_file": "mqa_per_item.csv",
+  "n_items": 100,
+  "n_missing_scores": 6,
+  "chosen_counts": {
+    "rescale12": 39,
+    "rescale12_seed1": 34,
+    "rescale12_seed2": 27
+  },
+  "mean_score_per_candidate": {
+    "rescale12": 0.5520525214816242,
+    "rescale12_seed1": 0.566351647326527,
+    "rescale12_seed2": 0.5448875765823138
+  },
+  "mean_score_selected": 0.5769980284260274,
+  "code_version": "30fe04a+dirty",
+  "time": "2026-11-16 00:09:49"
+}

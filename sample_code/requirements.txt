@@ -1,0 +1,8 @@
+torch==2.11.0  # install from https://download.pytorch.org/whl/cu128
+torchaudio==2.11.0
+diffusers==0.41.0
+transformers==5.20.1
+accelerate==1.15.0
+torchsde==0.2.6
+sentencepiece==0.2.2
+soundfile==0.14.0

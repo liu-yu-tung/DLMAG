@@ -1,0 +1,6 @@
+attribute,tag_share,mean_score,share_yes_above_0.5,variance_share_all_clips,variance_share_across_seeds
+instrument,0.442,0.424,0.42,0.47,0.58
+mood_theme,0.286,0.641,0.706,0.228,0.182
+context,0.103,0.819,0.896,0.315,0.102
+vocal,0.092,0.24,0.25,-0.042,0.041
+genre,0.077,0.52,0.56,0.029,0.096

@@ -1,0 +1,40 @@
+[project]
+name = "hw3"
+version = "0.1.0"
+description = "DLMAG HW3: text-to-music generation with Stable Audio Open, retrieval and evaluation"
+readme = "README.md"
+authors = [
+    { name = "liuyu", email = "57765519+liu-yu-tung@users.noreply.github.com" }
+]
+requires-python = "==3.11.*"
+# Pins follow the TA sample code (sample_code/requirements.txt) so `generate.py --check` compares like with like.
+dependencies = [
+    "torch==2.11.0",
+    "torchaudio==2.11.0",
+    "diffusers==0.41.0",
+    "transformers==5.20.1",
+    "accelerate==1.15.0",
+    "torchsde==0.2.6",
+    "sentencepiece==0.2.2",
+    "soundfile==0.14.0",
+    "numpy",
+    "pandas",
+    "tqdm",
+]
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu128" }
+torchaudio = { index = "pytorch-cu128" }
+
+[build-system]
+requires = ["uv_build>=0.13.0,<0.14.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "text_to_music"
+module-root = ""

@@ -1,0 +1,4 @@
+{"id": "3", "seed": 3, "seconds": 20.868, "time": 1794747080.8, "tokens": 50, "peak": 1.04, "clip_fraction": 2.267573790959432e-06, "rms": 0.11827, "noise_fingerprint": 81481.42219543457, "valid_frames": 216, "forward_samples": 200}
+{"id": "12", "seed": 12, "seconds": 20.195, "time": 1794747101.0, "tokens": 82, "peak": 0.8647, "clip_fraction": 0.0, "rms": 0.1234, "noise_fingerprint": -149615.3284072876, "valid_frames": 216, "forward_samples": 200}
+{"id": "22", "seed": 22, "seconds": 19.92, "time": 1794747121.0, "tokens": 57, "peak": 0.4231, "clip_fraction": 0.0, "rms": 0.10559, "noise_fingerprint": 63011.996757507324, "valid_frames": 216, "forward_samples": 200}
+{"id": "71", "seed": 71, "seconds": 20.051, "time": 1794747141.1, "tokens": 63, "peak": 0.9321, "clip_fraction": 0.0, "rms": 0.13707, "noise_fingerprint": -304318.96556663513, "valid_frames": 216, "forward_samples": 200}

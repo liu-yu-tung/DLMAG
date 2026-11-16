@@ -1,0 +1,24 @@
+{
+  "set": "dev",
+  "name": "rescale12_best3",
+  "candidates": [
+    "rescale12",
+    "rescale12_seed1",
+    "rescale12_seed2"
+  ],
+  "score": "clap_cosine",
+  "n_items": 100,
+  "chosen_counts": {
+    "rescale12": 39,
+    "rescale12_seed1": 40,
+    "rescale12_seed2": 21
+  },
+  "mean_score_per_candidate": {
+    "rescale12": 0.3264820496737957,
+    "rescale12_seed1": 0.32435491688549517,
+    "rescale12_seed2": 0.31374735057353975
+  },
+  "mean_score_selected": 0.3685638828575611,
+  "code_version": "3bffe55+dirty",
+  "time": "2026-11-15 13:40:31"
+}

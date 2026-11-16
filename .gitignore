@@ -1,0 +1,21 @@
+# symlinks to the heavy and course-material folders in ~/Developments/DLMAG/hw3 (course data, audio, clones with their own venvs, the report)
+/data
+/outputs
+/external
+/logs
+/report
+/.venv
+# private working notes and the experiment queue
+/queue.toml
+/docs/status.md
+/docs/handover.md
+/docs/methods_research.txt
+/scripts/analysis/review_checks/*.csv
+# queue gate markers
+/scripts/*/*.ready
+# written every 15 s by scripts/generation/job_queue.py
+/results/status.md
+# tags derived from the test captions (course material)
+/results/tags_test_summary.csv
+# per-id labels derived from test captions
+/results/analysis/caption_classes_test.csv

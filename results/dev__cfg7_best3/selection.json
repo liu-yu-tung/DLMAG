@@ -1,0 +1,24 @@
+{
+  "set": "dev",
+  "name": "cfg7_best3",
+  "candidates": [
+    "cfg7",
+    "cfg7_seed1",
+    "cfg7_seed2"
+  ],
+  "score": "clap_cosine",
+  "n_items": 100,
+  "chosen_counts": {
+    "cfg7": 30,
+    "cfg7_seed1": 37,
+    "cfg7_seed2": 33
+  },
+  "mean_score_per_candidate": {
+    "cfg7": 0.29892029277980325,
+    "cfg7_seed1": 0.2925536772981286,
+    "cfg7_seed2": 0.2902870925143361
+  },
+  "mean_score_selected": 0.35031037017703054,
+  "code_version": "ce5443b+dirty",
+  "time": "2026-11-15 09:36:48"
+}

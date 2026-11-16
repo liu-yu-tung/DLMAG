@@ -1,0 +1,26 @@
+{
+  "model": "stabilityai/stable-audio-open-1.0",
+  "code_version": "5a6bcbc+dirty",
+  "settings": {
+    "captions": "voice_male_to_female_ext.csv",
+    "prompt_style": "caption",
+    "tags": null,
+    "guidance": {
+      "mode": "cfg",
+      "scale": 12.0,
+      "apg_eta": 0.0,
+      "apg_momentum": 0.0,
+      "apg_norm_threshold": 0.0,
+      "rescale_phi": 0.7
+    },
+    "steps": 100,
+    "seconds": 10.0,
+    "seed_index": 0,
+    "compile": false
+  },
+  "started": "2026-11-15 20:37:40",
+  "finished": "2026-11-15 20:42:54",
+  "n_items": 14,
+  "mean_seconds_per_item": 21.66735714285715,
+  "mean_clip_fraction": 0.002882734112777793
+}

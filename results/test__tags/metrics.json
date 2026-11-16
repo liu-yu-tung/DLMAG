@@ -1,0 +1,120 @@
+{
+ "run_name": "test__tags",
+ "code_version": "5a6bcbc+dirty",
+ "pred_dir": "/home/liuyu/Developments/DLMAG/.claude/worktrees/hw3/hw3/outputs/test/tags",
+ "gt_dir": "/home/liuyu/Developments/DLMAG/.claude/worktrees/hw3/hw3/outputs/ref/test_retrieved",
+ "set": "test",
+ "audio_length_s": 10,
+ "clap_checkpoint": "music_audioset_epoch_15_esc_90.14.pt",
+ "bootstrap": {
+  "resamples": 1000,
+  "seed": 0,
+  "unit": "prompt id",
+  "interval": "percentile 95%"
+ },
+ "LAION-CLAP-Score": {
+  "value": 0.28001448065042495,
+  "ci95": [
+   0.2586844769855961,
+   0.3021590610733256
+  ]
+ },
+ "KL-PASST-softmax": {
+  "value": 1.0614922046661377,
+  "ci95": [
+   0.8611913055181504,
+   1.291329064965248
+  ]
+ },
+ "KL-PANNS-softmax": {
+  "value": 1.5070091485977173,
+  "ci95": [
+   1.260650497674942,
+   1.7720755577087401
+  ]
+ },
+ "ISC-PANNS-mean": {
+  "value": 1.7513034696033756,
+  "ci95": null
+ },
+ "ISC-PANNS-std": {
+  "value": 0.18388868119766658,
+  "ci95": null
+ },
+ "ISC-PASST-mean": {
+  "value": 1.6902145902049526,
+  "ci95": null
+ },
+ "ISC-PASST-std": {
+  "value": 0.15321702145887856,
+  "ci95": null
+ },
+ "FD-VGG": {
+  "value": 2.768592444223657,
+  "ci95": [
+   2.609012947397996,
+   3.7872188328374103
+  ],
+  "bootstrap_mean": 3.1179507924874477,
+  "value_fast_formula": 2.7685922825988385
+ },
+ "FD-VGG_musiccaps": {
+  "value": 7.804686058381623,
+  "ci95": [
+   7.802669826529502,
+   9.08940251409265
+  ],
+  "bootstrap_mean": 8.378813534754935
+ },
+ "FD-PANN": {
+  "value": 43.33527468931106,
+  "ci95": [
+   43.10520484623947,
+   48.72902971764223
+  ],
+  "bootstrap_mean": 45.840691969921785,
+  "value_fast_formula": 43.33528075718886
+ },
+ "FD-PANN_musiccaps": {
+  "value": 64.92707502297954,
+  "ci95": [
+   68.41221773575799,
+   74.29274245537265
+  ],
+  "bootstrap_mean": 71.17271711090261
+ },
+ "FD-PASST": {
+  "value": 756.2006104025165,
+  "ci95": [
+   767.391139472329,
+   829.3173691370984
+  ],
+  "bootstrap_mean": 796.5364334075078,
+  "value_fast_formula": 756.2007612776962
+ },
+ "FD-PASST_musiccaps": {
+  "value": 846.5879885244349,
+  "ci95": [
+   922.662692360276,
+   991.3696450906017
+  ],
+  "bootstrap_mean": 953.1679746476719
+ },
+ "fd_mert_retrieved": {
+  "value": 56.671267333852924,
+  "ci95": [
+   57.42684114520911,
+   64.91393581054493
+  ],
+  "bootstrap_mean": 60.664314934777096
+ },
+ "fd_mert_musiccaps": {
+  "value": 54.688526882939115,
+  "ci95": [
+   58.46888311300673,
+   69.21356973265478
+  ],
+  "bootstrap_mean": 63.18924839998559
+ },
+ "fd_mert_embedding": "m-a-p/MERT-v2-30s, time-mean of hidden states, mean over all 25 hidden states, first 10 s at 24 kHz"
+}
