@@ -1,0 +1,727 @@
+# Pre-registered predictions, checked after every job by scripts/analysis/knowledge.py (verdicts in results/analysis/knowledge.md).
+# Rule: a prediction is written here BEFORE its job finishes and is never edited afterwards; add a new one instead.
+# metric: clap, kl (paired per-prompt difference, run minus against), mqa (paired per-item difference), seconds_per_clip (ratio run / against).
+# met = the point difference lies in [low, high]. if_met / if_missed say what to do next; the queue default is what runs when nobody acts.
+
+# ---- written 11-15 11:00 and 11:35 by main (docs/findings.md), copied here unchanged ----
+
+[[prediction]]
+run = "dev__interval_early30"
+against = "dev__cfg7"
+metric = "clap"
+low = -0.02
+high = 0.0
+written = "11-15 11:35"
+reason = "between free (sigma > 110) and harmful; ETTA reports harm for its 40% window"
+if_met = "if the interval includes 0 (free): keep dev__interval_early12 to find the boundary. The guidance-interval story becomes 'the first 38 steps need no guidance'."
+if_missed = "if below -0.02 (harmful): replace dev__interval_early12 (sure to be worse) with dev__interval_early60 (off for sigma > 60, 29 steps) to bracket the boundary from above."
+
+[[prediction]]
+run = "dev__interval_early12"
+against = "dev__cfg7"
+metric = "clap"
+low = -0.05
+high = -0.01
+written = "11-15 11:35"
+reason = "12 < sigma <= 30 is where guidance starts to shape content"
+if_met = "boundary lies between sigma 12 and 30; no more interval runs."
+if_missed = "if free too: half of all steps need no guidance; queue dev__rescale12_early12 as a speed variant of the chosen setting."
+
+[[prediction]]
+run = "dev__apg12_projection"
+against = "dev__cfg12"
+metric = "clap"
+low = -0.005
+high = 0.005
+written = "11-15 11:00"
+reason = "the parallel fraction is about 0.2 early, so projection removes about 4% of the update"
+if_met = "projection does little; with apg12_eta1 the 2x2 says momentum carries APG's effect."
+if_missed = "projection matters; re-add dev__apg12_cap (dropped 11-15 by conductor 2) to separate the cap."
+
+[[prediction]]
+run = "dev__apg12_eta1"
+against = "dev__apg12"
+metric = "clap"
+low = -0.005
+high = 0.005
+written = "11-15 11:00"
+reason = "same reason as apg12_projection"
+if_met = "APG without projection equals APG; report APG as 'negative momentum on the guidance term'."
+if_missed = "projection interacts with momentum; say so, no further runs."
+
+[[prediction]]
+run = "dev__compose7"
+against = "dev__cfg7"
+metric = "clap"
+low = -0.03
+high = 0.0
+written = "11-15 11:00"
+reason = "tag guidance alone hurts; composition dilutes the caption's share of the scale"
+if_met = "composed guidance joins the tag-prompt negative result; no MQAScore run needed."
+if_missed = "if above 0 with an interval excluding 0: it is a candidate; move mqa_dev__compose7 up."
+
+[[prediction]]
+run = "dev__cfg7_best3"
+against = "dev__cfg7"
+metric = "mqa"
+low = 0.01
+high = 0.04
+written = "11-15 11:00"
+reason = "CLAP selection partly transfers to an independent judge"
+if_met = "best-of-3 improves in the user's sense (KL and MQAScore point gains, nothing worse beyond its interval): best-of-3 qualifies for the submission."
+if_missed = "if at or below 0: best-of-3 is CLAP-circular; submit a single run and report best-of-3 as the circularity study. If above +0.04: same as met."
+
+[[prediction]]
+run = "dev__cfg12"
+against = "dev__cfg7"
+metric = "mqa"
+low = 0.0
+high = 0.06
+written = "11-15 11:00"
+reason = "guidance strengthens attribute adherence (cfg3 < cfg7 < cfg12)"
+if_met = "MQAScore agrees with CLAP on the scale trend."
+if_missed = "CLAP and MQAScore disagree on scale: a report finding; check per attribute."
+
+[[prediction]]
+run = "dev__cfg3"
+against = "dev__cfg7"
+metric = "mqa"
+low = -0.08
+high = 0.0
+written = "11-15 11:00"
+reason = "guidance strengthens attribute adherence"
+if_met = "as above."
+if_missed = "as above."
+
+[[prediction]]
+run = "dev__tags"
+against = "dev__cfg7"
+metric = "mqa"
+low = -0.02
+high = 0.10
+written = "11-15 11:00"
+reason = "the tags are the same ones MQAScore asks about (circular), so far less of a penalty than its CLAP gap"
+if_met = "metric circularity shown from the MQAScore side; pair it with tags_oracle."
+if_missed = "tags hurt on every judge; the circularity claim is dropped."
+
+[[prediction]]
+run = "dev__interval_late"
+against = "dev__cfg7"
+metric = "mqa"
+low = -0.10
+high = 0.0
+written = "11-15 11:00"
+reason = "late guidance carries detail (A1)"
+if_met = "A1 holds on an independent judge."
+if_missed = "late guidance matters to CLAP and PaSST but not to MQAScore: say which attributes."
+
+# ---- written 11-15 11:58 by conductor 2, after dev__rescale12 (CLAP +0.028 vs cfg7, prediction 'between cfg7 and cfg12' missed high) ----
+
+[[prediction]]
+run = "dev__rescale12"
+against = "dev__cfg7"
+metric = "mqa"
+low = 0.0
+high = 0.05
+written = "11-15 11:58"
+reason = "CLAP +0.028 and KL -0.08 point the same way; rescale keeps the guidance direction and only fixes its size"
+if_met = "rescale12 is the single-run leader on both judges."
+if_missed = "if below 0: the CLAP gain is not confirmed; move mqa_dev__cfg12 ahead of the marker and compare the two before selecting."
+
+[[prediction]]
+run = "dev__rescale12_seed1"
+against = "dev__cfg7_seed1"
+metric = "clap"
+low = 0.010
+high = 0.045
+written = "11-15 11:58"
+reason = "the seed-0 gain is +0.028 [+0.017, +0.039]; seed noise is about 0.01"
+if_met = "the rescale gain replicates on a second seed."
+if_missed = "if below +0.010: the seed-0 gain was partly luck; treat rescale12 and cfg12 as tied until seed 2."
+
+[[prediction]]
+run = "dev__rescale12_seed2"
+against = "dev__cfg7_seed2"
+metric = "clap"
+low = 0.010
+high = 0.045
+written = "11-15 11:58"
+reason = "same as seed 1"
+if_met = "the gain holds on 3 of 3 seeds; rescale12 is the single-run pick over cfg12."
+if_missed = "if both seeds 1 and 2 miss low: rescale12 is not better than cfg12; fall back to the 11:50 picks."
+
+[[prediction]]
+run = "dev__rescale12_best3"
+against = "dev__rescale12"
+metric = "clap"
+low = 0.03
+high = 0.06
+written = "11-15 11:58"
+reason = "best-of-3 at cfg7 gained +0.051 over its seed 0; selection gain should not depend much on the setting"
+if_met = "selection and rescale add up; best-of-3 at rescale12 has the highest dev CLAP."
+if_missed = "if under +0.03: rescale already removes the bad seeds, so best-of-3 adds less; prefer the single run."
+
+[[prediction]]
+run = "dev__rescale12_best3"
+against = "dev__rescale12"
+metric = "mqa"
+low = 0.0
+high = 0.04
+written = "11-15 11:58"
+reason = "same transfer as predicted for best-of-3 at cfg7"
+if_met = "best-of-3 at rescale12 qualifies in the user's sense if KL is not worse beyond its interval."
+if_missed = "if below 0: it does not qualify; the pick is the single rescale run."
+
+[[prediction]]
+run = "dev__rescale18"
+against = "dev__rescale12"
+metric = "clap"
+low = -0.010
+high = 0.012
+written = "11-15 11:58"
+reason = "CFG gains shrink with scale (+0.029 for 3 to 7, +0.015 for 7 to 12); rescale removes the std blow-up but not the diminishing return"
+if_met = "the scale axis is closed at 12 for rescale; no further scale runs."
+if_missed = "if above +0.012 with an interval excluding 0 and KL / FD-VGG not worse: rescale18 becomes the single-run leader; queue dev__rescale18_seed1 and _seed2 and dev__rescale24. If below -0.010: the optimum is at or under 12; nothing to add."
+
+[[prediction]]
+run = "dev__rescale7"
+against = "dev__cfg7"
+metric = "clap"
+low = 0.0
+high = 0.015
+written = "11-15 11:58"
+reason = "at scale 7 the guided std is inflated less, so rescale has less to fix"
+if_met = "rescale helps mostly by making a high scale usable."
+if_missed = "if above +0.015: rescale helps by itself, independent of scale; say so. If below 0: rescale needs a high scale."
+
+[[prediction]]
+run = "dev__rescale12_phi1"
+against = "dev__rescale12"
+metric = "clap"
+low = -0.015
+high = 0.005
+written = "11-15 11:58"
+reason = "Lin et al. mix 0.7 because full rescale over-corrects"
+if_met = "phi 0.7 stays; the phi axis is closed."
+if_missed = "if above +0.005 with an interval excluding 0: phi 1 is better; it is a report ablation only if the selection is already committed."
+
+# ---- written 11-15 12:04 by conductor 2 with main: best-of-3 ranked by the 89.98 CLAP checkpoint, scored by the 90.14 one ----
+
+[[prediction]]
+run = "dev__rescale12_best3_c8998"
+against = "dev__rescale12"
+metric = "clap"
+low = 0.010
+high = 0.035
+written = "11-15 12:04"
+reason = "same-checkpoint best-of-3 at cfg7 gained +0.051; the two LAION checkpoints are close relatives, so about half of that should survive (TangoFlux: +0.022 at N = 15 across checkpoints)"
+if_met = "part of the best-of-3 gain is real under a different ranker; report same-checkpoint minus cross-checkpoint as the circular share."
+if_missed = "if above +0.035: the two checkpoints agree so closely that the swap removes little circularity; say so and lean on MQAScore and KL. If below +0.010: best-of-3 by CLAP is mostly circular; submit the single run."
+
+[[prediction]]
+run = "dev__rescale12_best3_c8998"
+against = "dev__rescale12"
+metric = "mqa"
+low = 0.0
+high = 0.04
+written = "11-15 12:04"
+reason = "a ranker that picks better text match should not lower an independent judge"
+if_met = "with KL not worse beyond its interval and the paired FD-VGG check passed, this is the only best-of-3 candidate for the submission."
+if_missed = "if below 0: it does not qualify; the pick is the single rescale12 run."
+
+[[prediction]]
+run = "dev__cfg7_best3_c8998"
+against = "dev__cfg7"
+metric = "clap"
+low = 0.015
+high = 0.040
+written = "11-15 12:04"
+reason = "same reasoning at the default setting; the same-checkpoint gain there is +0.051"
+if_met = "the circular share at cfg7 is +0.051 minus this value; one number for slide 15."
+if_missed = "as for rescale12_best3_c8998."
+
+# ---- written 11-15 16:10 by main, before vocal_stems_dev and the alm_judge runs (docs/strategy_v3.txt section 15) ----
+# alm: Qwen2-Audio P(Yes) on MQAScore's own questions (paired per item). vocal_db: Demucs vocal-to-mix level in dB (paired per clip).
+
+[[prediction]]
+run = "dev__real"
+against = "dev__cfg7"
+metric = "alm"
+low = 0.03
+high = 0.2
+written = "11-15 16:10"
+reason = "MQAScore puts dev real 0.10 above dev cfg7; a second judge that hears the same attributes should agree in sign"
+if_met = "two judges agree that real beats generated, which CLAP cannot see (0.302 vs 0.299); one line on slide 17."
+if_missed = "if at or below 0: the second judge does not separate real from generated, so it adds no evidence; report MQAScore alone and say so."
+
+[[prediction]]
+run = "dev__rescale12"
+against = "dev__cfg7"
+metric = "alm"
+low = 0.0
+high = 0.04
+written = "11-15 16:10"
+reason = "MQAScore gives rescale12 +0.007 over cfg7; a second judge should not reverse the sign"
+if_met = "the rescale gain is not a CLAP-only effect; cite both judges on the method slide."
+if_missed = "if below 0: the judges disagree on the method; report both and do not claim a perceptual gain."
+
+[[prediction]]
+run = "dev__cfg7"
+against = "dev__real"
+metric = "vocal_db"
+low = -50.0
+high = -15.0
+written = "11-15 16:10"
+reason = "3-clip CPU check: cfg7 about -63 dB vs real about -21 dB; SAO is known to produce few vocals"
+if_met = "vocals are a measured gap: one figure with vocal-caption clips split out."
+if_missed = "if above -15: SAO does make vocals and MQAScore's vocal failure is about their quality, not their presence; reword the vocal finding."
+
+# Test predictions from the dev vocal split (results/analysis/vocal_split_dev.csv), written before any rescale12 test eval ran.
+# Test has 1 caption with vocal tags of 100, so the dev no-vocal group is the closer guide.
+
+[[prediction]]
+run = "test__rescale12"
+against = "test__cfg7"
+metric = "clap"
+low = 0.010
+high = 0.045
+written = "11-15 17:37"
+reason = "dev dCLAP is the same on vocal and no-vocal captions (+0.028, +0.027)"
+if_met = "the CLAP gain carries from dev to test; report the dev-test agreement."
+if_missed = "if below 0.010: the gain depends on MusicCaps-style captions; report it as a dev-test gap and keep the pre-registered submission."
+
+[[prediction]]
+run = "test__rescale12"
+against = "test__cfg7"
+metric = "kl"
+low = -0.10
+high = 0.10
+written = "11-15 17:37"
+reason = "the dev KL gain sits only in vocal captions (-0.19); no-vocal is +0.02 [-0.10, +0.14]. Test KL is also against the retrieved clip, not a true pair"
+if_met = "a flat test KL is expected, not a failure; the report says so next to the dev KL gain."
+if_missed = "if below -0.10: rescale helps KL beyond vocals; if above +0.10: check the retrieved-reference effect before any claim."
+
+[[prediction]]
+run = "test__rescale12_best3_c8998"
+against = "test__cfg7"
+metric = "clap"
+low = 0.020
+high = 0.070
+written = "11-15 17:37"
+reason = "dev no-vocal group: +0.054 [+0.032, +0.078]; test captions are LLM-style, so somewhat less is likely"
+if_met = "the submission's CLAP gain holds on test."
+if_missed = "if below 0.020: the cross-checkpoint ranker adds little on test captions; report it."
+
+[[prediction]]
+run = "test__rescale12_best3_c8998"
+against = "test__cfg7"
+metric = "kl"
+low = -0.25
+high = 0.05
+written = "11-15 17:37"
+reason = "dev no-vocal group: -0.16 [-0.32, +0.01]"
+if_met = "report the KL change with its interval; claim a gain only if the interval excludes 0."
+if_missed = "if above +0.05: best-of-3 by CLAP costs KL on test; state it as a limitation."
+
+# ---- written 11-15 18:10 by main, before any pilot job is queued ----
+
+[[prediction]]
+run = "dev__rescale12_valid"
+against = "dev__rescale12"
+metric = "clap"
+low = -0.015
+high = 0.015
+written = "11-15 18:10"
+reason = "std over the 216 clip frames makes the rescale act stronger, close to phi 1; phi 1 single seed was +0.005 CLAP over rescale12, inside seed noise"
+if_met = "the fix changes how rescale is measured, not what it buys in CLAP; report KL and FD-VGG as the deciding metrics."
+if_missed = "if outside: the padded tail mattered more than phi 1 suggests; report the direction and keep the fix as a pilot."
+
+[[prediction]]
+run = "dev__rescale12_valid"
+against = "dev__rescale12"
+metric = "kl"
+low = -0.12
+high = 0.04
+written = "11-15 18:10"
+reason = "phi 1 single seed gave dKL -0.045 vs rescale12; a stronger rescale should move KL the same way"
+if_met = "the fix behaves like a stronger phi; the pilot slide says so."
+if_missed = "if above +0.04: rescale over the clip frames only hurts KL; if below -0.12: a real gain worth a seed replication next time."
+
+[[prediction]]
+run = "dev__rescale12_best3_mqa"
+against = "dev__rescale12"
+metric = "clap"
+low = 0.000
+high = 0.020
+written = "11-15 18:10"
+reason = "ranking by the judge is independent of the CLAP model; the CLAP-ranked pools gave +0.015 cross-checkpoint, a weaker correlate should give less"
+if_met = "a judge ranker lifts CLAP a little without being CLAP; report next to the cross-checkpoint ranker."
+if_missed = "if above 0.020: the judge and CLAP agree more than expected; if below 0: the judge prefers clips CLAP dislikes, report the disagreement."
+
+[[prediction]]
+run = "dev__rescale12_best3_mqa"
+against = "dev__rescale12"
+metric = "kl"
+low = -0.15
+high = 0.00
+written = "11-15 18:10"
+reason = "both CLAP rankers gave about -0.09 to -0.10 KL vs a random pick; seed 0 is a random pick"
+if_met = "any reasonable ranker of 3 seeds lowers KL; the selection effect is generic, not specific to CLAP."
+if_missed = "if above 0: the judge picks clips farther from the reference label distribution; report it."
+
+[[prediction]]
+run = "dev__rescale12_best3_mqa"
+against = "dev__rescale12_best3_c8998"
+metric = "alm"
+low = 0.000
+high = 0.060
+written = "11-15 18:10"
+reason = "the second judge asks the same kind of attribute questions as MQAScore, so the judge-ranked pool should score higher on it than the CLAP-ranked pool; scale not yet seen, sign mainly"
+if_met = "the two judges agree beyond the ranker; the judge-ranked pool is the better choice for attribute content."
+if_missed = "if below 0: the two judges disagree per clip; the MQAScore ranking only fits its own judge."
+
+[[prediction]]
+run = "test__rescale12_best3_mqa"
+against = "test__rescale12"
+metric = "clap"
+low = 0.000
+high = 0.015
+written = "11-15 18:10"
+reason = "dev expectation scaled by the dev-to-test shrink of the CLAP gain (about a third)"
+if_met = "the judge ranker transfers like the CLAP rankers."
+if_missed = "report the gap; the submission does not change."
+
+[[prediction]]
+run = "dev__rescale12_degraded"
+against = "dev__rescale12"
+metric = "kl"
+low = -0.20
+high = 0.00
+written = "11-15 18:10"
+reason = "MusicCaps references for captions with quality words are noisy recordings; band-limit plus noise moves the generated clip toward them in label space"
+if_met = "KL rewards matching recording conditions; say so where KL is used to pick a method."
+if_missed = "if above 0: KL is not moved by recording conditions at this SNR; the metric is safer than feared."
+
+[[prediction]]
+run = "dev__rescale12_degraded"
+against = "dev__rescale12"
+metric = "mqa"
+low = -0.03
+high = 0.01
+written = "11-15 18:10"
+reason = "the judge asks about genre, instruments, mood, vocals; mild noise should not change those answers much"
+if_met = "with the KL result: the judge is robust to recording conditions where KL is not."
+if_missed = "if below -0.03: the judge also penalises noise; if above +0.01: the judge rewards matching the caption's quality words."
+
+# ---- written 11-15 20:04 by main (user 20:03: tie the caption-word study back to the HW goal). Probe-ranked best-of-3: per caption,
+# keep the seed (0-2 of rescale12) whose MERT attribute probes give the highest mean log-odds for the word groups the caption asks
+# for (only groups with held-out real-dev AUC >= 0.75; scripts/selection/probe_rank.py). No new audio; per-caption metrics come from each
+# seed's per_prompt.csv. MERT is not CLAP, so the CLAP and KL gains are not circular. Report only; the submission is unchanged. ----
+
+[[prediction]]
+run = "dev__rescale12_best3_probe"
+against = "dev__rescale12"
+metric = "clap"
+low = 0.0
+high = 0.015
+written = "11-15 20:04"
+reason = "cross-checkpoint CLAP ranking gained +0.015 over the seed mean; a MERT attribute ranker shares less with the CLAP score, so less"
+if_met = "the attribute ranker is a non-circular selection signal: slide next to CLAP-ranked best-of-3."
+if_missed = "if at or below 0: the probes see attributes that CLAP does not reward; report the per-group hit rates instead of a score gain."
+
+[[prediction]]
+run = "dev__rescale12_best3_probe"
+against = "dev__rescale12"
+metric = "kl"
+low = -0.12
+high = 0.0
+written = "11-15 20:04"
+reason = "picking the clip that has the asked-for instruments and mood should move its tag distribution toward the reference"
+if_met = "the ranker helps the reference-based metric too."
+if_missed = "if above 0: attributes the probes reward are not the ones PaSST tags; if below -0.12: stronger than CLAP ranking on KL."
+
+[[prediction]]
+run = "test__rescale12_best3_probe"
+against = "test__rescale12"
+metric = "clap"
+low = 0.0
+high = 0.012
+written = "11-15 20:04"
+reason = "test captions lean on words the probes barely hear (shimmering, warm, dark), so fewer valid groups per caption and a smaller gain than dev"
+if_met = "the ranker transfers, at a smaller size, as expected from the caption style gap."
+if_missed = "if at or below 0: the ranker does not transfer to test-style captions; report as the caption-style limit."
+
+# ---- written 11-15 20:15 by main (user 20:08-20:14: run the two generation ideas overnight). Caption cleaning (scripts/generation/clean_captions.py):
+# drop sentences that only describe recording quality or use/setting (29 of 100 dev captions change; 0 of 100 test captions, so
+# test is not run). Changed captions regenerated on seed 0 with rescale12 settings; the other 71 clips reused. Scored against the
+# ORIGINAL captions and the original tags. ----
+
+[[prediction]]
+run = "dev__rescale12_clean"
+against = "dev__rescale12"
+metric = "clap"
+low = -0.01
+high = 0.01
+written = "11-15 20:15"
+reason = "71 of 100 clips are identical; on the 29, removing quality and setting sentences frees attention for the music words but the CLAP text still contains the dropped words"
+if_met = "cleaning is neutral on CLAP: the dropped sentences were not steering the music."
+if_missed = "if above +0.01: non-music sentences dilute the prompt; if below -0.01: CLAP rewards matching the recording words."
+
+[[prediction]]
+run = "dev__rescale12_clean"
+against = "dev__rescale12"
+metric = "kl"
+low = 0.0
+high = 0.08
+written = "11-15 20:15"
+reason = "dev references are noisy YouTube clips; a cleaner generation should match their tag distribution slightly worse"
+if_met = "KL partly rewards matching recording conditions (with the degrade probe)."
+if_missed = "if below 0: cleaning also helps the reference metric; if above +0.08: the recording words carry much of KL."
+
+[[prediction]]
+run = "dev__rescale12_clean"
+against = "dev__rescale12"
+metric = "mqa"
+low = 0.0
+high = 0.03
+written = "11-15 20:15"
+reason = "the judge asks about genre, instruments, mood and vocals; a prompt without non-music sentences should render those a little better"
+if_met = "the judge rewards following the musical words; with KL, the metrics disagree on what 'better' means."
+if_missed = "if below 0: the dropped sentences were also shaping the music."
+
+# Probe-in-the-loop round 2 (plan item 4), written before any round-2 clip exists. 89 of 100 dev captions get emphasis sentences
+# (one per asked group the round-1 pick misses); regenerated on the picked seed; kept only if the probe score rises.
+# Decision rule: test only if dev is an "improve" against round 1 (better on one metric, not worse beyond its paired interval on any other).
+
+[[prediction]]
+run = "dev__rescale12_loop2"
+against = "dev__rescale12_best3_probe"
+metric = "clap"
+low = -0.005
+high = 0.010
+written = "11-15 23:31"
+reason = "the extra sentences repeat the caption's own words, so the CLAP text match changes little; the probe gate keeps only clips that show more of the asked groups"
+if_met = "round 2 adds little beyond round 1: the probe gate and CLAP agree weakly."
+if_missed = "if above +0.01: emphasis sentences make the model render asked attributes CLAP also hears; if below: longer prompts dilute the main description."
+
+[[prediction]]
+run = "dev__rescale12_loop2"
+against = "dev__rescale12_best3_probe"
+metric = "kl"
+low = -0.05
+high = 0.03
+written = "11-15 23:31"
+reason = "KL compares tag distributions with noisy references; small changes either way"
+if_met = "KL is not moved by attribute emphasis."
+if_missed = "if below -0.05: the asked attributes also carry the reference tags; if above +0.03: emphasis pushes clips off the reference style."
+
+[[prediction]]
+run = "dev__rescale12_loop2"
+against = "dev__rescale12_best3_probe"
+metric = "kept_fraction"
+low = 0.35
+high = 0.65
+written = "11-15 23:31"
+reason = "a regeneration on the same seed with a longer prompt is roughly a coin flip on the probe score, slightly above since the added words name the missing groups"
+if_met = "emphasis helps the probe a little more often than not."
+if_missed = "if above 0.65: emphasis sentences reliably make the model render missing attributes; if below 0.35: they hurt."
+
+# Best-of-5 (director run 23:33, extends plan items 2-3; user 23:32 "all control to you"), written before seeds 3-4 exist.
+# Same settings (rescale12), seeds 3 and 4 added; each ranker picks among 5 instead of 3. Expected gain of a max over N noisy
+# candidates grows slowly (about sqrt(log N)), so going from 3 to 5 should add less than going from 1 to 3 did. Report only;
+# the submission is unchanged.
+
+[[prediction]]
+run = "dev__rescale12_best5_c8998"
+against = "dev__rescale12_best3_c8998"
+metric = "clap"
+low = 0.0
+high = 0.008
+written = "11-15 23:34"
+reason = "ranking by a second CLAP checkpoint correlates with the scoring CLAP; two more candidates give a small further gain"
+if_met = "more candidates help a little, with diminishing returns."
+if_missed = "if above +0.008: selection is far from saturated; if below 0: the second checkpoint's picks stop transferring to the scoring CLAP."
+
+[[prediction]]
+run = "test__rescale12_best5_c8998"
+against = "test__rescale12_best3_c8998"
+metric = "clap"
+low = 0.0
+high = 0.008
+written = "11-15 23:34"
+reason = "same as dev; test is only reported"
+if_met = "the dev pattern holds on test."
+if_missed = "the dev pattern does not transfer."
+
+[[prediction]]
+run = "dev__rescale12_best5_probe"
+against = "dev__rescale12_best3_probe"
+metric = "clap"
+low = -0.005
+high = 0.008
+written = "11-15 23:34"
+reason = "the probe ranker was neutral on dev CLAP at N=3; more candidates should keep it near neutral"
+if_met = "probe ranking optimizes attributes CLAP barely rewards."
+if_missed = "if above: with more candidates the probe picks start to agree with CLAP."
+
+[[prediction]]
+run = "dev__rescale12_best5_mqa"
+against = "dev__rescale12_best3_mqa"
+metric = "mqa"
+low = 0.0
+high = 0.02
+written = "11-15 23:34"
+reason = "ranking by MQAScore and scoring by MQAScore: the gain is guaranteed to be at least 0 per clip and grows slowly"
+if_met = "a self-scored gain, small; reported as an upper bound for this ranker."
+if_missed = "if above +0.02: MQAScore varies a lot between seeds of one caption."
+
+# Positive control for caption cleaning (user 11-16 00:39: "if we clean the words it can tell and it changes a lot, it backs
+# the point"), written before any clip exists. scripts/analysis/ablate_followed.py: 29 dev captions (the cleaning count) lose the first
+# sentence naming a followed group (guitar, piano, male/female voice, acoustic, electric; absent from the rest of the caption);
+# seed 0, rescale12; unchanged clips copied. Scored against the original captions. Reading fixed now:
+# - if CLAP or MQAScore on the 29 drops with an interval excluding 0 and the removed-group probe drops: the metrics can see a
+#   lost attribute at n = 29, so the cleaning null means the model ignored the recording words;
+# - if neither drops: the metrics cannot see it at this size, and the cleaning null is weak evidence (reported as a limit).
+# Ranges below are over all 100 captions (as knowledge.py computes); the 29-only numbers go to ablate_dev_scores.json.
+
+[[prediction]]
+run = "dev__rescale12_ablate"
+against = "dev__rescale12"
+metric = "clap"
+low = -0.015
+high = -0.002
+written = "11-16 00:40"
+reason = "the clip loses an instrument or voice the original caption asks for; CLAP scores against the original caption"
+if_met = "CLAP notices a lost followed attribute, unlike the lost recording words."
+if_missed = "if above -0.002: CLAP barely weighs single instruments or voices in long captions."
+
+[[prediction]]
+run = "dev__rescale12_ablate"
+against = "dev__rescale12"
+metric = "mqa"
+low = -0.03
+high = -0.003
+written = "11-16 00:40"
+reason = "the judge asks about instruments and vocals directly"
+if_met = "MQAScore sees the lost attribute; the cleaning null is informative."
+if_missed = "if above -0.003: the judge does not penalize a missing asked instrument or voice at this size."
+
+# Followed-word guidance (user 11-16 01:01: "go with 1, write predictions first"), written before the script or any clip exists.
+# From tonight's study: the model follows instrument, voice, timbre and genre words, ignores recording words, and renders mood
+# and dynamics through bundles. Method: per caption, a second prompt listing only the caption's own instrument, vocal, timbre and
+# genre phrases (scripts/analysis/caption_vocab.py lexicon matches, in caption order), added as an extra guidance term of weight +4 on top
+# of CFG 12 with rescale 0.7 (text_to_music/sampler.py extra_term_cfg; the caption keeps weight 12). One setting, fixed now (weight 4 =
+# the bundle-cut weight), no sweep. Captions with no such phrase keep their rescale12 clip (same seed and settings: bit-identical).
+# Scored against the original captions. Decision rule: test runs only if dev is an "improve" vs dev__rescale12 (better on one
+# metric, not worse beyond its paired interval on any other); as a submission candidate it would also have to be an improve vs
+# dev__rescale12_best3_c8998, and the user decides at 14:00.
+
+[[prediction]]
+run = "dev__rescale12_followed"
+against = "dev__rescale12"
+metric = "clap"
+low = 0.0
+high = 0.015
+written = "11-16 01:02"
+reason = "the extra term pushes toward the attributes the model can follow and CLAP hears (instruments, voices, genre)"
+if_met = "steering by followed words gives a small CLAP gain without changing the caption."
+if_missed = "if below 0: the extra term over-saturates like a higher CFG scale; if above +0.015: the followed words were under-weighted by plain CFG."
+
+[[prediction]]
+run = "dev__rescale12_followed"
+against = "dev__rescale12"
+metric = "kl"
+low = -0.05
+high = 0.05
+written = "11-16 01:02"
+reason = "KL compares tag distributions with noisy references; the method targets caption match, not reference style"
+if_met = "KL is untouched; the gain, if any, is in caption match."
+if_missed = "if below -0.05: the followed attributes also carry the reference tags; if above +0.05: the push moves clips off the reference style."
+
+[[prediction]]
+run = "dev__rescale12_followed"
+against = "dev__rescale12"
+metric = "mqa"
+low = 0.0
+high = 0.02
+written = "11-16 01:02"
+reason = "the judge asks about instruments, vocals and genre, the attributes the extra term strengthens"
+if_met = "the judge rewards the followed attributes; with CLAP, the finding produces a score change."
+if_missed = "if below 0: strengthening named attributes costs the judge's other questions (mood, quality)."
+
+# Guidance-strength control for followed-word guidance (side-agent note 11-16 01:05), written before either run has a clip.
+# With the full caption as the extra prompt, 12 * (cond - uncond) + 4 * (cond - uncond) is exactly CFG 16, so the control is
+# rescale16 (scale 16, rescale 0.7) on all dev captions. Rule fixed now: followed-word guidance is credited to "the words the model
+# follows" only if it is an "improve" vs dev__rescale16 (same total weight); if it only beats dev__rescale12, the gain is called
+# "more guidance". The existing dev__rescale18 is reported alongside.
+
+[[prediction]]
+run = "dev__rescale16"
+against = "dev__rescale12"
+metric = "clap"
+low = -0.01
+high = 0.01
+written = "11-16 01:04"
+reason = "rescale12 and rescale18 were close on dev CLAP; 16 sits between them"
+if_met = "the extra weight alone does not move CLAP; any followed-word gain is from the words."
+if_missed = "if above +0.01: more guidance alone lifts CLAP, so the followed-word result must beat this run, not rescale12."
+
+[[prediction]]
+run = "dev__rescale12_followed"
+against = "dev__rescale16"
+metric = "clap"
+low = 0.0
+high = 0.012
+written = "11-16 01:04"
+reason = "at the same total weight, pushing only the followed words concentrates guidance where the model can act"
+if_met = "the words, not the weight, give the gain."
+if_missed = "if below 0: the gain (if any) over rescale12 is just guidance strength."
+
+# Followed-word guidance at the same total weight (user 11-16 01:05: "can we try add up to 12?"), written before any clip.
+# Composed guidance (Liu et al. ECCV 2022 conjunction, text_to_music/sampler.py composed_cfg): caption weight 8 + followed-word prompt 4
+# = 12, rescale 0.7, same per-caption word lists (data/followed/dev_extra.csv). Total weight equals rescale12, so it is compared
+# with dev__rescale12 directly; the "words, not weight" credit rule is: an "improve" vs dev__rescale12. Test only if so.
+
+[[prediction]]
+run = "dev__rescale12_followed_sum12"
+against = "dev__rescale12"
+metric = "clap"
+low = -0.005
+high = 0.012
+written = "11-16 01:05"
+reason = "a third of the push moves from the full caption to its followed words; CLAP scores against the full caption, so a gain needs the followed words to carry most of what CLAP hears"
+if_met = "re-weighting toward followed words is neutral to slightly positive at no extra guidance."
+if_missed = "if below -0.005: the caption's other words (mood, texture) carry CLAP too and lose weight; if above +0.012: the followed words are what CLAP rewards."
+
+[[prediction]]
+run = "dev__rescale12_followed_sum12"
+against = "dev__rescale12"
+metric = "mqa"
+low = -0.005
+high = 0.02
+written = "11-16 01:05"
+reason = "the judge asks about instruments, vocals and genre, which keep or gain weight; mood questions lose some"
+if_met = "the judge's attribute questions benefit from the re-weighting."
+if_missed = "if below -0.005: the lost caption weight costs the judge's other questions."
+
+# Reading note 11-16 01:09 (side-agent note), before any followed-word clip: the followed-word prompt is a bare comma list of the
+# caption's words, the tag style that scored worse than captions as the main prompt (dev__tags). A drop in either followed-word
+# run may come from the format, not from the words; the report says so, and a sentence-form version would separate the two.
+
+# Sentence-form followed-word guidance (user 11-16 01:10: "yes, make it conditional"), written before any followed-word clip.
+# Same as dev__rescale12_followed_sum12 (caption 8 + words 4, rescale 0.7, same 95 captions) but the second prompt keeps the
+# caption's adjacent followed words together as phrases inside short sentences ("The music features distorted electric guitar
+# and synth strings. The genre is rock."), data/followed/dev_extra_sentence.csv. Condition fixed now: queued only if
+# dev__rescale12_followed_sum12 has a mean CLAP or MQAScore change vs dev__rescale12 below 0. Reading: if the sentence form is
+# above the tag form on that metric, the drop was the tag format; if not, it was the re-weighting.
+
+[[prediction]]
+run = "dev__rescale12_followed_sentence"
+against = "dev__rescale12_followed_sum12"
+metric = "clap"
+low = 0.0
+high = 0.012
+written = "11-16 01:11"
+reason = "sentences match the caption style T5 and CLAP saw; the tag format scored worse as a main prompt"
+if_met = "the format, not the words, caused the tag version's drop."
+if_missed = "if below 0: the re-weighting itself costs CLAP, whatever the format."

@@ -1,0 +1,17 @@
+pair,prompt_id,run_a,run_b,rating,chosen_side,chosen_run,strength
+pair_01,90,rescale12_best3_c8998,rescale12,1,B,rescale12,1
+pair_02,89,rescale12,rescale12_best3_c8998,2,B,rescale12_best3_c8998,2
+pair_03,12,rescale12,rescale12_best3_c8998,1,B,rescale12_best3_c8998,1
+pair_04,14,rescale12_best3_c8998,rescale12,2,B,rescale12,2
+pair_05,94,rescale12_best3_c8998,rescale12,-1,A,rescale12_best3_c8998,1
+pair_06,35,rescale12,rescale12_best3_c8998,1,B,rescale12_best3_c8998,1
+pair_07,88,rescale12,rescale12_best3_c8998,2,B,rescale12_best3_c8998,2
+pair_08,20,rescale12,rescale12_best3_c8998,-2,A,rescale12,2
+pair_09,75,rescale12_best3_c8998,rescale12,-2,A,rescale12_best3_c8998,2
+pair_10,85,rescale12_best3_c8998,rescale12,2,B,rescale12,2
+pair_11,68,rescale12_best3_c8998,rescale12,1,B,rescale12,1
+pair_12,30,rescale12,rescale12_best3_c8998,2,B,rescale12_best3_c8998,2
+pair_13,26,rescale12,rescale12_best3_c8998,2,B,rescale12_best3_c8998,2
+pair_14,55,rescale12_best3_c8998,rescale12,-1,A,rescale12_best3_c8998,1
+pair_15,23,rescale12_best3_c8998,rescale12,0,same,same,0
+pair_16,87,rescale12,rescale12_best3_c8998,-2,A,rescale12,2

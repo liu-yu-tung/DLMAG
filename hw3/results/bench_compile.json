@@ -1,0 +1,42 @@
+{
+  "ids": [
+    "0",
+    "1",
+    "2",
+    "3"
+  ],
+  "eager_seconds": [
+    16.123,
+    15.918,
+    15.99,
+    16.062
+  ],
+  "compiled_seconds": [
+    54.333,
+    14.006,
+    14.025,
+    14.056
+  ],
+  "eager_median_seconds": 15.99,
+  "compiled_median_seconds": 14.025,
+  "speedup": 1.14,
+  "compile_overhead_seconds": 40.3,
+  "max_abs_difference": [
+    0.1314697265625,
+    0.039306640625,
+    0.03338623046875,
+    0.03369140625
+  ],
+  "relative_rms_difference": [
+    0.04054431989789009,
+    0.04033368080854416,
+    0.021631881594657898,
+    0.012832555919885635
+  ],
+  "compiled_finite": true,
+  "rule": "use_compile if speedup >= 1.15 and compiled audio is finite",
+  "use_compile": false,
+  "gpu": "NVIDIA GeForce RTX 4060 Ti",
+  "torch": "2.11.0+cu128",
+  "finished": "2026-11-15 02:09:47"
+}

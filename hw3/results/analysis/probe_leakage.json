@@ -1,0 +1,45 @@
+{
+ "real_clips": 782,
+ "drums_score_on_level_alone": 0.366628187351844,
+ "drums_score_on_level_given_percussion": 0.33904113587942264,
+ "drums_score_on_percussion": {
+  "percussive_share": 0.40541908667166116,
+  "onset_rate_percussive": 0.0813383240194534
+ },
+ "corr_level_percussive_share": 0.04146367106018219,
+ "axes": {
+  "soft_to_loud": {
+   "pairs": 16,
+   "drums_probe_change_sd": 0.6353813409805298,
+   "drums_change_predicted_from_level_alone_sd": 0.26317969071895864,
+   "drums_change_predicted_from_level_given_percussion_sd": 0.2433766534053212,
+   "level_change_db": 2.326033890247345,
+   "percussive_share_change_sd": 0.33664173210999515,
+   "percussive_share_share_up": 0.625,
+   "onset_rate_percussive_change_sd": 0.7590917092294126,
+   "onset_rate_percussive_share_up": 0.625
+  },
+  "happy_to_sad": {
+   "pairs": 15,
+   "drums_probe_change_sd": -0.6061891913414001,
+   "drums_change_predicted_from_level_alone_sd": 0.014839092826587885,
+   "drums_change_predicted_from_level_given_percussion_sd": 0.013722520692382993,
+   "level_change_db": 0.1130459467569987,
+   "percussive_share_change_sd": -0.4384255654705016,
+   "percussive_share_share_up": 0.26666666666666666,
+   "onset_rate_percussive_change_sd": -0.350624729028729,
+   "onset_rate_percussive_share_up": 0.2
+  },
+  "voice_male_to_female": {
+   "pairs": 26,
+   "drums_probe_change_sd": -0.41246262192726135,
+   "drums_change_predicted_from_level_alone_sd": 0.10890031008828022,
+   "drums_change_predicted_from_level_given_percussion_sd": 0.10070607253805895,
+   "level_change_db": 0.760310906630296,
+   "percussive_share_change_sd": -0.15154065728027824,
+   "percussive_share_share_up": 0.46153846153846156,
+   "onset_rate_percussive_change_sd": -0.10131257087184502,
+   "onset_rate_percussive_share_up": 0.5
+  }
+ }
+}

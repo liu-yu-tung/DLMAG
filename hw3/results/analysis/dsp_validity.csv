@@ -1,0 +1,5 @@
+check,feature,positive_group,negative_group,n_positive,n_negative,auc,median_positive,median_negative
+tempo,rhythm_tempo_bpm,tempo: fast,tempo: slow,150,150,0.4964666666666667,122.28260869565217,122.28260869565217
+loudness,energy_rms_db_mean,"dynamics: loud, intense","dynamics: soft, calm",150,150,0.6896,41.81987190246582,37.172502517700195
+quality,energy_band_6000_12000hz_ratio,recording: high quality,recording: low quality,83,150,0.5208835341365462,0.0058119394816458225,0.0031152406008914113
+voice pitch,vocal_f0_median_hz,vocals: female voice,vocals: male voice,60,59,0.721186440677966,307.43353813882436,246.828951447135

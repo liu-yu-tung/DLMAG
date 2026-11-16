@@ -1,0 +1,40 @@
+{
+  "judge": "Qwen/Qwen2-Audio-7B-Instruct",
+  "quantization": "8-bit LLM, fp16 audio tower, projector and lm_head",
+  "partial": false,
+  "n_items_expected": 2,
+  "n_items_scored": 2,
+  "n_items_with_tags": 2,
+  "n_questions": 12,
+  "alm_qwen_mean": 0.9687836989760399,
+  "alm_qwen_ci95": [
+    0.9478197693824768,
+    0.989747628569603
+  ],
+  "bootstrap": {
+    "resamples": 1000,
+    "seed": 0,
+    "unit": "items"
+  },
+  "attribute_mean": {
+    "genre": 0.9648557305335999,
+    "instrument": 0.9977474957704544,
+    "mood_theme": 0.9927303691705067,
+    "vocal": 0.8180660307407379,
+    "context": null
+  },
+  "attribute_n_items": {
+    "genre": 1,
+    "instrument": 2,
+    "mood_theme": 2,
+    "vocal": 1,
+    "context": 0
+  },
+  "attribute_n_questions": {
+    "genre": 1,
+    "instrument": 5,
+    "mood_theme": 4,
+    "vocal": 2,
+    "context": 0
+  }
+}

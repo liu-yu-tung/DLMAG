@@ -1,0 +1,5 @@
+tag_kind,before_mean,n,mean,ci_low,ci_high
+kept instrument,0.327,77,0.083,0.016,0.157
+kept vocal,0.416,8,0.111,-0.118,0.36
+removed instrument,0.404,22,-0.148,-0.348,0.035
+removed vocal,0.317,18,-0.301,-0.448,-0.161

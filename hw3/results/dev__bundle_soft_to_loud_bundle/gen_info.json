@@ -1,0 +1,28 @@
+{
+  "model": "stabilityai/stable-audio-open-1.0",
+  "code_version": "918c3d5+dirty",
+  "settings": {
+    "captions": "bundle_soft_to_loud.csv",
+    "prompt_style": "caption",
+    "tags": null,
+    "guidance": {
+      "mode": "cfg",
+      "scale": 12.0,
+      "apg_eta": 0.0,
+      "apg_momentum": 0.0,
+      "apg_norm_threshold": 0.0,
+      "rescale_phi": 0.7,
+      "extra_scale": -4.0
+    },
+    "steps": 100,
+    "seconds": 10.0,
+    "seed_index": 0,
+    "compile": false,
+    "extra_prompt": "drums, percussion, groovy beat"
+  },
+  "started": "2026-11-16 02:36:37",
+  "finished": "2026-11-16 02:43:05",
+  "n_items": 16,
+  "mean_seconds_per_item": 23.844125000000005,
+  "mean_clip_fraction": 0.0002686366351269953
+}

@@ -1,0 +1,149 @@
+diff --git a/mqascore/models/audio_flamingo.py b/mqascore/models/audio_flamingo.py
+index 95f2a2c..e0a2cd8 100644
+--- a/mqascore/models/audio_flamingo.py
++++ b/mqascore/models/audio_flamingo.py
+@@ -21,7 +21,8 @@ VARIANTS = {
+ class AudioFlamingoBackend(LALMBackend):
+     default_fix_seconds = 30
+ 
+-    def __init__(self, variant="af", model_id=None, device="cuda"):
++    def __init__(self, variant="af", model_id=None, device="cuda",
++                 gpu_memory_gib=None, cpu_memory_gib=None):
+         import transformers
+         from transformers import AudioFlamingo3ForConditionalGeneration, AutoProcessor
+ 
+@@ -31,17 +32,20 @@ class AudioFlamingoBackend(LALMBackend):
+         self.name = variant
+         self.model_id = model_id or default_id
+         self.device = device
++        load_kwargs = {"device_map": device, "torch_dtype": torch.bfloat16}
++        if gpu_memory_gib is not None:
++            load_kwargs["device_map"] = "auto"
++            load_kwargs["max_memory"] = {0: f"{gpu_memory_gib}GiB", "cpu": f"{cpu_memory_gib or 40}GiB"}
+         try:
+             self.model = AudioFlamingo3ForConditionalGeneration.from_pretrained(
+-                self.model_id, device_map=device, torch_dtype=torch.bfloat16).eval()
++                self.model_id, **load_kwargs).eval()
+         except (ValueError, OSError, TypeError) as e:
+             cls = getattr(transformers, fallback, None) if fallback else None
+             if cls is None:
+                 raise
+             print(f"[{variant}] AudioFlamingo3ForConditionalGeneration failed ({e}); "
+                   f"trying {fallback}", flush=True)
+-            self.model = cls.from_pretrained(
+-                self.model_id, device_map=device, torch_dtype=torch.bfloat16).eval()
++            self.model = cls.from_pretrained(self.model_id, **load_kwargs).eval()
+         self.processor = AutoProcessor.from_pretrained(self.model_id)
+         self.yes_ids, self.no_ids = yes_no_ids(self.processor.tokenizer)
+         self.yes_t = torch.tensor(self.yes_ids, device=device)
+@@ -69,5 +73,5 @@ class AudioFlamingoBackend(LALMBackend):
+         am = inputs["attention_mask"]
+         # Position of the last real token; correct for left, right or no padding.
+         last = am.shape[1] - 1 - am.flip(1).argmax(dim=1)
+-        nl = logits[torch.arange(logits.shape[0], device=logits.device), last]
+-        return pyes_from_logits(nl, self.yes_t, self.no_t)
++        nl = logits[torch.arange(logits.shape[0], device=logits.device), last.to(logits.device)]
++        return pyes_from_logits(nl, self.yes_t.to(nl.device), self.no_t.to(nl.device))
+diff --git a/scripts/extract_tags.py b/scripts/extract_tags.py
+index cc22544..311b091 100644
+--- a/scripts/extract_tags.py
++++ b/scripts/extract_tags.py
+@@ -50,6 +50,24 @@ def extract_json(text):
+     return {k: obj.get(k, []) for k in ALL_ATTRIBUTES}
+ 
+ 
++def generate_hf(model_id, convs, max_new_tokens, temperature):
++    import torch
++    from tqdm import tqdm
++    from transformers import AutoModelForCausalLM, AutoTokenizer
++
++    tokenizer = AutoTokenizer.from_pretrained(model_id)
++    model = AutoModelForCausalLM.from_pretrained(model_id, torch_dtype=torch.bfloat16, device_map="cuda").eval()
++    sampling = {"do_sample": True, "temperature": temperature} if temperature > 0 else {"do_sample": False}
++    texts = []
++    for conv in tqdm(convs):
++        ids = tokenizer.apply_chat_template(conv, add_generation_prompt=True, return_tensors="pt",
++                                            return_dict=True).to("cuda")
++        with torch.no_grad():
++            out = model.generate(**ids, max_new_tokens=max_new_tokens, **sampling)
++        texts.append(tokenizer.decode(out[0, ids["input_ids"].shape[1]:], skip_special_tokens=True))
++    return texts
++
++
+ def parse_args():
+     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+     p.add_argument("--input", required=True)
+@@ -60,6 +78,8 @@ def parse_args():
+     p.add_argument("--max-model-len", type=int, default=8192)
+     p.add_argument("--temperature", type=float, default=0.0, help="0.0 = greedy")
+     p.add_argument("--gpu-memory-utilization", type=float, default=0.9)
++    p.add_argument("--backend", choices=["vllm", "hf"], default="vllm",
++                   help="hf = transformers generate, one prompt at a time (no vLLM install needed)")
+     return p.parse_args()
+ 
+ 
+@@ -76,21 +96,23 @@ def main():
+     if not todo:
+         return
+ 
+-    from vllm import LLM, SamplingParams
+-
+-    llm = LLM(model=args.model, max_model_len=args.max_model_len,
+-              gpu_memory_utilization=args.gpu_memory_utilization)
+-    params = SamplingParams(temperature=args.temperature, max_tokens=args.max_new_tokens)
+     instruction = tag_extraction_instruction()
+     convs = [[{"role": "system", "content": instruction},
+               {"role": "user", "content": it["text"]}] for it in todo]
+-    outputs = llm.chat(convs, params)
++    if args.backend == "vllm":
++        from vllm import LLM, SamplingParams
++
++        llm = LLM(model=args.model, max_model_len=args.max_model_len,
++                  gpu_memory_utilization=args.gpu_memory_utilization)
++        params = SamplingParams(temperature=args.temperature, max_tokens=args.max_new_tokens)
++        raw_outputs = [o.outputs[0].text for o in llm.chat(convs, params)]
++    else:
++        raw_outputs = generate_hf(args.model, convs, args.max_new_tokens, args.temperature)
+ 
+     if fail_path.exists():
+         fail_path.unlink()
+     n_fail = 0
+-    for it, o in zip(todo, outputs):
+-        raw = o.outputs[0].text
++    for it, raw in zip(todo, raw_outputs):
+         try:
+             append_jsonl(out, {**it, "tags": extract_json(raw)})
+         except (ValueError, json.JSONDecodeError) as e:
+diff --git a/scripts/score.py b/scripts/score.py
+index d510966..01fc348 100644
+--- a/scripts/score.py
++++ b/scripts/score.py
+@@ -39,6 +39,10 @@ def parse_args():
+     p.add_argument("--cache-dir", default=".mqascore_audio_cache")
+     p.add_argument("--model-id", default=None, help="override the HF model id / local path")
+     p.add_argument("--attn-impl", default="auto", help="qwen3omni only: auto|flash_attention_2|sdpa")
++    p.add_argument("--gpu-memory-gib", type=float, default=None,
++                   help="af/mf only: cap GPU weights at this many GiB and offload the rest to CPU (bf16 kept)")
++    p.add_argument("--cpu-memory-gib", type=float, default=None,
++                   help="af/mf only, with --gpu-memory-gib: CPU RAM budget for offloaded weights (default 40)")
+     p.add_argument("--limit", type=int, default=None, help="score only the first N items (dry run)")
+     return p.parse_args()
+ 
+@@ -68,9 +72,15 @@ def main():
+     kw = {"model_id": args.model_id} if args.model_id else {}
+     if args.model == "qwen3omni":
+         kw["attn_impl"] = args.attn_impl
++    elif args.gpu_memory_gib is not None:
++        kw.update(gpu_memory_gib=args.gpu_memory_gib, cpu_memory_gib=args.cpu_memory_gib)
+     backend = load_backend(args.model, **kw)
+-    fs = {"default": {}, "full": {"fix_seconds": None}}.get(
+-        args.fix_seconds, {"fix_seconds": float(args.fix_seconds)})
++    if args.fix_seconds == "default":
++        fs = {}
++    elif args.fix_seconds == "full":
++        fs = {"fix_seconds": None}
++    else:
++        fs = {"fix_seconds": float(args.fix_seconds)}
+     scorer = MQAScorer(backend, attributes=attrs, cache_dir=args.cache_dir, **fs)
+     check_protocol(out, scorer.protocol(args.protocol))
+ 

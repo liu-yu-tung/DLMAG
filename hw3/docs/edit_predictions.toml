@@ -1,0 +1,240 @@
+# Word-swap test ("does the model follow the word"), written 11-15 18:59 by main before any edited clip was generated.
+# Each axis: 12 dev captions, one word group swapped (scripts/generation/build_edits.py), generated with rescale12 on the original seed, so each
+# pair differs only in the words. moved = number of the 12 pairs whose detector moved in the expected direction.
+# Detectors: probe = MusicCaps-trained probe for the target group minus the source group (scripts/analysis/attribute_probes.py, MERT);
+# dsp = the HW1 hand-crafted feature named per axis. Insert axes compare the jazz and country inserts with each other.
+# Rule: never edited after a result exists; a missed range is reported as missed.
+
+[[prediction]]
+axis = "voice_male_to_female"
+detector = "probe"
+low = 7
+high = 11
+reason = "SAO renders vocals poorly (model card; vocal attribute 0.22 vs 0.49 real), but voice pitch is a strong cue when a voice is there"
+
+[[prediction]]
+axis = "guitar_to_piano"
+detector = "probe"
+low = 9
+high = 12
+reason = "instruments are the most concrete words and the text conditioning learns them well"
+
+[[prediction]]
+axis = "acoustic_to_electric"
+detector = "probe"
+low = 8
+high = 12
+reason = "distortion changes the spectrum strongly"
+
+[[prediction]]
+axis = "soft_to_loud"
+detector = "dsp: energy_rms_db_mean"
+low = 4
+high = 9
+reason = "several edits touch one detail ('soft rimshots'), and output loudness depends on the guidance more than on words"
+
+[[prediction]]
+axis = "happy_to_sad"
+detector = "probe"
+low = 7
+high = 11
+reason = "mood words move key, tempo and instrumentation together; the probe sees the bundle"
+
+[[prediction]]
+axis = "fast_to_slow"
+detector = "dsp: rhythm_tempo_bpm"
+low = 6
+high = 10
+reason = "beat tracking halves or doubles tempo at random, which hides part of a real change"
+
+[[prediction]]
+axis = "low_quality_to_studio"
+detector = "dsp: energy_band_6000_12000hz_ratio"
+low = 7
+high = 11
+reason = "MusicCaps' low-quality clips are band-limited; the model learned that from the words, so 'high quality' should widen the band"
+
+[[prediction]]
+axis = "insert_jazz_vs_country"
+detector = "probe"
+low = 8
+high = 12
+reason = "genre names are frequent training words; one appended sentence should still move the style"
+
+# Addendum 11-15 19:09 (main), before any edited clip exists (edits_generate has not started). Ranges above are unchanged.
+# Reason: with 12 pairs, a word the model ignores still moves the expected way in about 6 (p = 0.5 each); P(>=9) = 0.073,
+# P(>=10) = 0.019, so a range starting at 6-7 can be "met" by chance. Added before results, so it is planned analysis:
+# 1. Each count is reported with its one-sided binomial p (chance = 6 of 12), Holm-corrected over the 8 axes.
+# 2. Magnitude, not only sign: mean edited-minus-original change with a sign-flip permutation p (10000 flips, seed 0) and a
+#    paired bootstrap interval (1000, seed 0).
+# 3. Seed-noise scale: the same detector's change between seed 0 and seeds 1-2 of the original caption (no word changed);
+#    the edit effect is reported as a multiple of that spread.
+# 4. Specificity: the target-minus-source probe must move more than the mean of the unrelated probes (same category excluded).
+# 5. Extended set: every other eligible caption (143 more clips, runs edit_<axis>_ext) is pooled with the 12 as a second,
+#    larger test. The predictions above are scored on the 12 only.
+
+[[analysis]]
+written = "2026-11-15 19:09"
+chance_count = 6
+binomial_p_at_9 = 0.073
+binomial_p_at_10 = 0.019
+correction = "holm over 8 axes"
+extended_runs = "edit_<axis>_ext"
+
+# Addendum 2, 11-15 19:16 (main), before these clips are queued. HELD (user 19:17): bonus test, run only after the validity checks pass. User about 19:13-19:16: HW1 curated release-decade (TASK A, 1960s-2010s)
+# and 1980s release-market (TASK B: Brazil, Germany, Italy, Spain, UK, US) labels; HW1 clips had Latin/Mexican, country and techno
+# elements. Captions almost never name decades or countries (MusicCaps: decade words 52 of 5.5k, Brazil 7, Germany 6), so these
+# are appended sentences on the 12 genre-free captions of the jazz/country inserts (plus 12 more, *_ext), compared pair-wise
+# (same caption, same seed, one word differs). Detectors are HW1's own classifiers, trained on curated audio labels, not caption
+# words (scripts/hw1_detectors.py: A mert_ord10, B mert_layeravg; checked first on 10 s crops of HW1 validation clips).
+# hw1_decade = expected decade index under A's probabilities; hw1_market = log p(Brazil) - log p(Germany);
+# hw1_latin_market = log(p(Brazil) + p(Spain)) - log p(Germany). Scored with the planned analysis of addendum 1.
+
+[[prediction]]
+axis = "insert_1960s_vs_2010s"
+detector = "hw1_decade"
+low = 7
+high = 11
+reason = "decade words carry production cues (mono, tape, reverb vs loud bright mixes) that a text encoder knows, but SAO's training tags rarely name decades; HW1 A rarely confuses 1960s with 2010s (1 of 22)"
+
+[[prediction]]
+axis = "insert_brazil_vs_germany"
+detector = "hw1_market"
+low = 5
+high = 9
+reason = "HW1 B finds Brazil mostly through singing language and samba/MPB style; a country name is a weak style cue and most of these clips have no clear vocals"
+
+[[prediction]]
+axis = "insert_latin_vs_techno"
+detector = "probe"
+low = 9
+high = 12
+reason = "genre names are strong training words; techno minus latin/world probe (MERT)"
+
+[[prediction]]
+axis = "insert_latin_vs_techno"
+detector = "hw1_latin_market"
+low = 7
+high = 11
+reason = "cross-detector: if the Latin insert sounds Latin, HW1 B should lean to Brazil or Spain over Germany"
+
+# Addendum 3, 11-15 19:38 (main). Edit clips are being generated; none has been analysed. P1.4 (scripts/analysis/dsp_validity.py, real
+# MusicCaps audio, 150 vs 150 clips): the named features fail for two axes: beat-tracked tempo, fast vs slow, AUC 0.50 (both
+# medians 122 BPM); 6-12 kHz band ratio, high vs low quality, AUC 0.52. Loudness RMS 0.69 and vocal pitch 0.72 pass (>= 0.65).
+# Rule: the ranges above stay scored on the named feature and are reported with "detector cannot tell" when it failed. As a second
+# reading, each failing axis also uses the HW1 feature with the largest |AUC - 0.5| on real audio (results/analysis/
+# dsp_validity_all.csv, chosen before any edit is scored, sign taken from the real-audio AUC), plus the MERT probe. No range is
+# predicted for the second reading.
+
+# Correction to addendum 4, 11-15 23:27: the queue job had written edit_features.csv at 23:17 (it finished before its ETA), so
+# "not yet written" below is wrong. Nothing read the file, and no edit score was computed before addendum 4: edit_effects.py first
+# ran at 23:26, after commit 328bc0b.
+# Addendum 4, 11-15 23:23 (main, director run), before any edit score is computed (edit_features.csv not yet written; edit_effects.py
+# not yet run on the edit clips). Second-reading detectors, chosen on real MusicCaps audio only (probe training pool):
+# scripts/analysis/dsp_detectors.py fits three readers per check (single feature, a few interpretable features, all HW1 + extra features)
+# on sample A and scores them on a fresh sample B (tempo, loudness; quality has no fresh positives, so cross-validated A only).
+# Rule (plan "Director run"): a reader counts only if its fresh AUC (else cross-validated AUC) >= 0.65.
+# Results (dsp_detectors.csv): tempo interpretable 0.84 fresh (single onset rate 0.76, all features 0.89); loudness interpretable
+# 0.78 fresh; quality interpretable 0.72 CV; voice stem f0 energy-gated 0.74 (voice_pitch_check.csv); happy/sad all features 0.78
+# CV; electric/acoustic 0.75; jazz/country 0.77; piano/guitar 0.61 (fails: "detector cannot tell" for the DSP side).
+# The interpretable reader is the second reading where it exists, since the all-features reader includes genre-like features
+# (chroma entropy alone gives tempo 0.85, loudness 0.78) and would credit a genre change as a tempo change; all-features is
+# reported as a third reading. Ranges are those of each axis above: they predict whether the model follows the word, not
+# the detector. Chroma entropy is descriptive only (scripts/analysis/chroma_check.py), called "harmony" only if it adds >= 0.03 AUC
+# over a percussion and noise control model on real audio.
+
+[[second_reading]]
+axis = "fast_to_slow"
+detector = "reader: interpretable"
+low = 6
+high = 10
+
+[[second_reading]]
+axis = "soft_to_loud"
+detector = "reader: interpretable"
+low = 4
+high = 9
+
+[[second_reading]]
+axis = "low_quality_to_studio"
+detector = "reader: interpretable"
+low = 7
+high = 11
+
+[[second_reading]]
+axis = "voice_male_to_female"
+detector = "dsp stem: pitch_f0_median_energy_gated"
+low = 7
+high = 11
+
+[[second_reading]]
+axis = "happy_to_sad"
+detector = "reader: all features"
+low = 7
+high = 11
+
+[[second_reading]]
+axis = "acoustic_to_electric"
+detector = "reader: all features"
+low = 8
+high = 12
+
+[[second_reading]]
+axis = "insert_jazz_vs_country"
+detector = "reader: all features"
+low = 8
+high = 12
+
+# Addendum 5, 11-15 23:48 (main, director run; side-agent note 23:47), before any control clip exists. Meaning-free controls
+# (scripts/generation/control_edits.py): control_song_to_track (24 dev captions, first "song" -> "track", both generic words) and
+# control_neutral_insert (the 50 genre-insert captions + " The clip is ten seconds long."). Same ids, so same seeds.
+# Measure: profile_change_vs_seed = mean |probe change| over the 22 valid groups under the edit, over the same between seeds
+# (results/analysis/edit_controls.csv); groups_clear_of_zero = groups whose signed mean change has a 95% interval excluding 0.
+# Rule fixed now: if a control's profile ratio is >= 0.8 (the real axes measured 0.79-0.99 on unrelated probes), the slide
+# says "any text change re-rolls the clip", and meaning is claimed only from signed shifts (target counts, spillover) that
+# exceed the control's. Controls are predicted to have <= 2 of 22 groups clear of zero (about 1 by chance).
+
+[[control_prediction]]
+edit = "control_song_to_track"
+measure = "profile_change_vs_seed"
+low = 0.6
+high = 1.0
+
+[[control_prediction]]
+edit = "control_neutral_insert"
+measure = "profile_change_vs_seed"
+low = 0.6
+high = 1.0
+
+[[control_prediction]]
+edit = "control_song_to_track"
+measure = "groups_clear_of_zero"
+low = 0
+high = 2
+
+[[control_prediction]]
+edit = "control_neutral_insert"
+measure = "groups_clear_of_zero"
+low = 0
+high = 2
+
+# Addendum 6, 11-15 23:53 (main, director run), before any clip exists. Can the bundle be cut? (scripts/analysis/bundle_guidance.py;
+# Composable Diffusion negation/conjunction, cited in the HW3 spec.) Edited captions, same ids and seeds as the edit pairs, with an
+# extra guidance term of weight 4 on the text "drums, percussion, groovy beat": away from it for soft_to_loud (16 pairs), toward
+# it for happy_to_sad (15). The caption keeps weight 12 (extra term added on top of plain CFG; side-agent note 23:50). Control
+# arm: same weight and sign, text "The clip is ten seconds long." Measures against the plain edited clip, in seed-spread units
+# (MERT and CLAP probes): target-minus-source probe, drums probe, groovy probe.
+# Rule fixed now (bundle arm minus control arm, MERT drums probe must move >= 0.3 SD the intended way, else "the term did not
+# reach the bundle" and no claim is made):
+#   loud: "separable" if the target-minus-source probe keeps >= 50% of its edit effect (CLAP probe, which hears loudness:
+#   15/16); "bundled" if it loses more than 50%.
+#   sad: "separable" if putting the drums back leaves sad-minus-happy within 50% of its edit effect; "bundled" otherwise.
+# Predicted: loud bundled (loudness falls with the drums), sad separable (sad survives with drums back).
+
+[[bundle_prediction]]
+axis = "soft_to_loud"
+verdict = "bundled"
+
+[[bundle_prediction]]
+axis = "happy_to_sad"
+verdict = "separable"

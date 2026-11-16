@@ -1,0 +1,42 @@
+{
+ "set": "dev",
+ "drop_groups": [
+  "context: use or setting",
+  "recording: high quality",
+  "recording: low quality"
+ ],
+ "changed": 29,
+ "ids": [
+  1,
+  9,
+  10,
+  13,
+  14,
+  15,
+  18,
+  19,
+  23,
+  31,
+  34,
+  43,
+  45,
+  51,
+  53,
+  58,
+  61,
+  76,
+  80,
+  82,
+  84,
+  86,
+  87,
+  89,
+  92,
+  93,
+  95,
+  96,
+  99
+ ],
+ "median_words_before": 48.0,
+ "median_words_after": 45.0
+}

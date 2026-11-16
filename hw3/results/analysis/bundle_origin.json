@@ -1,0 +1,20 @@
+{
+ "caption_cooccurrence": {
+  "spearman": 0.3215361097779911,
+  "p": 6.438623954099628e-06
+ },
+ "audio_cooccurrence": {
+  "spearman": 0.31910627632912064,
+  "p": 7.6250831912743546e-06
+ },
+ "caption_cooccurrence_sign_agreement_on_clear": 0.8055555555555556,
+ "audio_cooccurrence_sign_agreement_on_clear": 0.8055555555555556,
+ "linear_fit": {
+  "caption_coef": 0.06561277424706291,
+  "audio_coef": 0.03846523177806259,
+  "r2": 0.1476719064560993
+ },
+ "pairs": 189,
+ "clear_pairs": 36,
+ "inter_association_spearman": 0.8923425585239695
+}

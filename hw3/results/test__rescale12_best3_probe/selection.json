@@ -1,0 +1,26 @@
+{
+  "set": "test",
+  "name": "rescale12_best3_probe",
+  "candidates": [
+    "rescale12",
+    "rescale12_seed1",
+    "rescale12_seed2"
+  ],
+  "score": "probe_score",
+  "score_file": "probe_rank.csv",
+  "n_items": 100,
+  "n_missing_scores": 0,
+  "chosen_counts": {
+    "rescale12": 34,
+    "rescale12_seed1": 25,
+    "rescale12_seed2": 41
+  },
+  "mean_score_per_candidate": {
+    "rescale12": -0.9229651083917845,
+    "rescale12_seed1": -0.9057037969770885,
+    "rescale12_seed2": -0.5124305814154565
+  },
+  "mean_score_selected": 0.14933581755842482,
+  "code_version": "ada92d6+dirty",
+  "time": "2026-11-15 23:22:15"
+}

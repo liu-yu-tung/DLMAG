@@ -1,0 +1,5 @@
+{"id": "1", "seed": 1, "seconds": 20.773, "time": 1794746962.4, "tokens": 41, "peak": 1.0156, "clip_fraction": 1.360544229100924e-05, "rms": 0.21761, "noise_fingerprint": 125297.60766792297, "valid_frames": 216, "forward_samples": 200}
+{"id": "19", "seed": 19, "seconds": 20.142, "time": 1794746982.6, "tokens": 78, "peak": 1.0596, "clip_fraction": 2.721088458201848e-05, "rms": 0.22623, "noise_fingerprint": 86590.92779541016, "valid_frames": 216, "forward_samples": 200}
+{"id": "28", "seed": 28, "seconds": 20.626, "time": 1794747003.3, "tokens": 70, "peak": 0.708, "clip_fraction": 0.0, "rms": 0.12259, "noise_fingerprint": 320911.0348815918, "valid_frames": 216, "forward_samples": 200}
+{"id": "80", "seed": 80, "seconds": 20.379, "time": 1794747023.7, "tokens": 43, "peak": 0.3699, "clip_fraction": 0.0, "rms": 0.055, "noise_fingerprint": -18500.40065765381, "valid_frames": 216, "forward_samples": 200}
+{"id": "94", "seed": 94, "seconds": 20.042, "time": 1794747043.8, "tokens": 90, "peak": 1.1279, "clip_fraction": 0.00017233561084140092, "rms": 0.18658, "noise_fingerprint": -133528.7412033081, "valid_frames": 216, "forward_samples": 200}

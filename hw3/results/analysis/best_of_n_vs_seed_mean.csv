@@ -1,0 +1,9 @@
+set,setting,ranker,baseline,checked_against_record,picks_seed0,picks_seed1,picks_seed2,dclap9014,dclap9014_low,dclap9014_high,dclap8998,dclap8998_low,dclap8998_high,dkl_passt,dkl_passt_low,dkl_passt_high,dkl_panns,dkl_panns_low,dkl_panns_high
+dev,cfg7,same-checkpoint (90.14),mean of seeds 0-2 per prompt (random pick),True,30,37,33,0.0564,0.0502,0.0623,0.0248,0.0164,0.0333,-0.0761,-0.1398,-0.0104,-0.0564,-0.1517,0.0351
+dev,cfg7,cross-checkpoint (89.98),mean of seeds 0-2 per prompt (random pick),True,34,33,33,0.0357,0.027,0.0437,0.0477,0.0418,0.0537,-0.0367,-0.1053,0.0347,-0.0255,-0.1295,0.07
+dev,rescale12,same-checkpoint (90.14),mean of seeds 0-2 per prompt (random pick),True,39,40,21,0.047,0.0414,0.0531,0.025,0.017,0.0337,-0.1036,-0.1565,-0.0499,-0.098,-0.1948,-0.0107
+dev,rescale12,cross-checkpoint (89.98),mean of seeds 0-2 per prompt (random pick),True,39,37,24,0.0198,0.0099,0.0285,0.0471,0.0418,0.053,-0.0884,-0.1492,-0.0265,-0.0669,-0.1645,0.0384
+test,rescale12,same-checkpoint (90.14),mean of seeds 0-2 per prompt (random pick),False,36,32,32,0.0457,0.0401,0.0513,0.0177,0.0112,0.0247,0.0076,-0.0381,0.0613,-0.0373,-0.1096,0.0343
+test,rescale12,cross-checkpoint (89.98),mean of seeds 0-2 per prompt (random pick),True,26,41,33,0.0279,0.0205,0.0356,0.0381,0.0339,0.0425,-0.0245,-0.0753,0.032,-0.0151,-0.095,0.0631
+test,cfg7,same-checkpoint (90.14),mean of seeds 0-2 per prompt (random pick),False,32,40,28,0.0487,0.0431,0.0549,0.0277,0.0208,0.0347,-0.0418,-0.1093,0.0295,-0.0295,-0.1062,0.0416
+test,cfg7,cross-checkpoint (89.98),mean of seeds 0-2 per prompt (random pick),True,29,39,32,0.0327,0.0251,0.0409,0.0439,0.0394,0.0486,-0.0463,-0.1047,0.0264,-0.0529,-0.1255,0.0193

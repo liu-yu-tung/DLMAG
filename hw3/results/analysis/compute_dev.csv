@@ -1,0 +1,7 @@
+run,family,passes,measured_passes,seconds_per_clip,seconds_per_clip_total,seconds_per_clip_fit,clap,clap_difference,clap_difference_low,clap_difference_high,kl_passt,fd_mert_musiccaps
+dev__interval_late12,interval,150,150.0,12.6722,12.6722,12.6523,0.2237,-0.0752,-0.0937,-0.0562,1.8657,43.938
+dev__interval_late,interval,171,171.0,14.1681,14.1681,14.1722,0.2718,-0.0271,-0.0344,-0.0192,1.6628,44.5046
+dev__interval_early,interval,179,179.0,14.7095,14.7095,14.7512,0.2994,0.0004,-0.0032,0.0046,1.5114,43.7932
+dev__cfg7,cfg7,200,,16.1201,16.1201,16.271,0.2989,0.0,0.0,0.0,1.5055,43.4962
+dev__rescale12,rescale,200,200.0,16.4479,16.4479,16.271,0.3265,0.0276,0.0165,0.0386,1.421,40.9728
+dev__cfg7_best3,best3,600,,,48.4659,,0.3503,0.0514,0.0408,0.0622,1.4275,42.6402

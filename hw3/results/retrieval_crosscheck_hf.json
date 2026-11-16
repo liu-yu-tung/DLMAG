@@ -1,0 +1,13 @@
+{
+ "top1_agreement": 0.0,
+ "pinned_top1_in_hf_top5": 0.0,
+ "mean_top5_overlap": 0.0,
+ "pearson_all_scores": 0.08016115427017212,
+ "pearson_top1_scores": -0.0769171342253685,
+ "mean_per_caption_spearman": 0.07960804425433039,
+ "hf_top1_score_range": [
+  0.043533556163311005,
+  0.046157680451869965
+ ],
+ "model": "laion/larger_clap_music (HF) vs music_audioset_epoch_15_esc_90.14.pt"
+}

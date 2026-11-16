@@ -1,0 +1,17 @@
+pair,prompt_id,run_a,run_b,rating,chosen_side,chosen_run,strength
+pair_01,17,rescale12_best3_c8998,cfg7,1,B,cfg7,1
+pair_02,72,rescale12_best3_c8998,cfg7,-2,A,rescale12_best3_c8998,2
+pair_03,97,cfg7,rescale12_best3_c8998,2,B,rescale12_best3_c8998,2
+pair_04,8,rescale12_best3_c8998,cfg7,-2,A,rescale12_best3_c8998,2
+pair_05,32,cfg7,rescale12_best3_c8998,2,B,rescale12_best3_c8998,2
+pair_06,15,rescale12_best3_c8998,cfg7,-2,A,rescale12_best3_c8998,2
+pair_07,63,cfg7,rescale12_best3_c8998,2,B,rescale12_best3_c8998,2
+pair_08,57,cfg7,rescale12_best3_c8998,-1,A,cfg7,1
+pair_09,60,cfg7,rescale12_best3_c8998,0,same,same,0
+pair_10,83,cfg7,rescale12_best3_c8998,2,B,rescale12_best3_c8998,2
+pair_11,48,cfg7,rescale12_best3_c8998,2,B,rescale12_best3_c8998,2
+pair_12,26,cfg7,rescale12_best3_c8998,2,B,rescale12_best3_c8998,2
+pair_13,12,rescale12_best3_c8998,cfg7,2,B,cfg7,2
+pair_14,62,rescale12_best3_c8998,cfg7,0,same,same,0
+pair_15,3,rescale12_best3_c8998,cfg7,2,B,cfg7,2
+pair_16,49,rescale12_best3_c8998,cfg7,1,B,cfg7,1

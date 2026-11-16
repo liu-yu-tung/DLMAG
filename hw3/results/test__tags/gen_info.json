@@ -1,0 +1,25 @@
+{
+  "model": "stabilityai/stable-audio-open-1.0",
+  "code_version": "5a6bcbc+dirty",
+  "settings": {
+    "captions": "test.csv",
+    "prompt_style": "tags",
+    "tags": "tags_test.jsonl",
+    "guidance": {
+      "mode": "cfg",
+      "scale": 7.0,
+      "apg_eta": 0.0,
+      "apg_momentum": 0.0,
+      "apg_norm_threshold": 0.0
+    },
+    "steps": 100,
+    "seconds": 10.0,
+    "seed_index": 0,
+    "compile": false
+  },
+  "started": "2026-11-15 22:10:43",
+  "finished": "2026-11-15 22:37:58",
+  "n_items": 100,
+  "mean_seconds_per_item": 16.30708,
+  "mean_clip_fraction": 0.0028051022209069744
+}

@@ -1,0 +1,2 @@
+{"id": "39", "seed": 39, "seconds": 21.252, "time": 1794747255.8, "tokens": 50, "peak": 0.8921, "clip_fraction": 0.0, "rms": 0.18142, "noise_fingerprint": -27509.48442840576, "valid_frames": 216, "forward_samples": 200}
+{"id": "87", "seed": 87, "seconds": 20.342, "time": 1794747276.1, "tokens": 100, "peak": 0.6553, "clip_fraction": 0.0, "rms": 0.13384, "noise_fingerprint": -52313.02266693115, "valid_frames": 216, "forward_samples": 200}

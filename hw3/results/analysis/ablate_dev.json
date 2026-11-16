@@ -1,0 +1,138 @@
+{
+ "eligible": 68,
+ "changed": 29,
+ "ids": [
+  2,
+  3,
+  4,
+  12,
+  15,
+  33,
+  38,
+  40,
+  42,
+  45,
+  46,
+  47,
+  50,
+  60,
+  61,
+  62,
+  63,
+  65,
+  68,
+  73,
+  75,
+  77,
+  78,
+  83,
+  85,
+  87,
+  89,
+  97,
+  98
+ ],
+ "removed": {
+  "2": [
+   "vocals: male voice"
+  ],
+  "3": [
+   "instrument: guitar"
+  ],
+  "4": [
+   "instrument: guitar",
+   "timbre: electric, distorted"
+  ],
+  "12": [
+   "instrument: piano, keys"
+  ],
+  "15": [
+   "instrument: piano, keys"
+  ],
+  "33": [
+   "vocals: male voice"
+  ],
+  "38": [
+   "vocals: male voice"
+  ],
+  "40": [
+   "instrument: guitar",
+   "timbre: electric, distorted",
+   "vocals: female voice",
+   "vocals: male voice"
+  ],
+  "42": [
+   "vocals: male voice"
+  ],
+  "45": [
+   "vocals: female voice"
+  ],
+  "46": [
+   "vocals: female voice"
+  ],
+  "47": [
+   "instrument: guitar",
+   "timbre: acoustic",
+   "vocals: female voice"
+  ],
+  "50": [
+   "vocals: male voice"
+  ],
+  "60": [
+   "vocals: male voice"
+  ],
+  "61": [
+   "instrument: guitar"
+  ],
+  "62": [
+   "instrument: guitar"
+  ],
+  "63": [
+   "vocals: male voice"
+  ],
+  "65": [
+   "timbre: electric, distorted"
+  ],
+  "68": [
+   "instrument: piano, keys"
+  ],
+  "73": [
+   "instrument: guitar",
+   "instrument: piano, keys",
+   "timbre: electric, distorted"
+  ],
+  "75": [
+   "vocals: male voice"
+  ],
+  "77": [
+   "vocals: female voice",
+   "vocals: male voice"
+  ],
+  "78": [
+   "timbre: acoustic"
+  ],
+  "83": [
+   "instrument: piano, keys"
+  ],
+  "85": [
+   "vocals: female voice"
+  ],
+  "87": [
+   "instrument: guitar",
+   "instrument: piano, keys",
+   "timbre: acoustic"
+  ],
+  "89": [
+   "instrument: guitar",
+   "timbre: electric, distorted"
+  ],
+  "97": [
+   "instrument: guitar",
+   "timbre: electric, distorted",
+   "vocals: male voice"
+  ],
+  "98": [
+   "instrument: piano, keys"
+  ]
+ }
+}

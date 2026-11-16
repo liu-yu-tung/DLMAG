@@ -1,0 +1,29 @@
+{
+  "first": "outputs/test/cfg7",
+  "second": "outputs/test/cfg7_regress",
+  "clips": [
+    {
+      "id": "3",
+      "identical_file": true,
+      "max_abs_difference": 0.0,
+      "rms_first": 0.1466237333262187,
+      "rms_difference": 0.0
+    },
+    {
+      "id": "4",
+      "identical_file": true,
+      "max_abs_difference": 0.0,
+      "rms_first": 0.08495169467212561,
+      "rms_difference": 0.0
+    },
+    {
+      "id": "5",
+      "identical_file": true,
+      "max_abs_difference": 0.0,
+      "rms_first": 0.1389287313682966,
+      "rms_difference": 0.0
+    }
+  ],
+  "all_identical": true,
+  "time": "2026-11-15 03:19:43"
+}

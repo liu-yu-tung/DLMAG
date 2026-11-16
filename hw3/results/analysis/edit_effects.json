@@ -1,0 +1,260 @@
+{
+ "verdicts": [
+  {
+   "axis": "voice_male_to_female",
+   "detector": "probe",
+   "predicted": [
+    7,
+    11
+   ],
+   "moved": 10,
+   "n": 12,
+   "met": true,
+   "p_binomial": 0.019287109375,
+   "p_binomial_holm": 0.135009765625,
+   "p_signflip": 0.0036996300369963003,
+   "effect_vs_noise": 0.8400083184242249
+  },
+  {
+   "axis": "guitar_to_piano",
+   "detector": "probe",
+   "predicted": [
+    9,
+    12
+   ],
+   "moved": 9,
+   "n": 12,
+   "met": true,
+   "p_binomial": 0.072998046875,
+   "p_binomial_holm": 0.43798828125,
+   "p_signflip": 0.006199380061993801,
+   "effect_vs_noise": 2.387754440307617
+  },
+  {
+   "axis": "acoustic_to_electric",
+   "detector": "probe",
+   "predicted": [
+    8,
+    12
+   ],
+   "moved": 11,
+   "n": 12,
+   "met": true,
+   "p_binomial": 0.003173828125,
+   "p_binomial_holm": 0.025390625,
+   "p_signflip": 9.999000099990002e-05,
+   "effect_vs_noise": 0.9698315262794495
+  },
+  {
+   "axis": "soft_to_loud",
+   "detector": "dsp: energy_rms_db_mean",
+   "predicted": [
+    4,
+    9
+   ],
+   "moved": 9,
+   "n": 12,
+   "met": true,
+   "p_binomial": 0.072998046875,
+   "p_binomial_holm": 0.43798828125,
+   "p_signflip": 0.029797020297970205,
+   "effect_vs_noise": 0.39015674804574074
+  },
+  {
+   "axis": "happy_to_sad",
+   "detector": "probe",
+   "predicted": [
+    7,
+    11
+   ],
+   "moved": 8,
+   "n": 12,
+   "met": true,
+   "p_binomial": 0.19384765625,
+   "p_binomial_holm": 0.775390625,
+   "p_signflip": 0.0494950504949505,
+   "effect_vs_noise": 0.5491162538528442
+  },
+  {
+   "axis": "fast_to_slow",
+   "detector": "dsp: rhythm_tempo_bpm",
+   "predicted": [
+    6,
+    10
+   ],
+   "moved": 4,
+   "n": 12,
+   "met": false,
+   "p_binomial": 0.927001953125,
+   "p_binomial_holm": 0.927001953125,
+   "p_signflip": 0.5784421557844216,
+   "effect_vs_noise": -0.05234870073906941
+  },
+  {
+   "axis": "low_quality_to_studio",
+   "detector": "dsp: energy_band_6000_12000hz_ratio",
+   "predicted": [
+    7,
+    11
+   ],
+   "moved": 8,
+   "n": 12,
+   "met": true,
+   "p_binomial": 0.19384765625,
+   "p_binomial_holm": 0.775390625,
+   "p_signflip": 0.057894210578942104,
+   "effect_vs_noise": 1.1762323002843809
+  },
+  {
+   "axis": "insert_jazz_vs_country",
+   "detector": "probe",
+   "predicted": [
+    8,
+    12
+   ],
+   "moved": 7,
+   "n": 12,
+   "met": false,
+   "p_binomial": 0.38720703125,
+   "p_binomial_holm": 0.775390625,
+   "p_signflip": 0.035396460353964605,
+   "effect_vs_noise": 0.589436411857605
+  },
+  {
+   "axis": "insert_1960s_vs_2010s",
+   "detector": "hw1_decade",
+   "predicted": [
+    7,
+    11
+   ],
+   "result": null
+  },
+  {
+   "axis": "insert_brazil_vs_germany",
+   "detector": "hw1_market",
+   "predicted": [
+    5,
+    9
+   ],
+   "result": null
+  },
+  {
+   "axis": "insert_latin_vs_techno",
+   "detector": "probe",
+   "predicted": [
+    9,
+    12
+   ],
+   "result": null
+  },
+  {
+   "axis": "insert_latin_vs_techno",
+   "detector": "hw1_latin_market",
+   "predicted": [
+    7,
+    11
+   ],
+   "result": null
+  }
+ ],
+ "second_readings": [
+  {
+   "axis": "fast_to_slow",
+   "detector": "reader: interpretable",
+   "predicted": [
+    6,
+    10
+   ],
+   "moved": 8,
+   "n": 12,
+   "met": true,
+   "p_binomial": 0.19384765625,
+   "p_signflip": 0.2505749425057494,
+   "effect_vs_noise": 0.1981335074659606
+  },
+  {
+   "axis": "soft_to_loud",
+   "detector": "reader: interpretable",
+   "predicted": [
+    4,
+    9
+   ],
+   "moved": 10,
+   "n": 12,
+   "met": false,
+   "p_binomial": 0.019287109375,
+   "p_signflip": 0.0007999200079992001,
+   "effect_vs_noise": 0.8218109702663711
+  },
+  {
+   "axis": "low_quality_to_studio",
+   "detector": "reader: interpretable",
+   "predicted": [
+    7,
+    11
+   ],
+   "moved": 8,
+   "n": 12,
+   "met": true,
+   "p_binomial": 0.19384765625,
+   "p_signflip": 0.047995200479952004,
+   "effect_vs_noise": 0.7886806738664213
+  },
+  {
+   "axis": "voice_male_to_female",
+   "detector": "dsp stem: pitch_f0_median_energy_gated",
+   "predicted": [
+    7,
+    11
+   ],
+   "moved": 8,
+   "n": 9,
+   "met": true,
+   "p_binomial": 0.01953125,
+   "p_signflip": 0.004899510048995101,
+   "effect_vs_noise": 0.6556857856956159
+  },
+  {
+   "axis": "happy_to_sad",
+   "detector": "reader: all features",
+   "predicted": [
+    7,
+    11
+   ],
+   "moved": 8,
+   "n": 12,
+   "met": true,
+   "p_binomial": 0.19384765625,
+   "p_signflip": 0.03949605039496051,
+   "effect_vs_noise": 0.2641899823654448
+  },
+  {
+   "axis": "acoustic_to_electric",
+   "detector": "reader: all features",
+   "predicted": [
+    8,
+    12
+   ],
+   "moved": 9,
+   "n": 12,
+   "met": true,
+   "p_binomial": 0.072998046875,
+   "p_signflip": 0.22277772222777723,
+   "effect_vs_noise": 0.21683145749390603
+  },
+  {
+   "axis": "insert_jazz_vs_country",
+   "detector": "reader: all features",
+   "predicted": [
+    8,
+    12
+   ],
+   "moved": 6,
+   "n": 12,
+   "met": false,
+   "p_binomial": 0.61279296875,
+   "p_signflip": 0.060993900609939006,
+   "effect_vs_noise": 0.7068001964014162
+  }
+ ]
+}
